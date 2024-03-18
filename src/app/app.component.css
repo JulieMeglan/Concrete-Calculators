@@ -1,0 +1,11 @@
+mat-sidenav-container {
+    height: 100%;
+}
+
+.navButton {
+    padding: 5px;    
+}
+
+.navButton button {
+    width: 100%;
+}

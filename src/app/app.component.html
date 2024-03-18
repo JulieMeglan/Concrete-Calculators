@@ -1,0 +1,45 @@
+<header>
+  <mat-toolbar>
+    <span>Concrete Calculators</span>
+  </mat-toolbar>
+</header>
+
+<mat-sidenav-container>
+  <mat-sidenav mode="side" opened hasBackdrop="False">
+    <nav>
+      <div class="navButton">
+        <a [routerLink]="['./home']" routerLinkActive="active">
+          <button mat-flat-button color="primary">Home</button>
+        </a>
+      </div>
+      <div class="navButton">
+        <a [routerLink]="['./calc']">
+          <button mat-flat-button color="primary">Plastic Shrinkage Cracks</button>
+        </a>
+      </div>
+      <div class="navButton">
+        <a [routerLink]="['./calc']">
+          <button mat-flat-button color="primary">TC Powers Volume</button>
+        </a>
+      </div>
+      <div class="navButton">
+        <a [routerLink]="['./calc']">
+          <button mat-flat-button color="primary">Bogue</button>
+        </a>
+      </div>
+      <div class="navButton">
+        <a [routerLink]="['./calc/morterandmix']">
+          <button mat-flat-button color="primary">Concrete & Mortar Mix</button>
+        </a>
+      </div>
+      <div class="navButton">
+        <a [routerLink]="['./calc']">
+          <button mat-flat-button color="primary">Login</button>
+        </a>
+      </div>
+    </nav>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <router-outlet></router-outlet>
+  </mat-sidenav-content>
+</mat-sidenav-container>
