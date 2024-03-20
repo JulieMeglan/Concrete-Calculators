@@ -1,14 +1,20 @@
 import { Component } from '@angular/core';
 import { MortarAndMixComponent } from './mortar-and-mix/mortar-and-mix.component';
+import { BogueComponent } from './bogue/bogue.component';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
+import {MatDividerModule} from '@angular/material/divider';
+import {MatButtonModule} from '@angular/material/button';
+import { IgxBannerModule } from 'igniteui-angular';
+
 
 @Component({
   selector: 'app-calculator-parent',
   standalone: true,
-  imports: [MortarAndMixComponent],
+  imports: [MortarAndMixComponent, BogueComponent, MatDividerModule, MatButtonModule, IgxBannerModule],
   templateUrl: './calculator-parent.component.html',
   styleUrl: './calculator-parent.component.css'
-})
+}
+)
 
 
 export class CalculatorParentComponent {
