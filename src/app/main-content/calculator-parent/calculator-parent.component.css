@@ -1,0 +1,10 @@
+.about-tutorial-and-calc-button{
+    display: table-cell;
+    width: 40%;
+    padding: 20px;
+}
+
+.about-tutorial-and-calc-button button{
+    padding: 20px;    
+}
+
