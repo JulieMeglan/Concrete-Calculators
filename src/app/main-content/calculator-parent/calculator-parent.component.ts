@@ -15,10 +15,6 @@ import {MatButtonModule} from '@angular/material/button';
 }
 )
 
-
-
-
-
 export class CalculatorParentComponent {
 public CalcName: String | undefined;
 
