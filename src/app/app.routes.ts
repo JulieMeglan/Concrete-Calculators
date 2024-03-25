@@ -5,6 +5,7 @@ import { MainContentComponent } from './main-content/main-content.component';
 import { MortarAndMixComponent } from './main-content/calculator-parent/mortar-and-mix/mortar-and-mix.component';
 import { BogueComponent } from './main-content/calculator-parent/bogue/bogue.component';
 import { TcpowersComponent } from './main-content/calculator-parent/tcpowers/tcpowers.component';
+import { PlasticShrinkageCracksComponent } from './main-content/calculator-parent/plastic-shrinkage-cracks/plastic-shrinkage-cracks.component';
 
 export const routes: Routes = [
     { path: '', component: MainContentComponent, 
@@ -13,10 +14,10 @@ export const routes: Routes = [
             { path: 'calc', 
                 component: CalculatorParentComponent
                 ,children: [
-                 { path: 'plasticshrink', component: CalculatorParentComponent },
-                 { path: 'tcpowers', component: CalculatorParentComponent },
+                 { path: 'plastic', component: PlasticShrinkageCracksComponent },
+                 { path: 'tcpowers', component: TcpowersComponent },
                  { path: 'bogue', component: BogueComponent },
-                 { path: 'morterandmix', component: MortarAndMixComponent },
+                 { path: 'morterandmix', component: MortarAndMixComponent }
                 ] 
             },
         ]
