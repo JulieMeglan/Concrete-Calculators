@@ -1,21 +1,21 @@
 import { Component } from '@angular/core';
 import { MortarAndMixComponent } from './mortar-and-mix/mortar-and-mix.component';
 import { BogueComponent } from './bogue/bogue.component';
+import { TcpowersComponent } from './tcpowers/tcpowers.component';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatButtonModule} from '@angular/material/button';
-import { IgxBannerModule } from 'igniteui-angular';
+import { PlasticShrinkageCracksComponent } from './plastic-shrinkage-cracks/plastic-shrinkage-cracks.component';
 
 
 @Component({
   selector: 'app-calculator-parent',
   standalone: true,
-  imports: [MortarAndMixComponent, BogueComponent, MatDividerModule, MatButtonModule, IgxBannerModule],
+  imports: [MortarAndMixComponent, BogueComponent, TcpowersComponent, PlasticShrinkageCracksComponent, MatDividerModule, MatButtonModule],
   templateUrl: './calculator-parent.component.html',
   styleUrl: './calculator-parent.component.css'
 }
 )
-
 
 export class CalculatorParentComponent {
 public CalcName: String | undefined;
