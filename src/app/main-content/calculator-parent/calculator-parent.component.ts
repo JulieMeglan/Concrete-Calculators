@@ -5,12 +5,13 @@ import { TcpowersComponent } from './tcpowers/tcpowers.component';
 import { Router, ActivatedRoute, ParamMap } from '@angular/router';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatButtonModule} from '@angular/material/button';
+import { PlasticShrinkageCracksComponent } from './plastic-shrinkage-cracks/plastic-shrinkage-cracks.component';
 
 
 @Component({
   selector: 'app-calculator-parent',
   standalone: true,
-  imports: [MortarAndMixComponent, BogueComponent, TcpowersComponent, MatDividerModule, MatButtonModule],
+  imports: [MortarAndMixComponent, BogueComponent, TcpowersComponent, PlasticShrinkageCracksComponent, MatDividerModule, MatButtonModule],
   templateUrl: './calculator-parent.component.html',
   styleUrl: './calculator-parent.component.css'
 }
