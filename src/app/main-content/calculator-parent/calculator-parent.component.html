@@ -3,10 +3,15 @@
     <!-- insert select here -->
 </div>
 <div NgIf="CalcName == 'tcpowers'">
+  
     <!-- insert select here -->
 </div>
 <div NgIf="CalcName == 'bogue'">
-    <!-- insert select here -->
+    <a class="about-tutorial-and-calc-button">
+        <button mat-raised-button color="basic">Calculator</button>
+        <button mat-raised-button color="basic">About</button>
+        <button mat-raised-button color="basic">Tutorial</button>
+    </a>
     <app-bogue></app-bogue>
 </div>
 <div NgIf="CalcName == 'morterandmix'">

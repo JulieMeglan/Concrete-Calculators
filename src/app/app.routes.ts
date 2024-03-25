@@ -3,6 +3,7 @@ import { HomeComponent } from './main-content/home/home.component';
 import { CalculatorParentComponent } from './main-content/calculator-parent/calculator-parent.component';
 import { MainContentComponent } from './main-content/main-content.component';
 import { MortarAndMixComponent } from './main-content/calculator-parent/mortar-and-mix/mortar-and-mix.component';
+import { BogueComponent } from './main-content/calculator-parent/bogue/bogue.component';
 
 export const routes: Routes = [
     { path: '', component: MainContentComponent, 
@@ -13,7 +14,7 @@ export const routes: Routes = [
                 ,children: [
                  { path: 'calc', component: CalculatorParentComponent },
                  { path: 'calc', component: CalculatorParentComponent },
-                 { path: 'calc', component: CalculatorParentComponent },
+                 { path: 'bogue', component: BogueComponent },
                  { path: 'morterandmix', component: MortarAndMixComponent },
                 ] 
             },
