@@ -2,9 +2,7 @@ import { Component } from '@angular/core';
 import { RouterOutlet, RouterModule } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import {MatButtonModule} from '@angular/material/button';
-import { MainContentComponent } from "./main-content/main-content.component";
 import {MatToolbarModule} from '@angular/material/toolbar';
-
 
 @Component({
     selector: 'app-root',
@@ -16,7 +14,6 @@ import {MatToolbarModule} from '@angular/material/toolbar';
         RouterModule,
         MatSidenavModule,
         MatButtonModule, 
-        MainContentComponent, 
         MatToolbarModule]
 })
 
