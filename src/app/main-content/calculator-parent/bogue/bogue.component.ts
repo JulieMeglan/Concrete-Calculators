@@ -20,7 +20,7 @@ export class BogueComponent {
   so3: number = 0;
   results: any;
 
-  calculateBogue(cao: number, sio2: number, al2o3: number, fe2o3: number = 2.58, so3: number): void {
+  calculateBogue(cao: number, sio2: number, al2o3: number, fe2o3: number, so3: number): void {
     if (this.cao <= 0 || this.sio2 <= 0 || this.al2o3 <= 0 || this.fe2o3 <= 0 || this.so3 <= 0) {
       alert("All input values must be positive non-zero numbers.");
       return;
