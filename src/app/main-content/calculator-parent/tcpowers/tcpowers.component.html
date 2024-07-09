@@ -1,1 +1,43 @@
-<p>tcpowers works!</p>
+<!-- tcpowers.component.html -->
+
+<h2>TC Powers Calculation</h2>
+<!-- gets input values for tc powers calculations via html form -->
+<!-- for use in TypeScript file, use [(ngModel)]="example" name = "example" -->
+<form id="tcpowersForm">
+    <!-- get input for water to cement ratio -->
+    <label for="wcInput">Water/Cement Ratio (w/c): </label>
+    <input type="number" id="wcInput" step="0.01" [(ngModel)]="wc" name = "wc" required><br>
+    <!-- get input for degree of hydration -->
+    <label for="alphaInput">Degree of Hydration (α): </label>
+    <input type="number" id="alphaInput" step="0.01" [(ngModel)]="alpha" name = "alpha" required><br>
+    <!-- submit button that calls function in tcpowers.component.ts -->
+    <button type="button" (click)="calculateTCPowers(wc, alpha)">Calculate</button>
+</form>
+<!-- displays results from tcpowers.component.ts -->
+<div id="results">
+    <h3>TC Powers Calculation Results</h3>
+    <!-- displays the percentage of wn -->
+    <p>w<sub>n</sub>: {{ results?.wn.toFixed(2) }}%</p>
+    <!-- displays the percentage of wg -->
+    <p>w<sub>g</sub>: {{ results?.wg.toFixed(2) }}%</p>
+    <!-- displays the percentage of vg -->
+    <p>V<sub>g</sub>: {{ results?.vg.toFixed(2) }}%</p>
+    <!-- displays the percentage of vhp -->
+    <p>V<sub>hp</sub>: {{ results?.vhp.toFixed(2) }}%</p>
+    <!-- displays the percentage of vc -->
+    <p>V<sub>c</sub>: {{ results?.vc.toFixed(2) }}%</p>
+    <!-- displays the percentage of vu -->
+    <p>V<sub>u</sub>: {{ results?.vu.toFixed(2) }}%</p>
+    <!-- displays the percentage of vp -->
+    <p>V<sub>p</sub>: {{ results?.vp.toFixed(2) }}%</p>
+    <!-- displays the percentage of pg -->
+    <p>P<sub>g</sub>: {{ results?.pg.toFixed(2) }}%</p>
+    <!-- displays the percentage of pc -->
+    <p>P<sub>c</sub>: {{ results?.pc.toFixed(2) }}%</p>
+    <!-- displays the percentage of x -->
+    <p>X: {{ results?.x.toFixed(2) }}%</p>
+    <!-- displays the percentage of wmin -->
+    <p>W<sub>min</sub>: {{ results?.wmin.toFixed(2) }}%</p>
+
+</div>
+
