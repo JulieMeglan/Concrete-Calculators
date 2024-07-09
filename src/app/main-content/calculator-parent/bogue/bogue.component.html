@@ -1,3 +1,12 @@
+<!-- bogue.component.html -->
+
+<!-- This HTML file creates a form to input values for Bogue Calculation, a method used in cement 
+chemistry to predict the proportions of various mineral phases in cement. The form collects 
+values for Lime (CaO), Silica (SiO2), Alumina (Al2O3), Ferric Oxide (Fe2O3), and Sulfur Trioxide 
+(SO3). When the "Calculate" button is clicked, the form triggers the calculateBogue function in the 
+TypeScript file "bogue.component.ts". The results are displayed below the form, showing the percentages
+of different mineral phases and the Alumina to Ferric Oxide ratio. -->
+
 <h2>Bogue Calculation</h2>
 <!-- gets input values for bogue calculations via html form -->
 <!-- for use in TypeScript file, use [(ngModel)]="example" name = "example" -->
@@ -23,9 +32,14 @@
 <!-- displays results from bogue.component.ts -->
 <div id="results">
     <h3>Bogue Calculation Results</h3>
+    <!-- displays the percentage of Tricalcium silicate (C3S) -->
     <p>C<sub>3</sub>S (Tricalcium silicate): {{ results?.c3s.toFixed(2) }}%</p>
+    <!-- displays the percentage of Dicalcium silicate (C2S) -->
     <p>C<sub>2</sub>S (Dicalcium silicate): {{ results?.c2s.toFixed(2) }}%</p>
+    <!-- displays the percentage of Tricalcium aluminate (C3A) -->
     <p>C<sub>3</sub>A (Tricalcium aluminate): {{ results?.c3a.toFixed(2) }}%</p>
+    <!-- displays the percentage of Tetracalcium aluminoferrite (C4AF) -->
     <p>C<sub>4</sub>AF (Tetracalcium aluminoferrite): {{ results?.c4af.toFixed(2) }}%</p>
+    <!-- displays the Alumina to Ferric Oxide (A/F) Ratio -->
     <p>A/F Ratio (Alumina to Ferric Oxide): {{ results?.afRatio.toFixed(2) }}</p>
 </div>
