@@ -1,1 +1,31 @@
-<p>bogue works!</p>
+<h2>Bogue Calculation</h2>
+<!-- gets input values for bogue calculations via html form -->
+<!-- for use in TypeScript file, use [(ngModel)]="example" name = "example" -->
+<form id="bogueForm">
+    <!-- get input for Lime -->
+    <label for="caoInput">Lime (CaO): </label>
+    <input type="number" id="caoInput" step="0.01" [(ngModel)]="cao" name = "cao" required><br>
+    <!-- get input for Silica -->
+    <label for="sio2Input">Silica (SiO<sub>2</sub>): </label>
+    <input type="number" id="sio2Input" step="0.01" [(ngModel)]="sio2" name = "sio2" required><br>
+    <!-- get input for Alumina -->
+    <label for="al2o3Input">Alumina (Al<sub>2</sub>O<sub>3</sub>): </label>
+    <input type="number" id="al2o3Input" step="0.01" [(ngModel)]="al2o3" name = "al2o3" required><br>
+    <!-- get input for Ferric Oxide -->
+    <label for="fe2o3Input">Ferric Oxide (Fe<sub>2</sub>O<sub>3</sub>): </label>
+    <input type="number" id="fe2o3Input" step="0.01" [(ngModel)]="fe2o3" name = "fe2o3" required><br>
+    <!-- get input for Sulfur Trioxide -->
+    <label for="so3Input">Sulfur Trioxide (SO<sub>3</sub>): </label>
+    <input type="number" id="so3Input" step="0.01" [(ngModel)]="so3" name = "so3" required><br>
+    <!-- submit button that calls function in bogue.component.ts -->
+    <button type="button" (click)="calculateBogue(cao, sio2, al2o3, fe2o3, so3)">Calculate</button>
+</form>
+<!-- displays results from bogue.component.ts -->
+<div id="results">
+    <h3>Bogue Calculation Results</h3>
+    <p>C<sub>3</sub>S (Tricalcium silicate): {{ results?.c3s.toFixed(2) }}%</p>
+    <p>C<sub>2</sub>S (Dicalcium silicate): {{ results?.c2s.toFixed(2) }}%</p>
+    <p>C<sub>3</sub>A (Tricalcium aluminate): {{ results?.c3a.toFixed(2) }}%</p>
+    <p>C<sub>4</sub>AF (Tetracalcium aluminoferrite): {{ results?.c4af.toFixed(2) }}%</p>
+    <p>A/F Ratio (Alumina to Ferric Oxide): {{ results?.afRatio.toFixed(2) }}</p>
+</div>

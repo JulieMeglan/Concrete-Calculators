@@ -6,6 +6,7 @@ import { BogueComponent } from './main-content/calculator-parent/bogue/bogue.com
 import { TcpowersComponent } from './main-content/calculator-parent/tcpowers/tcpowers.component';
 import { PlasticShrinkageCracksComponent } from './main-content/calculator-parent/plastic-shrinkage-cracks/plastic-shrinkage-cracks.component';
 
+
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
   { path: 'calc', 
