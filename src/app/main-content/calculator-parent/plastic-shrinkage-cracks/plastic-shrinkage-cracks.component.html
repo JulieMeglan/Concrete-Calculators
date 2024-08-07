@@ -7,15 +7,16 @@
 <p>Evaporation Rate = ([Concrete Temperature]<sup>2.5</sup> - [relative Humidity]/100 * [air temperature]<sup>2.5</sup>)(1 + 0.4[wind velocity])*10<sup>-6</sup></p>
 
 <form id="PlasicShrinkageCracksForm">
-    <!-- get input for Lime -->
+    <!-- get input for Concrete Temperature -->
     <label for="cTInput">Concrete Temperature (F): </label>
     <input type="number" id="cTInput" step="0.01" [(ngModel)]="cT" name = "cT" required><br>
-    <!-- get input for Silica -->
+    <!-- get input for Air Temperature -->
     <label for="aTInput">Air Temperature (F): </label>
     <input type="number" id="aTInput" step="0.01" [(ngModel)]="aT" name = "aT" required><br>
-    <!-- get input for Alumina -->
+    <!-- get input for Relative Humidity -->
     <label for="rHInput">Relative Humidity (%): </label>
     <input type="number" id="rHInput" step="0.01" [(ngModel)]="rH" name = "rH" required><br>
+    <!-- get input for Wind Velocity -->
     <label for="wVInput">Wind Velocity (mph): </label>
     <input type="number" id="wVInput" step="0.01" [(ngModel)]="wV" name = "wV" required><br>
  
@@ -25,6 +26,6 @@
 
 <!-- displays results from bogue.component.ts -->
 <div id="results">
-    <h3>Plasic Shrinkage Cracks Results</h3>
+    <h4><br><br>Plasic Shrinkage Cracks Results</h4>
     <p>Evaporation Rate (Ib/ft<sup>2</sup>/hr): {{ results?.eR.toFixed(3) }}</p>
 </div>

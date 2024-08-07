@@ -38,7 +38,6 @@ export class PlasticShrinkageCracksComponent {
     eR = (Math.pow(this.cT, 2.5) - (this.rH/100) * Math.pow(this.aT, 2.5))*(1 + (0.4 * this.wV)) * Math.pow(10, -6);
 
 
-
     // gathers calculated variables to be used in bogue.component.html
     this.results = {
       eR,

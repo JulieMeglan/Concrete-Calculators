@@ -3,8 +3,8 @@ import { MortarAndMixComponent } from './mortar-and-mix/mortar-and-mix.component
 import { BogueComponent } from './bogue/bogue.component';
 import { TcpowersComponent } from './tcpowers/tcpowers.component';
 import { Router, ActivatedRoute, RouterOutlet } from '@angular/router';
-import {MatDividerModule} from '@angular/material/divider';
-import {MatButtonModule} from '@angular/material/button';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatButtonModule } from '@angular/material/button';
 import { PlasticShrinkageCracksComponent } from './plastic-shrinkage-cracks/plastic-shrinkage-cracks.component';
 
 
