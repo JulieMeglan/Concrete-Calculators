@@ -1,9 +1,16 @@
 // bogue.component.ts
+
+// This TypeScript file defines the BogueComponent, which is responsible for handling the logic 
+// and calculations related to the Bogue Calculation method in the Angular webpage. It imports 
+// necessary modules and components, including FormsModule for handling input data and Material 
+// modules for UI components. The calculateBogue function performs the Bogue Calculation based on 
+// input values, and the results are stored in the results object for display in the HTML template.
+
+
 // imports for bogue calculator
 // ensure FormsModule is imported (required for input)
-
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms'; // imports FormsModule (required)
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -12,33 +19,34 @@ import { MatButtonModule } from '@angular/material/button';
 @Component({
   selector: 'app-bogue',
   standalone: true,
-  imports: [MatDividerModule, MatButtonModule, FormsModule],
-  templateUrl: './bogue.component.html',
+  imports: [MatDividerModule, MatButtonModule, FormsModule], // ensure FormsModule is in this line
+  templateUrl: './bogue.component.html', 
   styleUrl: './bogue.component.css'
 })
 
 // class containing bogue specific variables and functions
 export class BogueComponent {
   // variable declarations for bogue calculations
-  cao: number = 0;
-  sio2: number = 0;
-  al2o3: number = 0;
-  fe2o3: number = 0;
-  so3: number = 0;
-  results: any;
+  cao: number = 0; // variable for lime
+  sio2: number = 0; // variable for silica
+  al2o3: number = 0; // variable for alumina
+  fe2o3: number = 0; // variable for ferric oxide
+  so3: number = 0; // variable for sulfur trioxide
+  results: any; // stores values resulting from bogue formula
 
   // bogue calculation function
   calculateBogue(cao: number, sio2: number, al2o3: number, fe2o3: number, so3: number): void {
-    // ensures no input values are zero or negative numbers, as they are not feasible and will break the calculator
+    // checks if any input values are equal to zero or are negative values
     if (this.cao <= 0 || this.sio2 <= 0 || this.al2o3 <= 0 || this.fe2o3 <= 0 || this.so3 <= 0) {
-      alert("All input values must be positive non-zero numbers.");
+      alert("All input values must be positive non-zero numbers."); // displays alert message when user provides invalid input
       return;
     }
 
-    // calculated the alumina to ferric oxide ratio
+    // calculates the alumina to ferric oxide ratio
     // (necessary to determine which formula to use)
     const afRatio = this.al2o3 / this.fe2o3;
 
+    // declaration of resultant variables
     let c3s, c2s, c3a, c4af;
 
     // formula for if af ratio is greater than or equal to 0.64

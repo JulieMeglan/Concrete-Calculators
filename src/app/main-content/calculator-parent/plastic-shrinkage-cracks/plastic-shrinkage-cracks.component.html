@@ -1,1 +1,30 @@
-<p>plastic-shrinkage-cracks works!</p>
+<!-- <p>plastic-shrinkage-cracks works!</p> -->
+
+<h2>Plastic-Shrinkage-Cracks Calculation</h2>
+<!-- gets input values for bogue calculations via html form -->
+<!-- for use in TypeScript file, use [(ngModel)]="example" name = "example" -->
+
+<p>Evaporation Rate = ([Concrete Temperature]<sup>2.5</sup> - [relative Humidity]/100 * [air temperature]<sup>2.5</sup>)(1 + 0.4[wind velocity])*10<sup>-6</sup></p>
+
+<form id="PlasicShrinkageCracksForm">
+    <!-- get input for Lime -->
+    <label for="cTInput">Concrete Temperature (F): </label>
+    <input type="number" id="cTInput" step="0.01" [(ngModel)]="cT" name = "cT" required><br>
+    <!-- get input for Silica -->
+    <label for="aTInput">Air Temperature (F): </label>
+    <input type="number" id="aTInput" step="0.01" [(ngModel)]="aT" name = "aT" required><br>
+    <!-- get input for Alumina -->
+    <label for="rHInput">Relative Humidity (%): </label>
+    <input type="number" id="rHInput" step="0.01" [(ngModel)]="rH" name = "rH" required><br>
+    <label for="wVInput">Wind Velocity (mph): </label>
+    <input type="number" id="wVInput" step="0.01" [(ngModel)]="wV" name = "wV" required><br>
+ 
+    <!-- submit button that calls function in bogue.component.ts -->
+    <button type="button" (click)="calculatePlasticShrinkageCracks(cT, aT, rH, wV)">Calculate</button>
+</form>
+
+<!-- displays results from bogue.component.ts -->
+<div id="results">
+    <h3>Plasic Shrinkage Cracks Results</h3>
+    <p>Evaporation Rate (Ib/ft<sup>2</sup>/hr): {{ results?.eR.toFixed(3) }}</p>
+</div>
