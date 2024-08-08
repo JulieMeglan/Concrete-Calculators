@@ -18,11 +18,6 @@ export interface Ingredient {
   SSDMixAmountFtCubed: number;
   SSDMixAmountLbs: number;
   stockMixAmountLbs: number;
-  // Add metric fields if needed
-  kg?: number;
-  mCubed?: number;
-  SSDMixAmountKgs?: number;
-  stockMixAmountKgs?: number;
 }
 // Function to calculate ftCubed
 function calculateFtcubed(lb: number, SG: number): number {
