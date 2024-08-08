@@ -6,7 +6,7 @@ import { Router, ActivatedRoute, RouterOutlet } from '@angular/router';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatButtonModule} from '@angular/material/button';
 import { PlasticShrinkageCracksComponent } from './plastic-shrinkage-cracks/plastic-shrinkage-cracks.component';
-
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-calculator-parent',

@@ -6,3 +6,17 @@ table {
     font-weight: bold;
   }
   
+.form-container {
+    display: flex;
+    align-items: center;
+  }
+  
+.auto-width {
+    flex: 1; /* Field will automatically adjust */
+    min-width: 250px; /* Minimum width */
+  }
+  
+.toggle-container {
+    margin: 20px; 
+  }
+

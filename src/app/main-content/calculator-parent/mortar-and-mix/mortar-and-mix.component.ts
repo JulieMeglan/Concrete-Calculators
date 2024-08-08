@@ -6,8 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
-
-imports:      [  CommonModule ]
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 export interface Ingredient {
   name: string;
@@ -19,14 +18,18 @@ export interface Ingredient {
   SSDMixAmountFtCubed: number;
   SSDMixAmountLbs: number;
   stockMixAmountLbs: number;
+  // Add metric fields if needed
+  kg?: number;
+  mCubed?: number;
+  SSDMixAmountKgs?: number;
+  stockMixAmountKgs?: number;
 }
-
 // Function to calculate ftCubed
 function calculateFtcubed(lb: number, SG: number): number {
   if (SG === 0) {
     return 0;
   }
-  return parseFloat((lb / (SG * 62.4)).toFixed(2));
+  return parseFloat((lb / (SG * 62.4)).toFixed(8));
 }
 
 // Function to calculate totalFtCubed
@@ -35,7 +38,7 @@ function calculateTotalFtCubed(ingredients: Ingredient[]): number {
   ingredients.forEach(ingredient => {
     totalFtCubed += ingredient.ftCubed;
   });
-  return parseFloat(totalFtCubed.toFixed(2));
+  return parseFloat(totalFtCubed.toFixed(8));
 }
 
 // Function to calculate oneFootCubed
@@ -43,7 +46,7 @@ function calculateOneFootCubed(ingredient: Ingredient, totalFtCubed: number): nu
   if (totalFtCubed === 0 || isNaN(totalFtCubed)) {
     return 0; // Handle division by zero or NaN case
   }
-  return parseFloat((ingredient.ftCubed / totalFtCubed).toFixed(2));
+  return parseFloat((ingredient.ftCubed / totalFtCubed).toFixed(8));
 }
 
 // Function to calculate air ftCubed
@@ -55,7 +58,7 @@ function calculateAirFtCubed(ingredients: Ingredient[]): number {
     }
   });
   const airFtCubed = (ftCubedTotalMinusAir / 0.94) - ftCubedTotalMinusAir;
-  return parseFloat(airFtCubed.toFixed(2));
+  return parseFloat(airFtCubed.toFixed(8));
 }
 
 // Function to calculate totalOneFootCubed
@@ -64,13 +67,13 @@ function calculateTotalOneFootCubed(ingredients: Ingredient[]): number {
   ingredients.forEach(ingredient => {
     totalOneFootCubed += ingredient.oneFootCubed;
   });
-  return parseFloat(totalOneFootCubed.toFixed(2));
+  return parseFloat(totalOneFootCubed.toFixed(8));
 }
 
 // Function to calculate oneYardCubed
 function calculateOneYardCubed(ingredients: Ingredient[]): void {
   ingredients.forEach(ingredient => {
-    ingredient.oneYardCubed = parseFloat((ingredient.oneFootCubed * 27).toFixed(2));
+    ingredient.oneYardCubed = parseFloat((ingredient.oneFootCubed * 27).toFixed(8));
   });
 }
 
@@ -80,13 +83,13 @@ function calculateTotalOneYardCubed(ingredients: Ingredient[]): number {
   ingredients.forEach(ingredient => {
     totalOneYardCubed += ingredient.oneYardCubed;
   });
-  return parseFloat(totalOneYardCubed.toFixed(2));
+  return parseFloat(totalOneYardCubed.toFixed(8));
 }
 
 // Function to calculate SSDMixAmountFtCubed
 function calculateSSDMixAmountFtCubed(ingredients: Ingredient[], mixVolume: number): void {
   ingredients.forEach(ingredient => {
-    ingredient.SSDMixAmountFtCubed = parseFloat((ingredient.oneFootCubed * mixVolume).toFixed(2));
+    ingredient.SSDMixAmountFtCubed = parseFloat((ingredient.oneFootCubed * mixVolume).toFixed(8));
   });
 }
 
@@ -96,13 +99,13 @@ function calculateTotalSSDMixAmountFtCubed(ingredients: Ingredient[]): number {
   ingredients.forEach(ingredient => {
     totalSSDMixAmountFtCubed += ingredient.SSDMixAmountFtCubed;
   });
-  return parseFloat(totalSSDMixAmountFtCubed.toFixed(2));
+  return parseFloat(totalSSDMixAmountFtCubed.toFixed(8));
 }
 
 // Function to calculate SSDMixAmountLbs
 function calculateSSDMixAmountLbs(ingredients: Ingredient[]): void {
   ingredients.forEach(ingredient => {
-    ingredient.SSDMixAmountLbs = parseFloat((ingredient.SG * ingredient.SSDMixAmountFtCubed * 62.4).toFixed(2));
+    ingredient.SSDMixAmountLbs = parseFloat((ingredient.SG * ingredient.SSDMixAmountFtCubed * 62.4).toFixed(8));
   });
 }
 
@@ -112,7 +115,7 @@ function calculateTotalSSDMixAmountLbs(ingredients: Ingredient[]): number {
   ingredients.forEach(ingredient => {
     totalSSDMixAmountLbs += ingredient.SSDMixAmountLbs;
   });
-  return parseFloat(totalSSDMixAmountLbs.toFixed(2));
+  return parseFloat(totalSSDMixAmountLbs.toFixed(8));
 }
 
 // Function to calculate stockMixAmountLbs
@@ -128,15 +131,15 @@ function calculateStockMixAmountLbs(ingredients: Ingredient[], fineAggregateMC: 
         ingredient.stockMixAmountLbs = ingredient.SSDMixAmountLbs;
         break;
       case 'Fine Aggregates':
-        ingredient.stockMixAmountLbs = parseFloat((ingredient.SSDMixAmountLbs * (1 + fineAggregateMC / 100)).toFixed(2));
+        ingredient.stockMixAmountLbs = parseFloat((ingredient.SSDMixAmountLbs * (1 + fineAggregateMC / 100)).toFixed(8));
         break;
       case 'Coarse Aggregates':
-        ingredient.stockMixAmountLbs = parseFloat((ingredient.SSDMixAmountLbs * (1 + courseAggregateMC / 100)).toFixed(2));
+        ingredient.stockMixAmountLbs = parseFloat((ingredient.SSDMixAmountLbs * (1 + courseAggregateMC / 100)).toFixed(8));
         break;
       case 'Water':
         const fineAggDifference = fineAggregate ? (fineAggregate.SSDMixAmountLbs - fineAggregate.stockMixAmountLbs) : 0;
         const coarseAggDifference = coarseAggregate ? (coarseAggregate.SSDMixAmountLbs - coarseAggregate.stockMixAmountLbs) : 0;
-        ingredient.stockMixAmountLbs = parseFloat((ingredient.SSDMixAmountLbs + fineAggDifference + coarseAggDifference).toFixed(2));
+        ingredient.stockMixAmountLbs = parseFloat((ingredient.SSDMixAmountLbs + fineAggDifference + coarseAggDifference).toFixed(8));
         break;
       default:
         ingredient.stockMixAmountLbs = 0;
@@ -150,7 +153,7 @@ function calculateTotalStockMixAmountLbs(ingredients: Ingredient[]): number {
   ingredients.forEach(ingredient => {
     totalStockMixAmountLbs += ingredient.stockMixAmountLbs;
   });
-  return parseFloat(totalStockMixAmountLbs.toFixed(2));
+  return parseFloat(totalStockMixAmountLbs.toFixed(8));
 }
 
 const initialIngredientData: Ingredient[] = [
@@ -166,11 +169,12 @@ const initialIngredientData: Ingredient[] = [
 @Component({
   selector: 'app-mortar-and-mix',
   standalone: true,
-  imports: [MatDividerModule, MatButtonModule, MatInputModule, MatFormFieldModule, FormsModule, MatTableModule],
+  imports: [CommonModule, MatDividerModule, MatButtonModule, MatInputModule, MatFormFieldModule, FormsModule, MatTableModule, MatSlideToggleModule],
   templateUrl: './mortar-and-mix.component.html',
   styleUrls: ['./mortar-and-mix.component.css']
 })
 export class MortarAndMixComponent {
+  isMetric: boolean = false;
   displayedColumns: string[] = ['ingredient', 'lb', 'Specific gravity', 'Feet cubed', 'One foot cubed', 'One yard cubed', 'SSDMixAmountFtCubed', 'SSDMixAmountLbs', 'stockMixAmountLbs'];
   dataSource: Ingredient[] = [];
   userVolume: number = 40;
@@ -186,6 +190,11 @@ export class MortarAndMixComponent {
 
   initializeData(): void {
     this.dataSource = this.calculateIngredients(initialIngredientData);
+  }
+
+  onUnitToggleChange(event: any): void {
+    this.isMetric = event.checked;
+    //this.initializeData(); // Recalculate with the new unit system
   }
   
   calculateIngredients(ingredients: Ingredient[]): Ingredient[] {

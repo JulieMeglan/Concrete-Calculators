@@ -1,2 +1,5 @@
-<p>Home works!</p>
-<img src= "assets\images\SIUEbuilding.jpg" />
+<div class="welcome-box" 
+     (mouseenter)="changeMessage(true)" 
+     (mouseleave)="changeMessage(false)">
+  <p class="welcome-text">{{ message }}</p>
+</div>
