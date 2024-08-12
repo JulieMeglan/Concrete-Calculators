@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { Router } from '@angular/router'; // Import the Router service
 
 export interface Ingredient {
   name: string;
@@ -18,12 +19,18 @@ export interface Ingredient {
   SSDMixAmountFtCubed: number;
   SSDMixAmountLbs: number;
   stockMixAmountLbs: number;
-  // Add metric fields if needed
-  kg?: number;
-  mCubed?: number;
-  SSDMixAmountKgs?: number;
-  stockMixAmountKgs?: number;
 }
+
+// Function to calculate total lbs
+function calculateTotalLb(ingredients: Ingredient[]): number {
+  let totalLbs = 0;
+  ingredients.forEach(ingredient => {
+    totalLbs += ingredient.lb;
+  });
+  return parseFloat(totalLbs.toFixed(8));
+}
+
+
 // Function to calculate ftCubed
 function calculateFtcubed(lb: number, SG: number): number {
   if (SG === 0) {
@@ -119,7 +126,7 @@ function calculateTotalSSDMixAmountLbs(ingredients: Ingredient[]): number {
 }
 
 // Function to calculate stockMixAmountLbs
-function calculateStockMixAmountLbs(ingredients: Ingredient[], fineAggregateMC: number, courseAggregateMC: number): void {
+function calculateStockMixAmountLbs(ingredients: Ingredient[], fineAggregateMC: number, coarseAggregateMC: number): void {
   const fineAggregate = ingredients.find(ingredient => ingredient.name === 'Fine Aggregates');
   const coarseAggregate = ingredients.find(ingredient => ingredient.name === 'Coarse Aggregates');
   
@@ -134,7 +141,7 @@ function calculateStockMixAmountLbs(ingredients: Ingredient[], fineAggregateMC: 
         ingredient.stockMixAmountLbs = parseFloat((ingredient.SSDMixAmountLbs * (1 + fineAggregateMC / 100)).toFixed(8));
         break;
       case 'Coarse Aggregates':
-        ingredient.stockMixAmountLbs = parseFloat((ingredient.SSDMixAmountLbs * (1 + courseAggregateMC / 100)).toFixed(8));
+        ingredient.stockMixAmountLbs = parseFloat((ingredient.SSDMixAmountLbs * (1 + coarseAggregateMC / 100)).toFixed(8));
         break;
       case 'Water':
         const fineAggDifference = fineAggregate ? (fineAggregate.SSDMixAmountLbs - fineAggregate.stockMixAmountLbs) : 0;
@@ -180,11 +187,11 @@ export class MortarAndMixComponent {
   userVolume: number = 40;
   mixVolume: number = 0;
   fineAggregate: number = 1100;
-  courseAggregate: number = 1800;
+  coarseAggregate: number = 1800;
   fineAggregateMC: number = 1;
-  courseAggregateMC: number = 1;
+  coarseAggregateMC: number = 1;
 
-  constructor() {
+  constructor(private router: Router) { // Inject the Router service
     this.initializeData();
   }
 
@@ -194,7 +201,11 @@ export class MortarAndMixComponent {
 
   onUnitToggleChange(event: any): void {
     this.isMetric = event.checked;
-    //this.initializeData(); // Recalculate with the new unit system
+    if (this.isMetric) {
+      this.router.navigate(['/calc/metric-mortarandmix']); // Navigate to the metric component
+    } else {
+      this.router.navigate(['/calc/morterandmix']); // Navigate back to the imperial component
+    }
   }
   
   calculateIngredients(ingredients: Ingredient[]): Ingredient[] {
@@ -215,6 +226,9 @@ export class MortarAndMixComponent {
     // Calculate and add air ftCubed
     const airFtCubed = calculateAirFtCubed(calculatedIngredients);
     calculatedIngredients.push({ name: 'Air', lb: 0, SG: 0, ftCubed: airFtCubed, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 });
+
+   // Calculate total lb
+   const totalLb = calculateTotalLb(calculatedIngredients);
 
     // Calculate total feet cubed after ftCubed values are set
     const totalFtCubed = calculateTotalFtCubed(calculatedIngredients);
@@ -246,13 +260,13 @@ export class MortarAndMixComponent {
     const totalSSDMixAmountLbs = calculateTotalSSDMixAmountLbs(calculatedIngredients);
 
     // Calculate stockMixAmountLbs for each ingredient
-    calculateStockMixAmountLbs(calculatedIngredients, this.fineAggregateMC, this.courseAggregateMC);
+    calculateStockMixAmountLbs(calculatedIngredients, this.fineAggregateMC, this.coarseAggregateMC);
 
     // Calculate totalStockMixAmountLbs
     const totalStockMixAmountLbs = calculateTotalStockMixAmountLbs(calculatedIngredients);
 
     // Add totals row
-    calculatedIngredients.push({ name: 'Total', lb: 0, SG: 0, ftCubed: totalFtCubed, oneFootCubed: totalOneFootCubed, oneYardCubed: totalOneYardCubed, SSDMixAmountFtCubed: totalSSDMixAmountFtCubed, SSDMixAmountLbs: totalSSDMixAmountLbs, stockMixAmountLbs: totalStockMixAmountLbs});
+    calculatedIngredients.push({ name: 'Total', lb: totalLb, SG: 0, ftCubed: totalFtCubed, oneFootCubed: totalOneFootCubed, oneYardCubed: totalOneYardCubed, SSDMixAmountFtCubed: totalSSDMixAmountFtCubed, SSDMixAmountLbs: totalSSDMixAmountLbs, stockMixAmountLbs: totalStockMixAmountLbs});
 
     return calculatedIngredients;
   }
@@ -274,10 +288,10 @@ export class MortarAndMixComponent {
     }
   }
 
-  onCourseAggregateMCChange(): void {
+  onCoarseAggregateMCChange(): void {
     const ingredient = this.dataSource.find(ing => ing.name === 'Coarse Aggregates');
     if (ingredient) {
-      ingredient.lb = this.courseAggregate;
+      ingredient.lb = this.coarseAggregate;
       this.dataSource = this.calculateIngredients(initialIngredientData);
     }
   }
