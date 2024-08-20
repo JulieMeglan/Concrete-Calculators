@@ -1,12 +1,16 @@
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms'; // imports FormsModule (required)
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-tcpowers',
   standalone: true,
-  imports: [MatDividerModule, MatButtonModule, FormsModule],
+  imports: [CommonModule, MatDividerModule, MatButtonModule, MatInputModule, MatFormFieldModule, FormsModule, MatTableModule],
   templateUrl: './tcpowers.component.html',
   styleUrl: './tcpowers.component.css'
 })
@@ -15,14 +19,16 @@ export class TcpowersComponent {
   wc: number = 0; // variable for water/cement ratio
   alpha: number = 0; // variable for degree of hydration
   results: any; // stores values resulting from tc powers formula
+  
+  // defines the columns displayed in the table
+  displayedColumns: string[] = [
+    'wn', 'wg', 'vg', 'vhp', 'vc', 'vu', 'vp', 'pg', 'pc', 'x', 'wmin'
+  ];
+
+
 
   // tc powers calculation function
   calculateTCPowers(wc: number, alpha: number): void {
-    // checks if any input values are equal to zero or are negative values
-    if (this.wc <= 0 || this.alpha <= 0) {
-      alert("All input values must be positive non-zero numbers."); // displays alert message when user provides invalid input
-      return;
-    }
 
     // declaration of resultant variables
     let wn, wg, vg, vhp, vc, vu, vp, pg, pc, x, wmin;

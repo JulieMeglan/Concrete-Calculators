@@ -3,41 +3,97 @@
 <h2>TC Powers Calculation</h2>
 <!-- gets input values for tc powers calculations via html form -->
 <!-- for use in TypeScript file, use [(ngModel)]="example" name = "example" -->
-<form id="tcpowersForm">
     <!-- get input for water to cement ratio -->
-    <label for="wcInput">Water/Cement Ratio (w/c): </label>
-    <input type="number" id="wcInput" step="0.01" [(ngModel)]="wc" name = "wc" required><br>
+    <div>
+        <mat-form-field appearance="fill" class="auto-width">
+          <mat-label>Water/Cement Ratio (w/c):</mat-label>
+          <input matInput type="number" [(ngModel)]="wc" (ngModelChange)="calculateTCPowers(wc, alpha)" placeholder="Enter Value" min=".1">
+          <mat-error *ngIf="wc <= 0">Please enter a value greater than 0</mat-error>
+        </mat-form-field>
+      </div>
     <!-- get input for degree of hydration -->
-    <label for="alphaInput">Degree of Hydration (α): </label>
-    <input type="number" id="alphaInput" step="0.01" [(ngModel)]="alpha" name = "alpha" required><br>
-    <!-- submit button that calls function in tcpowers.component.ts -->
-    <button type="button" (click)="calculateTCPowers(wc, alpha)">Calculate</button>
-</form>
+    <div>
+        <mat-form-field appearance="fill" class="auto-width">
+          <mat-label>Degree of Hydration (α):</mat-label>
+          <input matInput type="number" [(ngModel)]="alpha" (ngModelChange)="calculateTCPowers(wc, alpha)" placeholder="Enter Value" min=".1">
+          <mat-error *ngIf="alpha <= 0">Please enter a value greater than 0</mat-error>
+        </mat-form-field>
+      </div>
 <!-- displays results from tcpowers.component.ts -->
-<div id="results">
-    <h3>TC Powers Calculation Results</h3>
-    <!-- displays the percentage of wn -->
-    <p>w<sub>n</sub>: {{ results?.wn.toFixed(2) }}%</p>
-    <!-- displays the percentage of wg -->
-    <p>w<sub>g</sub>: {{ results?.wg.toFixed(2) }}%</p>
-    <!-- displays the percentage of vg -->
-    <p>V<sub>g</sub>: {{ results?.vg.toFixed(2) }}%</p>
-    <!-- displays the percentage of vhp -->
-    <p>V<sub>hp</sub>: {{ results?.vhp.toFixed(2) }}%</p>
-    <!-- displays the percentage of vc -->
-    <p>V<sub>c</sub>: {{ results?.vc.toFixed(2) }}%</p>
-    <!-- displays the percentage of vu -->
-    <p>V<sub>u</sub>: {{ results?.vu.toFixed(2) }}%</p>
-    <!-- displays the percentage of vp -->
-    <p>V<sub>p</sub>: {{ results?.vp.toFixed(2) }}%</p>
-    <!-- displays the percentage of pg -->
-    <p>P<sub>g</sub>: {{ results?.pg.toFixed(2) }}%</p>
-    <!-- displays the percentage of pc -->
-    <p>P<sub>c</sub>: {{ results?.pc.toFixed(2) }}%</p>
-    <!-- displays the percentage of x -->
-    <p>X: {{ results?.x.toFixed(2) }}%</p>
-    <!-- displays the percentage of wmin -->
-    <p>W<sub>min</sub>: {{ results?.wmin.toFixed(2) }}%</p>
 
+<div id="results">
+  <h3>TC Powers Calculation Results</h3>
+
+  <table mat-table [dataSource]="[results]" class="mat-elevation-z8">
+    <!-- wn Column -->
+    <ng-container matColumnDef="wn">
+      <th mat-header-cell *matHeaderCellDef>w<sub>n</sub></th>
+      <td mat-cell *matCellDef="let result">{{ result?.wn.toFixed(2) }}%</td>
+    </ng-container>
+
+    <!-- wg Column -->
+    <ng-container matColumnDef="wg">
+      <th mat-header-cell *matHeaderCellDef>w<sub>g</sub></th>
+      <td mat-cell *matCellDef="let result">{{ result?.wg.toFixed(2) }}%</td>
+    </ng-container>
+
+    <!-- vg Column -->
+    <ng-container matColumnDef="vg">
+      <th mat-header-cell *matHeaderCellDef>V<sub>g</sub></th>
+      <td mat-cell *matCellDef="let result">{{ result?.vg.toFixed(2) }}%</td>
+    </ng-container>
+
+    <!-- vhp Column -->
+    <ng-container matColumnDef="vhp">
+      <th mat-header-cell *matHeaderCellDef>V<sub>hp</sub></th>
+      <td mat-cell *matCellDef="let result">{{ result?.vhp.toFixed(2) }}%</td>
+    </ng-container>
+
+    <!-- vc Column -->
+    <ng-container matColumnDef="vc">
+      <th mat-header-cell *matHeaderCellDef>V<sub>c</sub></th>
+      <td mat-cell *matCellDef="let result">{{ result?.vc.toFixed(2) }}%</td>
+    </ng-container>
+
+    <!-- vu Column -->
+    <ng-container matColumnDef="vu">
+      <th mat-header-cell *matHeaderCellDef>V<sub>u</sub></th>
+      <td mat-cell *matCellDef="let result">{{ result?.vu.toFixed(2) }}%</td>
+    </ng-container>
+
+    <!-- vp Column -->
+    <ng-container matColumnDef="vp">
+      <th mat-header-cell *matHeaderCellDef>V<sub>p</sub></th>
+      <td mat-cell *matCellDef="let result">{{ result?.vp.toFixed(2) }}%</td>
+    </ng-container>
+
+    <!-- pg Column -->
+    <ng-container matColumnDef="pg">
+      <th mat-header-cell *matHeaderCellDef>P<sub>g</sub></th>
+      <td mat-cell *matCellDef="let result">{{ result?.pg.toFixed(2) }}%</td>
+    </ng-container>
+
+    <!-- pc Column -->
+    <ng-container matColumnDef="pc">
+      <th mat-header-cell *matHeaderCellDef>P<sub>c</sub></th>
+      <td mat-cell *matCellDef="let result">{{ result?.pc.toFixed(2) }}%</td>
+    </ng-container>
+
+    <!-- x Column -->
+    <ng-container matColumnDef="x">
+      <th mat-header-cell *matHeaderCellDef>X</th>
+      <td mat-cell *matCellDef="let result">{{ result?.x.toFixed(2) }}%</td>
+    </ng-container>
+
+    <!-- wmin Column -->
+    <ng-container matColumnDef="wmin">
+      <th mat-header-cell *matHeaderCellDef>W<sub>min</sub></th>
+      <td mat-cell *matCellDef="let result">{{ result?.wmin.toFixed(2) }}%</td>
+    </ng-container>
+
+    <!-- Header and Row Declarations -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
 </div>
 
