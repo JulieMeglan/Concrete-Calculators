@@ -10,16 +10,20 @@
 // imports for bogue calculator
 // ensure FormsModule is imported (required for input)
 import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms'; // imports FormsModule (required)
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { FormsModule } from '@angular/forms';
+import { MatTableModule } from '@angular/material/table';
+import { CommonModule } from '@angular/common';
 
 // components for bogue calculator
 // ensure FormsModule is in imports
 @Component({
   selector: 'app-bogue',
   standalone: true,
-  imports: [MatDividerModule, MatButtonModule, FormsModule], // ensure FormsModule is in this line
+  imports: [CommonModule, MatDividerModule, MatButtonModule, MatInputModule, MatFormFieldModule, FormsModule, MatTableModule], // ensure FormsModule is in this line
   templateUrl: './bogue.component.html', 
   styleUrl: './bogue.component.css'
 })
@@ -34,13 +38,12 @@ export class BogueComponent {
   so3: number = 0; // variable for sulfur trioxide
   results: any; // stores values resulting from bogue formula
 
+  // defines the columns displayed in the table
+  displayedColumns: string[] = ['c3s', 'c2s', 'c3a', 'c4af', 'afRatio'];
+
   // bogue calculation function
   calculateBogue(cao: number, sio2: number, al2o3: number, fe2o3: number, so3: number): void {
-    // checks if any input values are equal to zero or are negative values
-    if (this.cao <= 0 || this.sio2 <= 0 || this.al2o3 <= 0 || this.fe2o3 <= 0 || this.so3 <= 0) {
-      alert("All input values must be positive non-zero numbers."); // displays alert message when user provides invalid input
-      return;
-    }
+
 
     // calculates the alumina to ferric oxide ratio
     // (necessary to determine which formula to use)
