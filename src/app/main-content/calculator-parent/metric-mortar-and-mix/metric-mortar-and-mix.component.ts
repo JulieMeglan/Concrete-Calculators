@@ -58,7 +58,7 @@ function calculateOneMeterCubed(ingredient: Ingredient, totalMeterCubed: number)
 function calculateAirMeterCubed(ingredients: Ingredient[]): number {
   let meterCubedTotalMinusAir = 0;
   ingredients.forEach(ingredient => {
-    if (ingredient.name !== 'Air') {
+    if (ingredient.name !== 'Air' && ingredient.name !== 'Coarse Aggregates') {
       meterCubedTotalMinusAir += ingredient.meterCubed;
     }
   });
