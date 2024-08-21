@@ -10,36 +10,87 @@ of different mineral phases and the Alumina to Ferric Oxide ratio. -->
 <h2>Bogue Calculation</h2>
 <!-- gets input values for bogue calculations via html form -->
 <!-- for use in TypeScript file, use [(ngModel)]="example" name = "example" -->
-<form id="bogueForm">
+
     <!-- get input for Lime -->
-    <label for="caoInput">Lime (CaO): </label>
-    <input type="number" id="caoInput" step="0.01" [(ngModel)]="cao" name = "cao" required><br>
-    <!-- get input for Silica -->
-    <label for="sio2Input">Silica (SiO<sub>2</sub>): </label>
-    <input type="number" id="sio2Input" step="0.01" [(ngModel)]="sio2" name = "sio2" required><br>
-    <!-- get input for Alumina -->
-    <label for="al2o3Input">Alumina (Al<sub>2</sub>O<sub>3</sub>): </label>
-    <input type="number" id="al2o3Input" step="0.01" [(ngModel)]="al2o3" name = "al2o3" required><br>
-    <!-- get input for Ferric Oxide -->
-    <label for="fe2o3Input">Ferric Oxide (Fe<sub>2</sub>O<sub>3</sub>): </label>
-    <input type="number" id="fe2o3Input" step="0.01" [(ngModel)]="fe2o3" name = "fe2o3" required><br>
-    <!-- get input for Sulfur Trioxide -->
-    <label for="so3Input">Sulfur Trioxide (SO<sub>3</sub>): </label>
-    <input type="number" id="so3Input" step="0.01" [(ngModel)]="so3" name = "so3" required><br>
-    <!-- submit button that calls function in bogue.component.ts -->
-    <button type="button" (click)="calculateBogue(cao, sio2, al2o3, fe2o3, so3)">Calculate</button>
-</form>
+    <div>
+        <mat-form-field appearance="fill" class="auto-width">
+          <mat-label>Lime (CaO):</mat-label>
+          <input matInput type="number" [(ngModel)]="cao" (ngModelChange)="calculateBogue(cao, sio2, al2o3, fe2o3, so3)" placeholder="Enter Value" min=".1">
+          <mat-error *ngIf="cao <= 0">Please enter a value greater than 0</mat-error>
+        </mat-form-field>
+      </div>
+      <!-- get input for Silica -->
+      <div>
+        <mat-form-field appearance="fill" class="auto-width">
+          <mat-label>Silica (SiO<sub>2</sub>):</mat-label>
+          <input matInput type="number" [(ngModel)]="sio2" (ngModelChange)="calculateBogue(cao, sio2, al2o3, fe2o3, so3)" placeholder="Enter Value" min=".1">
+          <mat-error *ngIf="sio2 <= 0">Please enter a value greater than 0</mat-error>
+        </mat-form-field>
+      </div>
+      <!-- get input for Alumina -->
+      <div>
+        <mat-form-field appearance="fill" class="auto-width">
+          <mat-label>Alumina (Al<sub>2</sub>O<sub>3</sub>):</mat-label>
+          <input matInput type="number" [(ngModel)]="al2o3" (ngModelChange)="calculateBogue(cao, sio2, al2o3, fe2o3, so3)" placeholder="Enter Value" min=".1">
+          <mat-error *ngIf="al2o3 <= 0">Please enter a value greater than 0</mat-error>
+        </mat-form-field>
+      </div>
+      <!-- get input for Ferric Oxide -->
+      <div>
+        <mat-form-field appearance="fill" class="auto-width">
+          <mat-label>Ferric Oxide (Fe<sub>2</sub>O<sub>3</sub>):</mat-label>
+          <input matInput type="number" [(ngModel)]="fe2o3" (ngModelChange)="calculateBogue(cao, sio2, al2o3, fe2o3, so3)" placeholder="Enter Value" min=".1">
+          <mat-error *ngIf="fe2o3 <= 0">Please enter a value greater than 0</mat-error>
+        </mat-form-field>
+      </div>
+      <!-- get input for Sulfur Trioxide -->
+      <div>
+        <mat-form-field appearance="fill" class="auto-width">
+          <mat-label>Sulfur Trioxide (SO<sub>3</sub>):</mat-label>
+          <input matInput type="number" [(ngModel)]="so3" (ngModelChange)="calculateBogue(cao, sio2, al2o3, fe2o3, so3)" placeholder="Enter Value" min=".1">
+          <mat-error *ngIf="so3 <= 0">Please enter a value greater than 0</mat-error>
+        </mat-form-field>
+      </div>
+
+
 <!-- displays results from bogue.component.ts -->
+
 <div id="results">
-    <h3>Bogue Calculation Results</h3>
-    <!-- displays the percentage of Tricalcium silicate (C3S) -->
-    <p>C<sub>3</sub>S (Tricalcium silicate): {{ results?.c3s.toFixed(2) }}%</p>
-    <!-- displays the percentage of Dicalcium silicate (C2S) -->
-    <p>C<sub>2</sub>S (Dicalcium silicate): {{ results?.c2s.toFixed(2) }}%</p>
-    <!-- displays the percentage of Tricalcium aluminate (C3A) -->
-    <p>C<sub>3</sub>A (Tricalcium aluminate): {{ results?.c3a.toFixed(2) }}%</p>
-    <!-- displays the percentage of Tetracalcium aluminoferrite (C4AF) -->
-    <p>C<sub>4</sub>AF (Tetracalcium aluminoferrite): {{ results?.c4af.toFixed(2) }}%</p>
-    <!-- displays the Alumina to Ferric Oxide (A/F) Ratio -->
-    <p>A/F Ratio (Alumina to Ferric Oxide): {{ results?.afRatio.toFixed(2) }}</p>
+  <h3>Bogue Calculation Results</h3>
+  
+  <table mat-table [dataSource]="[results]" class="mat-elevation-z8">
+    <!-- C3S Column -->
+    <ng-container matColumnDef="c3s">
+      <th mat-header-cell *matHeaderCellDef>C<sub>3</sub>S (Tricalcium silicate)</th>
+      <td mat-cell *matCellDef="let result">{{ result?.c3s.toFixed(2) }}%</td>
+    </ng-container>
+
+    <!-- C2S Column -->
+    <ng-container matColumnDef="c2s">
+      <th mat-header-cell *matHeaderCellDef>C<sub>2</sub>S (Dicalcium silicate)</th>
+      <td mat-cell *matCellDef="let result">{{ result?.c2s.toFixed(2) }}%</td>
+    </ng-container>
+
+    <!-- C3A Column -->
+    <ng-container matColumnDef="c3a">
+      <th mat-header-cell *matHeaderCellDef>C<sub>3</sub>A (Tricalcium aluminate)</th>
+      <td mat-cell *matCellDef="let result">{{ result?.c3a.toFixed(2) }}%</td>
+    </ng-container>
+
+    <!-- C4AF Column -->
+    <ng-container matColumnDef="c4af">
+      <th mat-header-cell *matHeaderCellDef>C<sub>4</sub>AF (Tetracalcium aluminoferrite)</th>
+      <td mat-cell *matCellDef="let result">{{ result?.c4af.toFixed(2) }}%</td>
+    </ng-container>
+
+    <!-- A/F Ratio Column -->
+    <ng-container matColumnDef="afRatio">
+      <th mat-header-cell *matHeaderCellDef>A/F Ratio (Alumina to Ferric Oxide)</th>
+      <td mat-cell *matCellDef="let result">{{ result?.afRatio.toFixed(2) }}</td>
+    </ng-container>
+
+    <!-- Header and Row Declarations -->
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
 </div>
