@@ -50,14 +50,16 @@ export class BogueComponent {
     const afRatio = this.al2o3 / this.fe2o3;
 
     // declaration of resultant variables
-    let c3s, c2s, c3a, c4af;
+    let formulaUsed, c3s, c2s, c3a, c4af;
 
     // formula for if af ratio is greater than or equal to 0.64
     if (afRatio >= 0.64) {
+      formulaUsed = "A/F Ratio >= 0.64";
       c3s = 4.071 * this.cao - 7.600 * this.sio2 - 6.718 * this.al2o3 - 1.430 * this.fe2o3 - 2.852 * this.so3;
       c3a = 2.650 * this.al2o3 - 1.692 * this.fe2o3;
       c4af = 3.043 * this.fe2o3;
     } else { // formula for if af ratio is less than 0.64
+      formulaUsed = "A/F Ratio < 0.64";
       c3s = 4.071 * this.cao - 7.600 * this.sio2 - 4.479 * this.al2o3 - 2.859 * this.fe2o3 - 2.852 * this.so3;
       c3a = 0;
       c4af = 2.100 * this.al2o3 + 1.702 * this.fe2o3;
@@ -68,6 +70,7 @@ export class BogueComponent {
 
     // gathers calculated variables to be used in bogue.component.html
     this.results = {
+      formulaUsed,
       c3s,
       c2s,
       c3a,
