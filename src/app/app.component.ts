@@ -5,20 +5,19 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { FormsModule } from '@angular/forms';
 
-
 @Component({
-    selector: 'app-root',
-    standalone: true,
-    templateUrl: './app.component.html',
-    styleUrl: './app.component.css',
-    imports: [
-        RouterOutlet,
-        RouterModule,
-        MatSidenavModule,
-        MatButtonModule, 
-        MatToolbarModule]
+  selector: 'app-root',
+  standalone: true,
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.css'], 
+  imports: [
+    RouterOutlet,
+    RouterModule,
+    MatSidenavModule,
+    MatButtonModule,
+    MatToolbarModule
+  ]
 })
-
 export class AppComponent {
   title = 'ConcreteCalculators';
 }
