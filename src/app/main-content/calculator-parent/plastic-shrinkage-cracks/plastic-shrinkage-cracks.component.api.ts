@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class NoaaService {
   private apiUrl = 'https://www.ncdc.noaa.gov/cdo-web/api/v2/data';
   //private token = 'YOUR_NOAA_API_TOKEN'; // Replace with your actual token
-  private token = 'PnHLWKPaBemBqzofzEXbzJdeyskkeYDX'; // Replace with your actual token
+  private token = ''; // Replace with your actual token
 
   constructor(private http: HttpClient) { }
 
