@@ -4,6 +4,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { FormsModule } from '@angular/forms';
+import { AboutDialogComponent } from './main-content/about-dialog/about-dialog.component';
+
 
 @Component({
   selector: 'app-root',

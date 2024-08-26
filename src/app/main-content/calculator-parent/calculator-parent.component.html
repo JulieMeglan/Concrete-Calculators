@@ -1,7 +1,7 @@
-<p></p>
-    <!-- <a class="about-tutorial-and-calc-button">
-        <button mat-raised-button color="basic">Calculator</button>
-        <button mat-raised-button color="basic">About</button>
-        <button mat-raised-button color="basic">Tutorial</button>
-    </a> -->
+<div class="button-container">
+  <a class="about-tutorial-and-calc-button">
+    <button mat-raised-button color="basic" (click)="openAboutDialog()">About</button>
+    <!-- <button mat-raised-button color="basic">Tutorial</button> -->
+  </a>
+</div>
 <router-outlet></router-outlet>

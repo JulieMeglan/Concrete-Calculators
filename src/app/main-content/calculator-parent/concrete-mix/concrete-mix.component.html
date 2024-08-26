@@ -1,20 +1,20 @@
-<!-- <p>Metric</p> -->
+<!-- <p>Imperial</p> -->
 
-<h2>Mortar Mix - Metric</h2>
+<h2>Concrete Mix - Imperial</h2>
 
 <div class="toggle-container">
   <mat-slide-toggle
     color="primary"
-    [(ngModel)]="isImperial"
+    [(ngModel)]="isMetric"
     (change)="onUnitToggleChange($event)"
   >
-    Switch to {{ isImperial ? 'Metric' : 'Imperial' }} 
+    Switch to {{ isMetric ? 'Imperial' : 'Metric' }} 
   </mat-slide-toggle>
 </div>
 
 <div>
   <mat-form-field appearance="fill" class="auto-width">
-    <mat-label>Volume (m³)</mat-label>
+    <mat-label>Volume (in³)</mat-label>
     <input matInput type="number" [(ngModel)]="userVolume" (ngModelChange)="onUserVolumeChange()" placeholder="Enter volume" min=".1">
     <mat-error *ngIf="userVolume <= 0">Please enter a value greater than 0</mat-error>
   </mat-form-field>
@@ -36,6 +36,7 @@
   </mat-form-field>
 </div>
 
+
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
   <!-- Ingredient Column -->
@@ -44,10 +45,10 @@
     <td mat-cell *matCellDef="let ingredient"> {{ingredient.name}} </td>
   </ng-container>
 
-  <!-- kg Column -->
-  <ng-container matColumnDef="kg">
-    <th mat-header-cell *matHeaderCellDef> kg </th>
-    <td mat-cell *matCellDef="let ingredient"> {{ingredient.kg | number:'1.2-2'}} </td>
+  <!-- lb Column -->
+  <ng-container matColumnDef="lb">
+    <th mat-header-cell *matHeaderCellDef> lb </th>
+    <td mat-cell *matCellDef="let ingredient"> {{ingredient.lb | number:'1.2-2'}} </td>
   </ng-container>
 
   <!-- SG Column -->
@@ -56,37 +57,43 @@
     <td mat-cell *matCellDef="let ingredient"> {{ingredient.SG | number:'1.2-2'}} </td>
   </ng-container>
 
-  <!-- Meter cubed Column -->
-  <ng-container matColumnDef="Meter cubed">
-    <th mat-header-cell *matHeaderCellDef> m³ </th>
-    <td mat-cell *matCellDef="let ingredient"> {{ingredient.meterCubed | number:'1.2-2'}} </td>
+  <!-- Feet cubed Column -->
+  <ng-container matColumnDef="Feet cubed">
+    <th mat-header-cell *matHeaderCellDef> ft³ </th>
+    <td mat-cell *matCellDef="let ingredient"> {{ingredient.ftCubed | number:'1.2-2'}} </td>
   </ng-container>
 
-  <!-- One meter cubed Column -->
-  <ng-container matColumnDef="One meter cubed">
-    <th mat-header-cell *matHeaderCellDef> 1 m³ </th>
-    <td mat-cell *matCellDef="let ingredient"> {{ingredient.oneMeterCubed | number:'1.2-2'}} </td>
+  <!-- One foot cubed Column -->
+  <ng-container matColumnDef="One foot cubed">
+    <th mat-header-cell *matHeaderCellDef> 1 ft³ </th>
+    <td mat-cell *matCellDef="let ingredient"> {{ingredient.oneFootCubed | number:'1.2-2'}} </td>
+  </ng-container>
+  
+  <!-- One yard cubed Column -->
+  <ng-container matColumnDef="One yard cubed">
+    <th mat-header-cell *matHeaderCellDef> 1 yd³ </th>
+    <td mat-cell *matCellDef="let ingredient"> {{ingredient.oneYardCubed | number:'1.2-2'}} </td>
   </ng-container>
 
-  <!-- SSD Mix Amount Meter Cubed Column -->
-  <ng-container matColumnDef="SSDMixAmountMeterCubed">
-    <th mat-header-cell *matHeaderCellDef> SSD Mix Amount (m³) </th>
-    <td mat-cell *matCellDef="let ingredient"> {{ingredient.SSDMixAmountMeterCubed | number:'1.2-2'}} </td>
+  <!-- SSD Mix Amount Ft Cubed Column -->
+  <ng-container matColumnDef="SSDMixAmountFtCubed">
+    <th mat-header-cell *matHeaderCellDef> SSD Mix Amount (ft³) </th>
+    <td mat-cell *matCellDef="let ingredient"> {{ingredient.SSDMixAmountFtCubed | number:'1.2-2'}} </td>
   </ng-container>
 
-  <!-- SSD Mix Amount Kgs Column -->
-  <ng-container matColumnDef="SSDMixAmountKgs">
-    <th mat-header-cell *matHeaderCellDef> SSD Mix Amount (kg) </th>
-    <td mat-cell *matCellDef="let ingredient"> {{ingredient.SSDMixAmountKgs | number:'1.2-2'}} </td>
-  </ng-container>
+    <!-- SSD Mix Amount Ft Cubed Column -->
+    <ng-container matColumnDef="SSDMixAmountLbs">
+      <th mat-header-cell *matHeaderCellDef> SSD Mix Amount (lbs) </th>
+      <td mat-cell *matCellDef="let ingredient"> {{ingredient.SSDMixAmountLbs | number:'1.2-2'}} </td>
+    </ng-container>
 
-  <!-- stockMixAmountKgs Column -->
-  <ng-container matColumnDef="stockMixAmountKgs">
-    <th mat-header-cell *matHeaderCellDef> Stock Mix Amount (kg) </th>
-    <td mat-cell *matCellDef="let element"> {{element.stockMixAmountKgs | number:'1.2-2'}} </td>
-  </ng-container>
-
-  <!-- Total Row -->
+    <!-- stockMixAmountLbs Column -->
+    <ng-container matColumnDef="stockMixAmountLbs">
+      <th mat-header-cell *matHeaderCellDef> Stock Mix Amount (lbs) </th>
+      <td mat-cell *matCellDef="let element"> {{element.stockMixAmountLbs | number:'1.2-2'}} </td>
+    </ng-container>
+  
+    <!-- Total Row -->
   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.total-row]="row.name === 'Total'"></tr>
 

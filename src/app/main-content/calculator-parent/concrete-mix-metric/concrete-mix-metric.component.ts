@@ -156,13 +156,13 @@ const initialIngredientData: Ingredient[] = [
 ];
 
 @Component({
-  selector: 'app-mortar-and-mix',
+  selector: 'app-concrete-mix-metric',
   standalone: true,
   imports: [CommonModule, MatDividerModule, MatButtonModule, MatInputModule, MatFormFieldModule, FormsModule, MatTableModule, MatSlideToggleModule],
-  templateUrl: './metric-mortar-and-mix.component.html',
-  styleUrls: ['./metric-mortar-and-mix.component.css']
+  templateUrl: './concrete-mix-metric.component.html',
+  styleUrls: ['./concrete-mix-metric.component.css']
 })
-export class MetricMortarAndMixComponent {
+export class ConcreteMixMetricComponent {
   isImperial: boolean = false;
   displayedColumns: string[] = ['ingredient', 'kg', 'Specific gravity', 'Meter cubed', 'One meter cubed', 'SSDMixAmountMeterCubed', 'SSDMixAmountKgs', 'stockMixAmountKgs'];
   dataSource: Ingredient[] = [];
@@ -184,9 +184,9 @@ export class MetricMortarAndMixComponent {
   onUnitToggleChange(event: any): void {
     this.isImperial = event.checked;
     if (this.isImperial) {
-      this.router.navigate(['/calc/mortarandmix']); 
+      this.router.navigate(['/calc/concretemix']); 
     } else {
-      this.router.navigate(['/calc/metric-mortarandmix']); 
+      this.router.navigate(['/calc/concretemixmetric']); 
     }
   }
   
