@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "ConcreteCalculators": {
+    "concretecalculators": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -63,10 +63,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "ConcreteCalculators:build:production"
+              "buildTarget": "concretecalculators:build:production"
             },
             "development": {
-              "buildTarget": "ConcreteCalculators:build:development"
+              "buildTarget": "concretecalculators:build:development"
             }
           },
           "defaultConfiguration": "development"
@@ -74,7 +74,7 @@
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "buildTarget": "ConcreteCalculators:build"
+            "buildTarget": "concretecalculators:build"
           }
         },
         "test": {
