@@ -13,6 +13,6 @@ export class HomeComponent {
   message: string = "Welcome to Southern Illinois University Edwardsville's Concrete Calculator website";
 
   changeMessage(isHovering: boolean) {
-    this.message = isHovering ? "Select a calculator to get started." : "Welcome to Southern Illinois University Edwardsville's\nConcrete Calculator website";
+    this.message = isHovering ? "Select a calculator to get started" : "Welcome to Southern Illinois University Edwardsville's Concrete Calculator website";
   }
 }

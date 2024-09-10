@@ -12,8 +12,8 @@ table {
   }
   
 .auto-width {
-    flex: 1; 
-    min-width: 250px;
+    flex: 1; /* Field will automatically adjust */
+    min-width: 250px; /* Minimum width */
   }
   
 .toggle-container {
