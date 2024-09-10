@@ -34,17 +34,18 @@ export class TcpowersComponent {
     let wn, wg, vg, vhp, vc, vu, vp, pg, pc, x, wmin;
 
     // tc powers formula implementation
-    wn = 0.24 * this.alpha;
-    wg = 0.18 * this.alpha;
-    vg = wg;
-    vhp = 0.68 * this.alpha;
-    vc = this.wc - (0.36 * this.alpha);
-    vu = (1 - this.alpha) * 0.32;
-    vp = this.wc + 0.32;
-    pg = wg / vhp;;
-    pc = vc / vp;
-    x = (0.68 * this.alpha) / ((0.32 * this.alpha) + this.wc);
-    wmin = 0.42 * this.alpha;
+    wn = 0.24 * this.alpha; // nonevaporable water
+    wg = 0.18 * this.alpha; // gel pore water
+    
+    vhp = 0.68 * this.alpha; // total volume of hydration products
+    vc = 0.32 // specific volume of cement (constant)
+    vu = (1 - this.alpha) * 0.32; // volume of unhydrated cement
+    vp = this.wc + 0.32; // original volume of paste
+    pg = 0.26 * vhp; // volume of gel porosity
+    pc = this.wc - (0.36 * this.alpha); // capillary porosity
+    vg = vhp - pg; // total volume of hydration products minus the gel pores
+    x = (vhp) / (vg + vc); // gel/space ratio
+    wmin = wn + wg; // weight of water
 
   
 
