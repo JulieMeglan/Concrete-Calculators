@@ -3,9 +3,7 @@ import { RouterOutlet, RouterModule } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { FormsModule } from '@angular/forms';
-import { AboutDialogComponent } from './main-content/about-dialog/about-dialog.component';
-
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-root',
@@ -17,9 +15,15 @@ import { AboutDialogComponent } from './main-content/about-dialog/about-dialog.c
     RouterModule,
     MatSidenavModule,
     MatButtonModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatIconModule  
   ]
 })
 export class AppComponent {
   title = 'ConcreteCalculators';
+  sidenavOpened = false;  // Control for the sidenav state
+
+  toggleSidenav() {
+    this.sidenavOpened = !this.sidenavOpened;
+  }
 }

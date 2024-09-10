@@ -12,7 +12,7 @@ import { filter } from 'rxjs/operators';
   styleUrls: ['./calculator-parent.component.css']   
 })
 export class CalculatorParentComponent implements OnInit {
-  public aboutText: string = '';
+  public aboutText: string = 'test';
 
   constructor(
     private route: ActivatedRoute,
@@ -23,13 +23,18 @@ export class CalculatorParentComponent implements OnInit {
   ngOnInit() {
     // Subscribe to Router events and filter NavigationEnd events
     this.router.events.pipe(
-      filter((event): event is NavigationEnd => event instanceof NavigationEnd) 
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
     ).subscribe(() => {
-      // Get the active route path
-      const activePath = this.route.snapshot.firstChild?.url[0]?.path;
+      // Update aboutText based on the active route after navigation ends
+      const activePath = this.route.firstChild?.snapshot.url[0]?.path;
       this.updateAboutText(activePath);
     });
+
+    // Manually call updateAboutText on initial load to set the aboutText correctly
+    const initialPath = this.route.firstChild?.snapshot.url[0]?.path;
+    this.updateAboutText(initialPath);
   }
+
 
   updateAboutText(activePath: string | undefined) {
     switch (activePath) {

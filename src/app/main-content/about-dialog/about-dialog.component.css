@@ -1,14 +1,19 @@
 .dialog-content {
-    padding: 20px;
-    text-align: center;
-  }
+  padding: 20px;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column; 
+  height: 100%; 
+}
 
 .dialog-actions {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-  }
-  
-  .dialog-actions button {
-    margin: 0 5px;
-  }
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.dialog-actions button {
+  margin: 0 5px;
+}
