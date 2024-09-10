@@ -9,7 +9,7 @@
 
 // imports for bogue calculator
 // ensure FormsModule is imported (required for input)
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -17,7 +17,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
-import { Firestore, collection, collectionData} from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
 // components for bogue calculator
@@ -31,8 +31,15 @@ import { Observable } from 'rxjs';
 })
 
 // class containing bogue specific variables and functions
-export class BogueComponent {
-  private firestore: Firestore = inject(Firestore); // inject Cloud Firestore
+export class BogueComponent implements OnInit {
+
+  constructor(private firestore: Firestore){
+  }
+
+  public ngOnInit(): void {
+    const testCollection = collection(this.firestore, 'test');
+    addDoc(testCollection, {text: "test write"});
+  }
   
   // variable declarations for bogue calculations
   cao: number = 0; // variable for lime

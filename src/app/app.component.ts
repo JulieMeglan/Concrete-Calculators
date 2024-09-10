@@ -1,11 +1,11 @@
-import { Component, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet, RouterModule } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Firestore, collection, collectionData } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -18,16 +18,18 @@ import { Observable } from 'rxjs';
     RouterModule,
     MatSidenavModule,
     MatButtonModule,
-    MatToolbarModule
+    MatToolbarModule,
+    CommonModule
   ]
 })
-export class AppComponent{
+export class AppComponent implements OnInit{
   title = 'ConcreteCalculators';
-  firestore: Firestore = inject(Firestore);
-  items$: Observable<any[]>;
 
-  constructor() {
-    const aCollection = collection(this.firestore, 'bogue')
-    this.items$ = collectionData(aCollection);
+  constructor(private firestore: Firestore){
+  }
+
+  public ngOnInit(): void {
+    const testCollection = collection(this.firestore, 'test');
+    addDoc(testCollection, {text: "test write"});
   }
 }
