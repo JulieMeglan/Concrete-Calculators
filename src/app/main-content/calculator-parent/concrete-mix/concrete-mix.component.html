@@ -1,0 +1,100 @@
+<!-- <p>Imperial</p> -->
+
+<h2>Concrete Mix - Imperial</h2>
+
+<div class="toggle-container">
+  <mat-slide-toggle
+    color="primary"
+    [(ngModel)]="isMetric"
+    (change)="onUnitToggleChange($event)"
+  >
+    Switch to {{ isMetric ? 'Imperial' : 'Metric' }} 
+  </mat-slide-toggle>
+</div>
+
+<div>
+  <mat-form-field appearance="fill" class="auto-width">
+    <mat-label>Volume (in³)</mat-label>
+    <input matInput type="number" [(ngModel)]="userVolume" (ngModelChange)="onUserVolumeChange()" placeholder="Enter volume" min=".1">
+    <mat-error *ngIf="userVolume <= 0">Please enter a value greater than 0</mat-error>
+  </mat-form-field>
+</div>
+
+<div>
+  <mat-form-field appearance="fill" class="auto-width">
+    <mat-label>Fine aggregate moisture content</mat-label>
+    <input matInput type="number" [(ngModel)]="fineAggregateMC" (ngModelChange)="onFineAggregateMCChange()" placeholder="Fine aggregate moisture content" min=".00001">
+    <mat-error *ngIf="fineAggregateMC <= 0">Please enter a value greater than 0</mat-error>
+  </mat-form-field>
+</div>
+
+<div>
+  <mat-form-field appearance="fill" class="auto-width">
+    <mat-label>Coarse aggregate moisture content</mat-label>
+    <input matInput type="number" [(ngModel)]="coarseAggregateMC" (ngModelChange)="onCoarseAggregateMCChange()" placeholder="Coarse aggregate moisture content" min="0.00001">
+    <mat-error *ngIf="coarseAggregateMC <= 0">Please enter a value greater than 0</mat-error>
+  </mat-form-field>
+</div>
+
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <!-- Ingredient Column -->
+  <ng-container matColumnDef="ingredient">
+    <th mat-header-cell *matHeaderCellDef> Ingredient </th>
+    <td mat-cell *matCellDef="let ingredient"> {{ingredient.name}} </td>
+  </ng-container>
+
+  <!-- lb Column -->
+  <ng-container matColumnDef="lb">
+    <th mat-header-cell *matHeaderCellDef> lb </th>
+    <td mat-cell *matCellDef="let ingredient"> {{ingredient.lb | number:'1.2-2'}} </td>
+  </ng-container>
+
+  <!-- SG Column -->
+  <ng-container matColumnDef="Specific gravity">
+    <th mat-header-cell *matHeaderCellDef> Specific Gravity </th>
+    <td mat-cell *matCellDef="let ingredient"> {{ingredient.SG | number:'1.2-2'}} </td>
+  </ng-container>
+
+  <!-- Feet cubed Column -->
+  <ng-container matColumnDef="Feet cubed">
+    <th mat-header-cell *matHeaderCellDef> ft³ </th>
+    <td mat-cell *matCellDef="let ingredient"> {{ingredient.ftCubed | number:'1.2-2'}} </td>
+  </ng-container>
+
+  <!-- One foot cubed Column -->
+  <ng-container matColumnDef="One foot cubed">
+    <th mat-header-cell *matHeaderCellDef> 1 ft³ </th>
+    <td mat-cell *matCellDef="let ingredient"> {{ingredient.oneFootCubed | number:'1.2-2'}} </td>
+  </ng-container>
+  
+  <!-- One yard cubed Column -->
+  <ng-container matColumnDef="One yard cubed">
+    <th mat-header-cell *matHeaderCellDef> 1 yd³ </th>
+    <td mat-cell *matCellDef="let ingredient"> {{ingredient.oneYardCubed | number:'1.2-2'}} </td>
+  </ng-container>
+
+  <!-- SSD Mix Amount Ft Cubed Column -->
+  <ng-container matColumnDef="SSDMixAmountFtCubed">
+    <th mat-header-cell *matHeaderCellDef> SSD Mix Amount (ft³) </th>
+    <td mat-cell *matCellDef="let ingredient"> {{ingredient.SSDMixAmountFtCubed | number:'1.2-2'}} </td>
+  </ng-container>
+
+    <!-- SSD Mix Amount Ft Cubed Column -->
+    <ng-container matColumnDef="SSDMixAmountLbs">
+      <th mat-header-cell *matHeaderCellDef> SSD Mix Amount (lbs) </th>
+      <td mat-cell *matCellDef="let ingredient"> {{ingredient.SSDMixAmountLbs | number:'1.2-2'}} </td>
+    </ng-container>
+
+    <!-- stockMixAmountLbs Column -->
+    <ng-container matColumnDef="stockMixAmountLbs">
+      <th mat-header-cell *matHeaderCellDef> Stock Mix Amount (lbs) </th>
+      <td mat-cell *matCellDef="let element"> {{element.stockMixAmountLbs | number:'1.2-2'}} </td>
+    </ng-container>
+  
+    <!-- Total Row -->
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.total-row]="row.name === 'Total'"></tr>
+
+</table>

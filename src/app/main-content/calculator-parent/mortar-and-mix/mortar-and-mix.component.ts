@@ -204,7 +204,7 @@ export class MortarAndMixComponent {
     if (this.isMetric) {
       this.router.navigate(['/calc/metric-mortarandmix']); // Navigate to the metric component
     } else {
-      this.router.navigate(['/calc/morterandmix']); // Navigate back to the imperial component
+      this.router.navigate(['/calc/mortarandmix']); // Navigate back to the imperial component
     }
   }
   

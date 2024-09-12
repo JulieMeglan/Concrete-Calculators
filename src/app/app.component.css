@@ -35,4 +35,24 @@ mat-sidenav-container {
     width: auto;
 }
 
+.header-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .sidenav-toggle-button {
+    margin-right: auto; 
+  }
+  
+  .logo-container {
+    display: flex;
+    justify-content: center;
+    flex-grow: 1;
+  }
+  
+  .logo-image {
+    max-height: 100px; 
+  }
+  
 

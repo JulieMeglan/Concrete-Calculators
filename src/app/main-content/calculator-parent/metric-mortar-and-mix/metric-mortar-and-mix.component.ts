@@ -184,7 +184,7 @@ export class MetricMortarAndMixComponent {
   onUnitToggleChange(event: any): void {
     this.isImperial = event.checked;
     if (this.isImperial) {
-      this.router.navigate(['/calc/morterandmix']); 
+      this.router.navigate(['/calc/mortarandmix']); 
     } else {
       this.router.navigate(['/calc/metric-mortarandmix']); 
     }

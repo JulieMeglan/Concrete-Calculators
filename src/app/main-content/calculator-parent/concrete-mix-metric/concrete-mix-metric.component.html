@@ -1,0 +1,93 @@
+<!-- <p>Metric</p> -->
+
+<h2>Concrete Mix - Metric</h2>
+
+<div class="toggle-container">
+  <mat-slide-toggle
+    color="primary"
+    [(ngModel)]="isImperial"
+    (change)="onUnitToggleChange($event)"
+  >
+    Switch to {{ isImperial ? 'Metric' : 'Imperial' }} 
+  </mat-slide-toggle>
+</div>
+
+<div>
+  <mat-form-field appearance="fill" class="auto-width">
+    <mat-label>Volume (m³)</mat-label>
+    <input matInput type="number" [(ngModel)]="userVolume" (ngModelChange)="onUserVolumeChange()" placeholder="Enter volume" min=".1">
+    <mat-error *ngIf="userVolume <= 0">Please enter a value greater than 0</mat-error>
+  </mat-form-field>
+</div>
+
+<div>
+  <mat-form-field appearance="fill" class="auto-width">
+    <mat-label>Fine aggregate moisture content</mat-label>
+    <input matInput type="number" [(ngModel)]="fineAggregateMC" (ngModelChange)="onFineAggregateMCChange()" placeholder="Fine aggregate moisture content" min=".00001">
+    <mat-error *ngIf="fineAggregateMC <= 0">Please enter a value greater than 0</mat-error>
+  </mat-form-field>
+</div>
+
+<div>
+  <mat-form-field appearance="fill" class="auto-width">
+    <mat-label>Coarse aggregate moisture content</mat-label>
+    <input matInput type="number" [(ngModel)]="coarseAggregateMC" (ngModelChange)="onCoarseAggregateMCChange()" placeholder="Coarse aggregate moisture content" min="0.00001">
+    <mat-error *ngIf="coarseAggregateMC <= 0">Please enter a value greater than 0</mat-error>
+  </mat-form-field>
+</div>
+
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <!-- Ingredient Column -->
+  <ng-container matColumnDef="ingredient">
+    <th mat-header-cell *matHeaderCellDef> Ingredient </th>
+    <td mat-cell *matCellDef="let ingredient"> {{ingredient.name}} </td>
+  </ng-container>
+
+  <!-- kg Column -->
+  <ng-container matColumnDef="kg">
+    <th mat-header-cell *matHeaderCellDef> kg </th>
+    <td mat-cell *matCellDef="let ingredient"> {{ingredient.kg | number:'1.2-2'}} </td>
+  </ng-container>
+
+  <!-- SG Column -->
+  <ng-container matColumnDef="Specific gravity">
+    <th mat-header-cell *matHeaderCellDef> Specific Gravity </th>
+    <td mat-cell *matCellDef="let ingredient"> {{ingredient.SG | number:'1.2-2'}} </td>
+  </ng-container>
+
+  <!-- Meter cubed Column -->
+  <ng-container matColumnDef="Meter cubed">
+    <th mat-header-cell *matHeaderCellDef> m³ </th>
+    <td mat-cell *matCellDef="let ingredient"> {{ingredient.meterCubed | number:'1.2-2'}} </td>
+  </ng-container>
+
+  <!-- One meter cubed Column -->
+  <ng-container matColumnDef="One meter cubed">
+    <th mat-header-cell *matHeaderCellDef> 1 m³ </th>
+    <td mat-cell *matCellDef="let ingredient"> {{ingredient.oneMeterCubed | number:'1.2-2'}} </td>
+  </ng-container>
+
+  <!-- SSD Mix Amount Meter Cubed Column -->
+  <ng-container matColumnDef="SSDMixAmountMeterCubed">
+    <th mat-header-cell *matHeaderCellDef> SSD Mix Amount (m³) </th>
+    <td mat-cell *matCellDef="let ingredient"> {{ingredient.SSDMixAmountMeterCubed | number:'1.2-2'}} </td>
+  </ng-container>
+
+  <!-- SSD Mix Amount Kgs Column -->
+  <ng-container matColumnDef="SSDMixAmountKgs">
+    <th mat-header-cell *matHeaderCellDef> SSD Mix Amount (kg) </th>
+    <td mat-cell *matCellDef="let ingredient"> {{ingredient.SSDMixAmountKgs | number:'1.2-2'}} </td>
+  </ng-container>
+
+  <!-- stockMixAmountKgs Column -->
+  <ng-container matColumnDef="stockMixAmountKgs">
+    <th mat-header-cell *matHeaderCellDef> Stock Mix Amount (kg) </th>
+    <td mat-cell *matCellDef="let element"> {{element.stockMixAmountKgs | number:'1.2-2'}} </td>
+  </ng-container>
+
+  <!-- Total Row -->
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.total-row]="row.name === 'Total'"></tr>
+
+</table>
