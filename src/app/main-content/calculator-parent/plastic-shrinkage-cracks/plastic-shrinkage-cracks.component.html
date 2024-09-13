@@ -1,30 +1,103 @@
-<!-- <p>plastic-shrinkage-cracks works!</p> -->
-
 <h2>Plastic-Shrinkage-Cracks Calculation</h2>
-<!-- gets input values for bogue calculations via html form -->
-<!-- for use in TypeScript file, use [(ngModel)]="example" name = "example" -->
 
-<p>Evaporation Rate = ([Concrete Temperature]<sup>2.5</sup> - [relative Humidity]/100 * [air temperature]<sup>2.5</sup>)(1 + 0.4[wind velocity])*10<sup>-6</sup></p>
-
-<form id="PlasicShrinkageCracksForm">
-    <!-- get input for Lime -->
-    <label for="cTInput">Concrete Temperature (F): </label>
-    <input type="number" id="cTInput" step="0.01" [(ngModel)]="cT" name = "cT" required><br>
-    <!-- get input for Silica -->
-    <label for="aTInput">Air Temperature (F): </label>
-    <input type="number" id="aTInput" step="0.01" [(ngModel)]="aT" name = "aT" required><br>
-    <!-- get input for Alumina -->
-    <label for="rHInput">Relative Humidity (%): </label>
-    <input type="number" id="rHInput" step="0.01" [(ngModel)]="rH" name = "rH" required><br>
-    <label for="wVInput">Wind Velocity (mph): </label>
-    <input type="number" id="wVInput" step="0.01" [(ngModel)]="wV" name = "wV" required><br>
- 
-    <!-- submit button that calls function in bogue.component.ts -->
-    <button type="button" (click)="calculatePlasticShrinkageCracks(cT, aT, rH, wV)">Calculate</button>
-</form>
-
-<!-- displays results from bogue.component.ts -->
-<div id="results">
-    <h3>Plasic Shrinkage Cracks Results</h3>
-    <p>Evaporation Rate (Ib/ft<sup>2</sup>/hr): {{ results?.eR.toFixed(3) }}</p>
+<p>Evaporation Rate = ([Concrete Temperature]<sup>2.5</sup> - ([relative Humidity]/100) * [air temperature]<sup>2.5</sup>)(1 + 0.4[wind velocity])*10<sup>-6</sup></p>
+<div>
+    <mat-form-field appearance="fill" class="auto-width">
+      <mat-label>Concrete Temperature (F): </mat-label>
+      <input matInput type="number" [(ngModel)]="cT" (ngModelChange)="calculatePlasticShrinkageCracks(cT, aT, rH, wV)" placeholder="Enter Value">
+      <!-- <mat-error *ngIf="cao <= 0">Please enter a value greater than 0</mat-error> -->
+    </mat-form-field>
 </div>
+<div>
+    <mat-form-field appearance="fill" class="auto-width">
+      <mat-label>Air Temperature (F): </mat-label>
+      <input matInput type="number" [(ngModel)]="aT" (ngModelChange)="calculatePlasticShrinkageCracks(cT, aT, rH, wV)" placeholder="Enter Value">
+      <!-- <mat-error *ngIf="cao <= 0">Please enter a value greater than 0</mat-error> -->
+    </mat-form-field>
+</div>
+<div>
+    <mat-form-field appearance="fill" class="auto-width">
+      <mat-label>Relative Humidity (%): </mat-label>
+      <input matInput type="number" [(ngModel)]="rH" (ngModelChange)="calculatePlasticShrinkageCracks(cT, aT, rH, wV)" placeholder="Enter Value">
+      <!-- <mat-error *ngIf="cao <= 0">Please enter a value greater than 0</mat-error> -->
+    </mat-form-field>
+</div>
+<div>
+    <mat-form-field appearance="fill" class="auto-width">
+      <mat-label>Wind Velocity (mph): </mat-label>
+      <input matInput type="number" [(ngModel)]="wV" (ngModelChange)="calculatePlasticShrinkageCracks(cT, aT, rH, wV)" placeholder="Enter Value" min="0">
+      <mat-error *ngIf="wV <= 0">Please enter a value greater than 0</mat-error>
+    </mat-form-field>
+</div>
+
+<!-- displays results from plastic-shrinkage-cacks.component.ts -->
+<div id="results">
+    <h4><br>Plasic Shrinkage Cracks Results</h4>
+    <p>Evaporation Rate (Ib/ft<sup>2</sup>/hr): {{ results?.eR.toFixed(3) }}</p>
+
+    <table mat-table [dataSource]="[results]" class="mat-elevation-z8">
+        <!-- eR Column -->
+        <ng-container matColumnDef="eR">
+          <th mat-header-cell *matHeaderCellDef>Evaporation Rate (Ib/ft<sup>2</sup>/hr): </th>
+          <td mat-cell *matCellDef="let result">{{ results?.eR.toFixed(3) }}%</td>
+        </ng-container>
+        <!-- suggestion Column -->
+        <ng-container matColumnDef="suggestion">
+            <th mat-header-cell *matHeaderCellDef>suggestion </th>
+            <td mat-cell *matCellDef="let result">{{ results?.suggestion }}</td>
+        </ng-container>
+    
+        <!-- Header and Row Declarations -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+</div>
+
+
+<div>
+  <h1>Plastic Shrinkage Cracks Analysis</h1>
+
+  <!-- Add a form to input concrete temperature, etc., and trigger PlasticShrinkageGrapher -->
+  <form>
+    <mat-form-field>
+      <mat-label>Concrete Temperature</mat-label>
+      <input matInput [(ngModel)]="myCT" name="concreteT" type="number" placeholder="Enter concrete temperature">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Latitude</mat-label>
+      <input matInput [(ngModel)]="latitude" name="lat" type="number" placeholder="Enter latitude">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Longitude</mat-label>
+      <input matInput [(ngModel)]="longitude" name="long" type="number" placeholder="Enter longitude">
+    </mat-form-field>
+
+    <button mat-raised-button color="primary" type="button" (click)="PlasticShrinkageGrapher(latitude, longitude, myCT)">
+      Graph
+    </button>
+  </form>
+
+
+  <div style="display: block;">
+    <canvas baseChart  id="myChart"
+            [data]="chart"
+            [options]="chartOptions"
+            [legend]="true"
+            [type]="'line'">
+    </canvas>
+  </div>
+
+<!-- for testing
+<div>
+  <ul>
+    <li *ngFor="let period of gResults">
+      eR: {{period.eR}}, myCT: {{period.myCT}}, aT: {{ period.aT }}, rH: {{period.rH}}%, wV: {{ period.wV }}, suggestion: {{period.suggestion}}, time: {{ period.time }}, long: {{period.long}}, lat: {{period.lat}}
+      
+    </li>
+  </ul>
+</div>
+-->
+
+
