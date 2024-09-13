@@ -39,7 +39,7 @@ import { ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 export class PlasticShrinkageCracksComponent {
   @ViewChild('myChart', { static: true }) myChart!: ElementRef<HTMLCanvasElement>;
 
-
+// set to 0 later
   eR:         number = 0;   //evaporation rate
   cT:         number = 0;    //concrete temperature
   myCT:       number = 80;
@@ -152,7 +152,7 @@ export class PlasticShrinkageCracksComponent {
   title = 'Weather App';
   forecast: any;
 
-  //placeholder initial plan
+  //set to 0 later
   latitude: number = 39.7456;
   longitude: number = -97.0892;
   

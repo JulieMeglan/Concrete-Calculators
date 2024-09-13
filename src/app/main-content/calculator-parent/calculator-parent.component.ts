@@ -1,14 +1,8 @@
-
-import { Component } from '@angular/core';
-import { MortarAndMixComponent } from './mortar-and-mix/mortar-and-mix.component';
-import { BogueComponent } from './bogue/bogue.component';
-import { TcpowersComponent } from './tcpowers/tcpowers.component';
-import { Router, ActivatedRoute, RouterOutlet } from '@angular/router';
-import { MatDividerModule } from '@angular/material/divider';
-import { MatButtonModule } from '@angular/material/button';
-import { PlasticShrinkageCracksComponent } from './plastic-shrinkage-cracks/plastic-shrinkage-cracks.component';
-import { CommonModule } from '@angular/common';
-
+import { MatDialog } from '@angular/material/dialog';
+import { AboutDialogComponent } from '../about-dialog/about-dialog.component';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterEvent, NavigationEnd, RouterModule, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-calculator-parent',
