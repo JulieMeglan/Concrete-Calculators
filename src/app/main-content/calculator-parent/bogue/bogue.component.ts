@@ -31,14 +31,9 @@ import { Observable } from 'rxjs';
 })
 
 // class containing bogue specific variables and functions
-export class BogueComponent implements OnInit {
+export class BogueComponent {
 
   constructor(private firestore: Firestore){
-  }
-
-  public ngOnInit(): void {
-    const testCollection = collection(this.firestore, 'test');
-    addDoc(testCollection, {text: "test write"});
   }
   
   // variable declarations for bogue calculations
@@ -51,6 +46,27 @@ export class BogueComponent implements OnInit {
 
   // defines the columns displayed in the table
   displayedColumns: string[] = ['c3s', 'c2s', 'c3a', 'c4af', 'afRatio'];
+
+  // Add the following method in BogueComponent
+saveToFirestore(): void {
+  // Reference the collection where data will be saved
+  const testCollection = collection(this.firestore, 'bogue');
+  
+  // Add a new document with the current values
+  addDoc(testCollection, {
+    cao: this.cao,
+    sio2: this.sio2,
+    al2o3: this.al2o3,
+    fe2o3: this.fe2o3,
+    so3: this.so3,
+    timestamp: new Date()  // Add a timestamp if needed
+  }).then(() => {
+    console.log('Data saved successfully!');
+  }).catch(error => {
+    console.error('Error saving data: ', error);
+  });
+}
+
 
   // bogue calculation function
   calculateBogue(cao: number, sio2: number, al2o3: number, fe2o3: number, so3: number): void {

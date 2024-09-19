@@ -22,14 +22,10 @@ import { Observable } from 'rxjs';
     CommonModule
   ]
 })
-export class AppComponent implements OnInit{
+export class AppComponent{
   title = 'ConcreteCalculators';
 
   constructor(private firestore: Firestore){
   }
 
-  public ngOnInit(): void {
-    const testCollection = collection(this.firestore, 'test');
-    addDoc(testCollection, {text: "test write"});
-  }
 }

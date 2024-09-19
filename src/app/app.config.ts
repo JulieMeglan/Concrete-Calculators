@@ -8,9 +8,12 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideFirebaseApp, getApp, initializeApp } from '@angular/fire/app';
 import { connectFirestoreEmulator, getFirestore, provideFirestore } from '@angular/fire/firestore';
 import { getStorage, provideStorage } from '@angular/fire/storage';
+import { provideAuth, getAuth, connectAuthEmulator } from '@angular/fire/auth';
 import { firebaseConfig } from '../firebase.config'; // this file contains the firebaseConfig from the firebase website
-import { environment } from '../environments/environment'; // this file specifies whether to production or emulation is used
 
+// if pushed to production, use ../environments/environment.prod
+// if used for testing, use ../environments/environment (this allows emulators to properly connect)
+import { environment } from '../environments/environment.prod'; // this file specifies whether to production or emulation is used
 
 export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes),
@@ -24,5 +27,13 @@ export const appConfig: ApplicationConfig = {
       }
       return firestore;
     }),
-    provideStorage(() => getStorage())]
+    provideStorage(() => getStorage()),
+    provideAuth(() => {
+      const auth = getAuth(); // initialized authentication
+      if (!environment.production) { // checks whether or not emulation is used
+        connectAuthEmulator(auth, "http://127.0.0.1:9099") // if emulation is used, connects to auth emulation
+      }
+      return auth;
+    })
+    ]
 };

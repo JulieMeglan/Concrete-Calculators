@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -6,6 +6,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
+import { Firestore, addDoc, collection, collectionData } from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-tcpowers',
@@ -15,6 +17,9 @@ import { CommonModule } from '@angular/common';
   styleUrl: './tcpowers.component.css'
 })
 export class TcpowersComponent {
+
+  constructor(private firestore: Firestore){
+  }
   // variable declarations for tc powers calculations
   wc: number = 0; // variable for water/cement ratio
   alpha: number = 0; // variable for degree of hydration
@@ -25,6 +30,21 @@ export class TcpowersComponent {
     'wn', 'wg', 'vg', 'vhp', 'vc', 'vu', 'vp', 'pg', 'pc', 'x', 'wmin'
   ];
 
+  saveToFirestore(): void {
+    // Reference the collection where data will be saved
+    const testCollection = collection(this.firestore, 'tcpowers');
+    
+    // Add a new document with the current values
+    addDoc(testCollection, {
+      wcRatio: this.wc,
+      alpha: this.alpha,
+      timestamp: new Date()  // Add a timestamp if needed
+    }).then(() => {
+      console.log('Data saved successfully!');
+    }).catch(error => {
+      console.error('Error saving data: ', error);
+    });
+  }
 
 
   // tc powers calculation function

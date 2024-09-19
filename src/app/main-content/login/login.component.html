@@ -1,0 +1,26 @@
+<!-- login.component.html -->
+
+<h2>Login Component</h2>
+
+<!-- Form for User Login -->
+<div>
+  <mat-form-field appearance="fill" class="auto-width">
+    <mat-label>Email</mat-label>
+    <input matInput type="email" [(ngModel)]="email" placeholder="Enter your email">
+    <mat-error *ngIf="email == ''">Email is required</mat-error>
+  </mat-form-field>
+</div>
+
+<div>
+  <mat-form-field appearance="fill" class="auto-width">
+    <mat-label>Password</mat-label>
+    <input matInput type="password" [(ngModel)]="password" placeholder="Enter your password">
+    <mat-error *ngIf="password == ''">Password is required</mat-error>
+  </mat-form-field>
+</div>
+
+<!-- Buttons for User Actions -->
+<div>
+  <button mat-raised-button color="primary" (click)="addUser()">Add User</button>
+  <button mat-raised-button color="accent" (click)="login()">Login</button>
+</div>

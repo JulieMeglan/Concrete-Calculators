@@ -19,6 +19,10 @@
           <mat-error *ngIf="alpha <= 0">Please enter a value greater than 0</mat-error>
         </mat-form-field>
       </div>
+      <!-- Save Button to Firestore -->
+      <div>
+        <button mat-raised-button color="primary" (click)="saveToFirestore()">Save to Firestore</button>
+      </div><br>
 <!-- displays results from tcpowers.component.ts -->
 
 <div id="results">

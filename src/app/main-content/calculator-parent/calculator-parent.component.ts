@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
     MortarAndMixComponent, 
     BogueComponent, 
     TcpowersComponent, 
-    PlasticShrinkageCracksComponent, 
+    PlasticShrinkageCracksComponent,
     MatDividerModule, 
     MatButtonModule,
     RouterOutlet
