@@ -32,7 +32,6 @@
 
 <!-- displays results from plastic-shrinkage-cacks.component.ts -->
 <div id="results">
-    <h4><br>Plasic Shrinkage Cracks Results</h4>
     <p>Evaporation Rate (Ib/ft<sup>2</sup>/hr): {{ results?.eR.toFixed(3) }}</p>
 
     <table mat-table [dataSource]="[results]" class="mat-elevation-z8">
@@ -58,6 +57,7 @@
   <h1>Plastic Shrinkage Cracks Analysis</h1>
 
   <!-- Add a form to input concrete temperature, etc., and trigger PlasticShrinkageGrapher -->
+   <!--
   <form>
     <mat-form-field>
       <mat-label>Concrete Temperature</mat-label>
@@ -79,7 +79,6 @@
     </button>
   </form>
 
-
   <div style="display: block;">
     <canvas baseChart  id="myChart"
             [data]="chart"
@@ -88,6 +87,7 @@
             [type]="'line'">
     </canvas>
   </div>
+-->
 
 <!-- for testing
 <div>
