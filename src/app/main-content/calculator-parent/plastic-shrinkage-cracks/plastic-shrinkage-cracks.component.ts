@@ -99,12 +99,12 @@ export class PlasticShrinkageCracksComponent {
     }
   };
   
-/*
+
   ngOnInit() {
     Chart.register(...registerables, this.backgroundColorPlugin); // Register the plugin here
     this.initializeChart(); // Initialize the chart
   }
-*/
+
 
   constructor(private http: HttpClient) {}
 
@@ -179,7 +179,7 @@ export class PlasticShrinkageCracksComponent {
     );
   }
 
-/*
+
   PlasticShrinkageGrapher(lat: number, long: number, myCT: number) {
     let eR, aT, rH, wV, suggestion, time;
 
@@ -262,5 +262,5 @@ export class PlasticShrinkageCracksComponent {
     }
       
 }
-    */
+
 }
