@@ -7,9 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { Router } from '@angular/router'; // Import the Router service
-
-//minor change
+import { Router } from '@angular/router'; 
 
 export interface Ingredient {
   name: string;
@@ -176,13 +174,13 @@ const initialIngredientData: Ingredient[] = [
 ];
 
 @Component({
-  selector: 'app-mortar-and-mix',
+  selector: 'app-concrete-mix',
   standalone: true,
   imports: [CommonModule, MatDividerModule, MatButtonModule, MatInputModule, MatFormFieldModule, FormsModule, MatTableModule, MatSlideToggleModule],
-  templateUrl: './mortar-and-mix.component.html',
-  styleUrls: ['./mortar-and-mix.component.css']
+  templateUrl: './concrete-mix.component.html',
+  styleUrls: ['./concrete-mix.component.css']
 })
-export class MortarAndMixComponent {
+export class ConcreteMixComponent {
   isMetric: boolean = false;
   displayedColumns: string[] = ['ingredient', 'lb', 'Specific gravity', 'Feet cubed', 'One foot cubed', 'One yard cubed', 'SSDMixAmountFtCubed', 'SSDMixAmountLbs', 'stockMixAmountLbs'];
   dataSource: Ingredient[] = [];
@@ -204,9 +202,9 @@ export class MortarAndMixComponent {
   onUnitToggleChange(event: any): void {
     this.isMetric = event.checked;
     if (this.isMetric) {
-      this.router.navigate(['/calc/metric-mortarandmix']); // Navigate to the metric component
+      this.router.navigate(['/calc/concretemixmetric']); // Navigate to the metric component
     } else {
-      this.router.navigate(['/calc/mortarandmix']); // Navigate back to the imperial component
+      this.router.navigate(['/calc/concretemix']); // Navigate back to the imperial component
     }
   }
   

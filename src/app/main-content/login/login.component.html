@@ -24,3 +24,8 @@
   <button mat-raised-button color="primary" (click)="addUser()">Add User</button>
   <button mat-raised-button color="accent" (click)="login()">Login</button>
 </div>
+<br>
+<div *ngIf="results">
+  <h2>{{ results }}</h2>
+</div>
+

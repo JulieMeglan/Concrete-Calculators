@@ -7,6 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { Firestore, addDoc, collection, collectionData } from '@angular/fire/firestore';
+import { Auth } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 
 @Component({
@@ -18,7 +19,7 @@ import { Observable } from 'rxjs';
 })
 export class TcpowersComponent {
 
-  constructor(private firestore: Firestore){
+  constructor(private firestore: Firestore, private auth: Auth){
   }
   // variable declarations for tc powers calculations
   wc: number = 0; // variable for water/cement ratio
@@ -31,19 +32,27 @@ export class TcpowersComponent {
   ];
 
   saveToFirestore(): void {
-    // Reference the collection where data will be saved
-    const testCollection = collection(this.firestore, 'tcpowers');
-    
-    // Add a new document with the current values
-    addDoc(testCollection, {
-      wcRatio: this.wc,
-      alpha: this.alpha,
-      timestamp: new Date()  // Add a timestamp if needed
-    }).then(() => {
-      console.log('Data saved successfully!');
-    }).catch(error => {
-      console.error('Error saving data: ', error);
-    });
+    // Get the current authenticated user
+    const user = this.auth.currentUser;
+  
+    if (user) {
+      // Reference the collection where data will be saved
+      const testCollection = collection(this.firestore, 'tcpowers');
+      
+      // Add a new document with the current values and the user's UID
+      addDoc(testCollection, {
+        wcRatio: this.wc,
+        alpha: this.alpha,
+        uid: user.uid,  // Include the uid of the logged-in user
+        timestamp: new Date()  // Add a timestamp if needed
+      }).then(() => {
+        alert('Data saved successfully!');
+      }).catch(error => {
+        alert('Error saving data: ' + error);
+      });
+    } else {
+      alert('No user is logged in');
+    }
   }
 
 
@@ -54,17 +63,18 @@ export class TcpowersComponent {
     let wn, wg, vg, vhp, vc, vu, vp, pg, pc, x, wmin;
 
     // tc powers formula implementation
-    wn = 0.24 * this.alpha;
-    wg = 0.18 * this.alpha;
-    vg = wg;
-    vhp = 0.68 * this.alpha;
-    vc = this.wc - (0.36 * this.alpha);
-    vu = (1 - this.alpha) * 0.32;
-    vp = this.wc + 0.32;
-    pg = wg / vhp;;
-    pc = vc / vp;
-    x = (0.68 * this.alpha) / ((0.32 * this.alpha) + this.wc);
-    wmin = 0.42 * this.alpha;
+    wn = 0.24 * this.alpha; // nonevaporable water
+    wg = 0.18 * this.alpha; // gel pore water
+    
+    vhp = 0.68 * this.alpha; // total volume of hydration products
+    vc = 0.32 // specific volume of cement (constant)
+    vu = (1 - this.alpha) * 0.32; // volume of unhydrated cement
+    vp = this.wc + 0.32; // original volume of paste
+    pg = 0.26 * vhp; // volume of gel porosity
+    pc = this.wc - (0.36 * this.alpha); // capillary porosity
+    vg = vhp - pg; // total volume of hydration products minus the gel pores
+    x = (vhp) / (vg + vc); // gel/space ratio
+    wmin = wn + wg; // weight of water
 
   
 

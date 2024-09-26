@@ -13,7 +13,7 @@ import { firebaseConfig } from '../firebase.config'; // this file contains the f
 
 // if pushed to production, use ../environments/environment.prod
 // if used for testing, use ../environments/environment (this allows emulators to properly connect)
-import { environment } from '../environments/environment.prod'; // this file specifies whether to production or emulation is used
+import { environment } from '../environments/environment'; // this file specifies whether to production or emulation is used
 
 export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes),

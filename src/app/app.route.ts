@@ -5,6 +5,8 @@ import { MortarAndMixComponent } from './main-content/calculator-parent/mortar-a
 import { BogueComponent } from './main-content/calculator-parent/bogue/bogue.component';
 import { TcpowersComponent } from './main-content/calculator-parent/tcpowers/tcpowers.component';
 import { PlasticShrinkageCracksComponent } from './main-content/calculator-parent/plastic-shrinkage-cracks/plastic-shrinkage-cracks.component';
+import { ConcreteMixComponent } from './main-content/calculator-parent/concrete-mix/concrete-mix.component';
+import { ConcreteMixMetricComponent } from './main-content/calculator-parent/concrete-mix-metric/concrete-mix-metric.component';
 import { MetricMortarAndMixComponent } from './main-content/calculator-parent/metric-mortar-and-mix/metric-mortar-and-mix.component'; // Import the new component
 import { LoginComponent } from './main-content/login/login.component';
 
@@ -17,7 +19,9 @@ export const routes: Routes = [
         { path: 'plasticshrinkage', component: PlasticShrinkageCracksComponent },
         { path: 'tcpowers', component: TcpowersComponent },
         { path: 'bogue', component: BogueComponent },
-        { path: 'morterandmix', component: MortarAndMixComponent },
+        { path: 'concretemix', component: ConcreteMixComponent },
+        { path: 'concretemixmetric', component: ConcreteMixMetricComponent },
+        { path: 'mortarandmix', component: MortarAndMixComponent },
         { path: 'metric-mortarandmix', component: MetricMortarAndMixComponent },
       ] 
   },

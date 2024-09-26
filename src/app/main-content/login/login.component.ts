@@ -27,6 +27,8 @@ export class LoginComponent {
   // Declare variables for email and password
   email: string = '';
   password: string = '';
+  confirmation: string = '';
+  results: string = '';
 
   // Inject Firestore and Auth services
   constructor(private firestore: Firestore, private auth: Auth){
@@ -45,10 +47,12 @@ export class LoginComponent {
         });
       })
       .then(() => {
-        console.log('User added successfully!');
+        this.results = 'User ' + this.email  + ' added successfully!';
       })
       .catch(error => {
+        this.results = '';
         alert('Error adding user: ' + error.message);
+        
       });
   }
 
@@ -56,10 +60,12 @@ export class LoginComponent {
   login(): void {
     signInWithEmailAndPassword(this.auth, this.email, this.password)
       .then(userCredential => {
-        console.log('User logged in successfully!', userCredential);
+        this.results = 'User ' + userCredential.user.email + ' logged in successfully!';
       })
       .catch(error => {
+        this.results = '';
         alert('Error logging in: ' + error.message);
+        
       });
   }
 }

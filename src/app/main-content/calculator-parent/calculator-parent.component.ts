@@ -1,44 +1,73 @@
-import { Component } from '@angular/core';
-import { MortarAndMixComponent } from './mortar-and-mix/mortar-and-mix.component';
-import { BogueComponent } from './bogue/bogue.component';
-import { TcpowersComponent } from './tcpowers/tcpowers.component';
-import { Router, ActivatedRoute, RouterOutlet } from '@angular/router';
-import {MatDividerModule} from '@angular/material/divider';
-import {MatButtonModule} from '@angular/material/button';
-import { PlasticShrinkageCracksComponent } from './plastic-shrinkage-cracks/plastic-shrinkage-cracks.component';
-import { CommonModule } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
+import { AboutDialogComponent } from '../about-dialog/about-dialog.component';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router, RouterEvent, NavigationEnd, RouterModule, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-calculator-parent',
   standalone: true,
-  imports: [
-    MortarAndMixComponent, 
-    BogueComponent, 
-    TcpowersComponent, 
-    PlasticShrinkageCracksComponent,
-    MatDividerModule, 
-    MatButtonModule,
-    RouterOutlet
-  ],
-  templateUrl: './calculator-parent.component.html',
-  styleUrl: './calculator-parent.component.css'
-}
-)
-
-export class CalculatorParentComponent {
-public CalcName: String | undefined;
+  imports: [RouterOutlet, RouterModule],
+  templateUrl: './calculator-parent.component.html',  
+  styleUrls: ['./calculator-parent.component.css']   
+})
+export class CalculatorParentComponent implements OnInit {
+  public aboutText: string = 'test';
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router  
+    private router: Router,
+    public dialog: MatDialog
   ) {}
 
-  ngOnInit(){
-    console.log(this.router.url);
-    console.log("routes");
-    console.log(this.route.snapshot.url);
-    console.log(this.route.snapshot.url[0].path);
-    const CalcName = '';
+  ngOnInit() {
+    // Subscribe to Router events and filter NavigationEnd events
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      // Update aboutText based on the active route after navigation ends
+      const activePath = this.route.firstChild?.snapshot.url[0]?.path;
+      this.updateAboutText(activePath);
+    });
+
+    // Manually call updateAboutText on initial load to set the aboutText correctly
+    const initialPath = this.route.firstChild?.snapshot.url[0]?.path;
+    this.updateAboutText(initialPath);
   }
 
+
+  updateAboutText(activePath: string | undefined) {
+    switch (activePath) {
+      case 'plasticshrinkage':
+        this.aboutText = 'Plastic Shrinkage Cracks is a very smart calculator';
+        break;
+      case 'tcpowers':
+        this.aboutText = 'TC Powers is a very smart calculator.';
+        break;
+      case 'bogue':
+        this.aboutText = 'Bogue is a very smart calculator';
+        break;
+      case 'concretemix':
+        this.aboutText = 'Concrete Mix (Imperial) is a very smart calculator';
+        break;
+      case 'concretemixmetric':
+        this.aboutText = 'Concrete Mix (Metric) is a very smart calculator';
+        break;
+      case 'mortarandmix':
+        this.aboutText = 'Mortar and Mix (Imperial) is a very smart calculator';
+        break;
+      case 'metric-mortarandmix':
+        this.aboutText = 'Mortar and Mix (Metric) is a very smart calculator';
+        break;
+      default:
+        this.aboutText = 'About this calculator';
+    }
+  }
+
+  openAboutDialog() {
+    this.dialog.open(AboutDialogComponent, {
+      data: this.aboutText,
+      width: '400px'
+    });
+  }
 }

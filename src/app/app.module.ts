@@ -2,6 +2,9 @@ import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { Routes } from '@angular/router';
+import { CalculatorParentComponent } from './main-content/calculator-parent/calculator-parent.component';
 
 
 @NgModule({
@@ -9,7 +12,8 @@ import { CommonModule } from '@angular/common';
   imports: [
     BrowserModule,
     FormsModule, 
-    CommonModule
+    CommonModule, 
+    RouterModule
   ],
   providers: [],
   bootstrap: [],

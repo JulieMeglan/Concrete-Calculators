@@ -18,6 +18,7 @@ import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { Firestore, addDoc, collection, collectionData } from '@angular/fire/firestore';
+import { Auth } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 
 // components for bogue calculator
@@ -33,7 +34,7 @@ import { Observable } from 'rxjs';
 // class containing bogue specific variables and functions
 export class BogueComponent {
 
-  constructor(private firestore: Firestore){
+  constructor(private firestore: Firestore, private auth: Auth){
   }
   
   // variable declarations for bogue calculations
@@ -48,24 +49,32 @@ export class BogueComponent {
   displayedColumns: string[] = ['c3s', 'c2s', 'c3a', 'c4af', 'afRatio'];
 
   // Add the following method in BogueComponent
-saveToFirestore(): void {
-  // Reference the collection where data will be saved
-  const testCollection = collection(this.firestore, 'bogue');
+  saveToFirestore(): void {
+    // Get the current authenticated user
+    const user = this.auth.currentUser;
   
-  // Add a new document with the current values
-  addDoc(testCollection, {
-    cao: this.cao,
-    sio2: this.sio2,
-    al2o3: this.al2o3,
-    fe2o3: this.fe2o3,
-    so3: this.so3,
-    timestamp: new Date()  // Add a timestamp if needed
-  }).then(() => {
-    console.log('Data saved successfully!');
-  }).catch(error => {
-    console.error('Error saving data: ', error);
-  });
-}
+    if (user) {
+      // Reference the collection where data will be saved
+      const testCollection = collection(this.firestore, 'bogue');
+      
+      // Add a new document with the current values and the user's UID
+      addDoc(testCollection, {
+        cao: this.cao,
+        sio2: this.sio2,
+        al2o3: this.al2o3,
+        fe2o3: this.fe2o3,
+        so3: this.so3,
+        uid: user.uid,  // Include the uid of the logged-in user
+        timestamp: new Date()  // Add a timestamp if needed
+      }).then(() => {
+        alert('Data saved successfully!');
+      }).catch(error => {
+        alert('Error saving data: ' + error);
+      });
+    } else {
+      alert('No user is logged in');
+    }
+  }
 
 
   // bogue calculation function
