@@ -14,11 +14,13 @@ import { firebaseConfig } from '../firebase.config'; // this file contains the f
 // if pushed to production, use ../environments/environment.prod
 // if used for testing, use ../environments/environment (this allows emulators to properly connect)
 import { environment } from '../environments/environment'; // this file specifies whether to production or emulation is used
+import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
   providers: [provideRouter(routes),
     provideAnimationsAsync(),
     provideAnimations(),
+    provideCharts(withDefaultRegisterables()),
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
     provideFirestore(() => {
       const firestore = getFirestore(); // initialized firestore
