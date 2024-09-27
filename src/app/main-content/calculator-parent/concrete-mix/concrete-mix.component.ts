@@ -359,10 +359,10 @@ export class ConcreteMixComponent {
     }
   }
   
-  onCourseAggregatesLbChange() {
-    const courseAggregates = this.dataSource.find(ing => ing.name === 'Course aggregates');
-    if (courseAggregates) {
-      courseAggregates.lb = this.coarseAggregatesLb;
+  onCoarseAggregatesLbChange() {
+    const coarseAggregates = this.dataSource.find(ing => ing.name === 'Coarse aggregates');
+    if (coarseAggregates) {
+      coarseAggregates.lb = this.coarseAggregatesLb;
       this.dataSource = this.calculateIngredients(this.dataSource);
     }
   }
@@ -372,13 +372,6 @@ export class ConcreteMixComponent {
     if (water) {
       water.lb = this.waterLb;
       this.dataSource = this.calculateIngredients(this.dataSource);
-    }
-  }
-
-    const ingredient = this.dataSource.find(ing => ing.name === 'Coarse Aggregates');
-    if (ingredient) {
-      ingredient.lb = this.coarseAggregate;
-      this.dataSource = this.calculateIngredients(initialIngredientData);
     }
   }
 }

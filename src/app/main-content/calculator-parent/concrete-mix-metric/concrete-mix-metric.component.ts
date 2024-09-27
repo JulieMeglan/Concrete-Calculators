@@ -175,7 +175,7 @@ export class ConcreteMixMetricComponent {
   blastFurnanceSlagKg: number = 0;
   flyAshKg: number = 0;
   fineAggregatesKg: number = 1100;
-  courseAggregatesKg: number = 1800;
+  coarseAggregatesKg: number = 1800;
   waterKg: number = 340;
 
   constructor(private router: Router) { 
@@ -297,7 +297,7 @@ export class ConcreteMixMetricComponent {
   onCoarseAggregateMCChange(): void {
     const ingredient = this.dataSource.find(ing => ing.name === 'Coarse aggregates');
     if (ingredient) {
-      ingredient.kg = this.courseAggregatesKg;
+      ingredient.kg = this.coarseAggregatesKg;
       this.dataSource = this.calculateIngredients(initialIngredientData);
     }
   }
@@ -333,10 +333,10 @@ export class ConcreteMixMetricComponent {
     }
   }
   
-  onCourseAggregatesKgChange() {
-    const courseAggregates = this.dataSource.find(ing => ing.name === 'Course aggregates');
-    if (courseAggregates) {
-      courseAggregates.kg = this.courseAggregatesKg;
+  onCoarseAggregatesKgChange() {
+    const coarseAggregates = this.dataSource.find(ing => ing.name === 'Coarse aggregates');
+    if (coarseAggregates) {
+      coarseAggregates.kg = this.coarseAggregatesKg;
       this.dataSource = this.calculateIngredients(this.dataSource);
     }
   }
