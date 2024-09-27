@@ -123,6 +123,7 @@ function calculateStockMixAmountKgs(ingredients: Ingredient[], fineAggregateMC: 
         ingredient.stockMixAmountKgs = parseFloat((ingredient.SSDMixAmountKgs * (1 + fineAggregateMC / 100)).toFixed(8));
         break;
       case 'Coarse aggregates':
+
         ingredient.stockMixAmountKgs = parseFloat((ingredient.SSDMixAmountKgs * (1 + coarseAggregateMC / 100)).toFixed(8));
         break;
       case 'Water':
@@ -200,6 +201,7 @@ export class ConcreteMixMetricComponent {
   
     // Calculate meterCubed for each ingredient
     let calculatedIngredients = filteredIngredients.map(ingredient => ({
+
       ...ingredient,
       meterCubed: calculateMeterCubed(ingredient.kg, ingredient.SG),
       oneMeterCubed: 0,
@@ -232,7 +234,7 @@ export class ConcreteMixMetricComponent {
     
     // Calculate total meter cubed after meterCubed values are set
     const totalMeterCubed = calculateTotalMeterCubed(calculatedIngredients);
-  
+
     // Update oneMeterCubed for each ingredient using totalMeterCubed
     calculatedIngredients.forEach(ingredient => {
       ingredient.oneMeterCubed = calculateOneMeterCubed(ingredient, totalMeterCubed);
@@ -287,6 +289,7 @@ export class ConcreteMixMetricComponent {
     const ingredient = this.dataSource.find(ing => ing.name === 'Fine aggregates');
     if (ingredient) {
       ingredient.kg = this.fineAggregatesKg;
+
       this.dataSource = this.calculateIngredients(initialIngredientData);
     }
   }

@@ -19,7 +19,6 @@ export interface Ingredient {
   SSDMixAmountFtCubed: number;
   SSDMixAmountLbs: number;
   stockMixAmountLbs: number;
-  
 }
 
 // Function to calculate total lbs
@@ -196,7 +195,6 @@ export class ConcreteMixComponent {
   flyAshLb: number = 0;
   waterLb: number = 340;
 
-
   constructor(private router: Router) { // Inject the Router service
     this.initializeData();
   }
@@ -219,6 +217,7 @@ export class ConcreteMixComponent {
 
     // Calculate ftCubed for each ingredient
     let calculatedIngredients = filteredIngredients.map(ingredient => ({
+
       ...ingredient,
       ftCubed: calculateFtcubed(ingredient.lb, ingredient.SG),
       oneFootCubed: 0,
@@ -249,6 +248,7 @@ export class ConcreteMixComponent {
   calculatedIngredients.push(airIngredient);
    
   // Calculate total lb
+
    const totalLb = calculateTotalLb(calculatedIngredients);
 
     // Calculate total feet cubed after ftCubed values are set
@@ -298,6 +298,7 @@ export class ConcreteMixComponent {
       SSDMixAmountLbs: totalSSDMixAmountLbs,
       stockMixAmountLbs: totalStockMixAmountLbs
     });
+
     return calculatedIngredients;
   }
 
@@ -314,6 +315,7 @@ export class ConcreteMixComponent {
     const ingredient = this.dataSource.find(ing => ing.name === 'Fine aggregates');
     if (ingredient) {
       ingredient.lb = this.fineAggregatesLb;
+
       this.dataSource = this.calculateIngredients(initialIngredientData);
     }
   }
@@ -373,4 +375,11 @@ export class ConcreteMixComponent {
     }
   }
 
+=======
+    const ingredient = this.dataSource.find(ing => ing.name === 'Coarse Aggregates');
+    if (ingredient) {
+      ingredient.lb = this.coarseAggregate;
+      this.dataSource = this.calculateIngredients(initialIngredientData);
+    }
+  }
 }
