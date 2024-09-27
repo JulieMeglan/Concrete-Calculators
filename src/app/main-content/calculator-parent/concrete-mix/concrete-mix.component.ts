@@ -127,20 +127,20 @@ function calculateTotalSSDMixAmountLbs(ingredients: Ingredient[]): number {
 
 // Function to calculate stockMixAmountLbs
 function calculateStockMixAmountLbs(ingredients: Ingredient[], fineAggregateMC: number, coarseAggregateMC: number): void {
-  const fineAggregate = ingredients.find(ingredient => ingredient.name === 'Fine Aggregates');
-  const coarseAggregate = ingredients.find(ingredient => ingredient.name === 'Coarse Aggregates');
+  const fineAggregate = ingredients.find(ingredient => ingredient.name === 'Fine aggregates');
+  const coarseAggregate = ingredients.find(ingredient => ingredient.name === 'Coarse aggregates');
   
   ingredients.forEach(ingredient => {
     switch (ingredient.name) {
       case 'Cement':
       case 'Fly ash':
-      case 'Blast Furnace Slag':
+      case 'Blast furnace slag':
         ingredient.stockMixAmountLbs = ingredient.SSDMixAmountLbs;
         break;
-      case 'Fine Aggregates':
+      case 'Fine aggregates':
         ingredient.stockMixAmountLbs = parseFloat((ingredient.SSDMixAmountLbs * (1 + fineAggregateMC / 100)).toFixed(8));
         break;
-      case 'Coarse Aggregates':
+      case 'Coarse aggregates':
         ingredient.stockMixAmountLbs = parseFloat((ingredient.SSDMixAmountLbs * (1 + coarseAggregateMC / 100)).toFixed(8));
         break;
       case 'Water':
@@ -164,11 +164,11 @@ function calculateTotalStockMixAmountLbs(ingredients: Ingredient[]): number {
 }
 
 const initialIngredientData: Ingredient[] = [
-  { name: 'Cement', lb: 680, SG: 3.15, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
+  { name: 'Cement', lb: 1020, SG: 3.15, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
   { name: 'Fly ash', lb: 0, SG: 2.5, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
-  { name: 'Blast Furnace Slag', lb: 0, SG: 2.8, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
-  { name: 'Fine Aggregates', lb: 1100, SG: 2.5, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
-  { name: 'Coarse Aggregates', lb: 1800, SG: 2.6, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
+  { name: 'Blast furnace slag', lb: 0, SG: 2.8, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
+  { name: 'Fine aggregates', lb: 1100, SG: 2.6, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
+  { name: 'Coarse aggregates', lb: 1800, SG: 2.6, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
   { name: 'Water', lb: 340, SG: 1.0, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
   //water has to come after aggregates b/c of calculateStockMixAmountLbs function
 ];
@@ -186,10 +186,14 @@ export class ConcreteMixComponent {
   dataSource: Ingredient[] = [];
   userVolume: number = 40;
   mixVolume: number = 0;
-  fineAggregate: number = 1100;
-  coarseAggregate: number = 1800;
+  fineAggregatesLb: number = 1100;
+  coarseAggregatesLb: number = 1800;
   fineAggregateMC: number = 1;
   coarseAggregateMC: number = 1;
+  cementLb: number = 1020;
+  blastFurnanceSlagLb: number = 0;
+  flyAshLb: number = 0;
+  waterLb: number = 340;
 
   constructor(private router: Router) { // Inject the Router service
     this.initializeData();
@@ -209,8 +213,11 @@ export class ConcreteMixComponent {
   }
   
   calculateIngredients(ingredients: Ingredient[]): Ingredient[] {
+    const filteredIngredients = ingredients.filter(ingredient => ingredient.name !== 'Total' && ingredient.name !== 'Air');
+
     // Calculate ftCubed for each ingredient
-    let calculatedIngredients = ingredients.map(ingredient => ({
+    let calculatedIngredients = filteredIngredients.map(ingredient => ({
+
       ...ingredient,
       ftCubed: calculateFtcubed(ingredient.lb, ingredient.SG),
       oneFootCubed: 0,
@@ -225,9 +232,23 @@ export class ConcreteMixComponent {
     
     // Calculate and add air ftCubed
     const airFtCubed = calculateAirFtCubed(calculatedIngredients);
-    calculatedIngredients.push({ name: 'Air', lb: 0, SG: 0, ftCubed: airFtCubed, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 });
 
-   // Calculate total lb
+   // Create and add the 'Air' ingredient
+   const airIngredient: Ingredient = {
+    name: 'Air',
+    lb: 0,
+    SG: 0,
+    ftCubed: airFtCubed,
+    oneFootCubed: 0,
+    oneYardCubed: 0,
+    SSDMixAmountFtCubed: 0,
+    SSDMixAmountLbs: 0,
+    stockMixAmountLbs: 0
+  };
+  calculatedIngredients.push(airIngredient);
+   
+  // Calculate total lb
+
    const totalLb = calculateTotalLb(calculatedIngredients);
 
     // Calculate total feet cubed after ftCubed values are set
@@ -265,8 +286,18 @@ export class ConcreteMixComponent {
     // Calculate totalStockMixAmountLbs
     const totalStockMixAmountLbs = calculateTotalStockMixAmountLbs(calculatedIngredients);
 
-    // Add totals row
-    calculatedIngredients.push({ name: 'Total', lb: totalLb, SG: 0, ftCubed: totalFtCubed, oneFootCubed: totalOneFootCubed, oneYardCubed: totalOneYardCubed, SSDMixAmountFtCubed: totalSSDMixAmountFtCubed, SSDMixAmountLbs: totalSSDMixAmountLbs, stockMixAmountLbs: totalStockMixAmountLbs});
+    // Add totals row only once
+    calculatedIngredients.push({
+      name: 'Total',
+      lb: totalLb,
+      SG: 0,
+      ftCubed: totalFtCubed,
+      oneFootCubed: totalOneFootCubed,
+      oneYardCubed: totalOneYardCubed,
+      SSDMixAmountFtCubed: totalSSDMixAmountFtCubed,
+      SSDMixAmountLbs: totalSSDMixAmountLbs,
+      stockMixAmountLbs: totalStockMixAmountLbs
+    });
 
     return calculatedIngredients;
   }
@@ -281,14 +312,70 @@ export class ConcreteMixComponent {
   }
 
   onFineAggregateMCChange(): void {
-    const ingredient = this.dataSource.find(ing => ing.name === 'Fine Aggregates');
+    const ingredient = this.dataSource.find(ing => ing.name === 'Fine aggregates');
     if (ingredient) {
-      ingredient.lb = this.fineAggregate;
+      ingredient.lb = this.fineAggregatesLb;
+
       this.dataSource = this.calculateIngredients(initialIngredientData);
     }
   }
 
   onCoarseAggregateMCChange(): void {
+    const ingredient = this.dataSource.find(ing => ing.name === 'Coarse aggregates');
+    if (ingredient) {
+      ingredient.lb = this.coarseAggregatesLb;
+      this.dataSource = this.calculateIngredients(initialIngredientData);
+    }
+  }
+
+  onCementLbChange() {
+    const cement = this.dataSource.find(ing => ing.name === 'Cement');
+    if (cement) {
+      cement.lb = this.cementLb;
+      this.dataSource = this.calculateIngredients(this.dataSource);    }
+  }
+
+  onFlyAshLbChange() {
+    const flyAsh = this.dataSource.find(ing => ing.name === 'Fly ash');
+    if (flyAsh) {
+      flyAsh.lb = this.flyAshLb;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+  
+  onBlastFurnaceSlagLbChange() {
+    const blastFurnaceSlag = this.dataSource.find(ing => ing.name === 'Blast furnace slag');
+    if (blastFurnaceSlag) {
+      blastFurnaceSlag.lb = this.blastFurnanceSlagLb;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+  
+  onFineAggregatesLbChange() {
+    const fineAggregates = this.dataSource.find(ing => ing.name === 'Fine aggregates');
+    if (fineAggregates) {
+      fineAggregates.lb = this.fineAggregatesLb;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+  
+  onCourseAggregatesLbChange() {
+    const courseAggregates = this.dataSource.find(ing => ing.name === 'Course aggregates');
+    if (courseAggregates) {
+      courseAggregates.lb = this.coarseAggregatesLb;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+  
+  onWaterLbChange() {
+    const water = this.dataSource.find(ing => ing.name === 'Water');
+    if (water) {
+      water.lb = this.waterLb;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+
+=======
     const ingredient = this.dataSource.find(ing => ing.name === 'Coarse Aggregates');
     if (ingredient) {
       ingredient.lb = this.coarseAggregate;
