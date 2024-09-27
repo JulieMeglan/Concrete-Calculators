@@ -69,13 +69,13 @@
 
     <mat-form-field appearance="fill" class="auto-width">
       <mat-label>Coarse aggregates (lb)</mat-label>
-      <input matInput type="number" [(ngModel)]="coarseAggregatesLb" (ngModelChange)="onCourseAggregatesLbChange()" placeholder="Coarse aggregates (lb)" min="0.00001" step="1">
+      <input matInput type="number" [(ngModel)]="coarseAggregatesLb" (ngModelChange)="onCoarseAggregatesLbChange()" placeholder="Coarse aggregates (lb)" min="0.00001" step="1">
       <mat-error *ngIf="coarseAggregatesLb <= 0">Please enter a value greater than 0</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="auto-width">
       <mat-label>(Water lb)</mat-label>
-      <input matInput type="number" [(ngModel)]="waterLb" (ngModelChange)="onWaterLbChange()" placeholder="Water lb)" min="0.00001" step="1">
+      <input matInput type="number" [(ngModel)]="waterLb" (ngModelChange)="onWaterLbChange()" placeholder="Water (lb)" min="0.00001" step="1">
       <mat-error *ngIf="waterLb <= 0">Please enter a value greater than 0</mat-error>
     </mat-form-field>
   </div>

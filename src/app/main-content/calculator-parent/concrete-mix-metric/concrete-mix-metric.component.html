@@ -69,8 +69,8 @@
 
     <mat-form-field appearance="fill" class="auto-width">
       <mat-label>Coarse aggregates (kg)</mat-label>
-      <input matInput type="number" [(ngModel)]="courseAggregatesKg" (ngModelChange)="onCourseAggregatesKgChange()" placeholder="Coarse aggregates (kg)" min="0.00001" step="1">
-      <mat-error *ngIf="courseAggregatesKg <= 0">Please enter a value greater than 0</mat-error>
+      <input matInput type="number" [(ngModel)]="coarseAggregatesKg" (ngModelChange)="onCoarseAggregatesKgChange()" placeholder="Coarse aggregates (kg)" min="0.00001" step="1">
+      <mat-error *ngIf="coarseAggregatesKg <= 0">Please enter a value greater than 0</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="auto-width">

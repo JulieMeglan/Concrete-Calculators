@@ -359,10 +359,10 @@ export class ConcreteMixComponent {
     }
   }
   
-  onCourseAggregatesLbChange() {
-    const courseAggregates = this.dataSource.find(ing => ing.name === 'Course aggregates');
-    if (courseAggregates) {
-      courseAggregates.lb = this.coarseAggregatesLb;
+  onCoarseAggregatesLbChange() {
+    const coarseAggregates = this.dataSource.find(ing => ing.name === 'Coarse aggregates');
+    if (coarseAggregates) {
+      coarseAggregates.lb = this.coarseAggregatesLb;
       this.dataSource = this.calculateIngredients(this.dataSource);
     }
   }
@@ -374,5 +374,4 @@ export class ConcreteMixComponent {
       this.dataSource = this.calculateIngredients(this.dataSource);
     }
   }
-
 }
