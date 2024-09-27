@@ -375,10 +375,4 @@ export class ConcreteMixComponent {
     }
   }
 
-    const ingredient = this.dataSource.find(ing => ing.name === 'Coarse Aggregates');
-    if (ingredient) {
-      ingredient.lb = this.coarseAggregate;
-      this.dataSource = this.calculateIngredients(initialIngredientData);
-    }
-  }
 }
