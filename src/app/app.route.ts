@@ -11,6 +11,7 @@ import { ConcreteMixMetricComponent } from './main-content/calculator-parent/con
 
 export const routes: Routes = [
   { path: 'home', component: HomeComponent },
+  { path: 'calc', redirectTo: 'home', pathMatch: 'full' },
   { path: 'calc', 
       component: CalculatorParentComponent,
       children: [
