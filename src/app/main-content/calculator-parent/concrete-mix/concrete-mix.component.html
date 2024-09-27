@@ -81,32 +81,6 @@
   </div>
 </div>
 
-=======
-<div>
-  <mat-form-field appearance="fill" class="auto-width">
-    <mat-label>Volume (in³)</mat-label>
-    <input matInput type="number" [(ngModel)]="userVolume" (ngModelChange)="onUserVolumeChange()" placeholder="Enter volume" min=".1">
-    <mat-error *ngIf="userVolume <= 0">Please enter a value greater than 0</mat-error>
-  </mat-form-field>
-</div>
-
-<div>
-  <mat-form-field appearance="fill" class="auto-width">
-    <mat-label>Fine aggregate moisture content</mat-label>
-    <input matInput type="number" [(ngModel)]="fineAggregateMC" (ngModelChange)="onFineAggregateMCChange()" placeholder="Fine aggregate moisture content" min=".00001">
-    <mat-error *ngIf="fineAggregateMC <= 0">Please enter a value greater than 0</mat-error>
-  </mat-form-field>
-</div>
-
-<div>
-  <mat-form-field appearance="fill" class="auto-width">
-    <mat-label>Coarse aggregate moisture content</mat-label>
-    <input matInput type="number" [(ngModel)]="coarseAggregateMC" (ngModelChange)="onCoarseAggregateMCChange()" placeholder="Coarse aggregate moisture content" min="0.00001">
-    <mat-error *ngIf="coarseAggregateMC <= 0">Please enter a value greater than 0</mat-error>
-  </mat-form-field>
-</div>
-
-
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
   <!-- Ingredient Column -->
