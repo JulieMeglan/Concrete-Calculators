@@ -12,8 +12,6 @@ import { provideAuth, getAuth, connectAuthEmulator } from '@angular/fire/auth';
 import { firebaseConfig } from '../firebase.config'; // this file contains the firebaseConfig from the firebase website
 
 
-// if used for testing, use ../environments/environment (this allows emulators to properly connect)
-// import { environment } from '../environments/environment'; // this file specifies whether to production or emulation is used
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
