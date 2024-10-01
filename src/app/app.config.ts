@@ -11,9 +11,9 @@ import { getStorage, provideStorage } from '@angular/fire/storage';
 import { provideAuth, getAuth, connectAuthEmulator } from '@angular/fire/auth';
 import { firebaseConfig } from '../firebase.config'; // this file contains the firebaseConfig from the firebase website
 
-// if pushed to production, use ../environments/environment.prod
+
 // if used for testing, use ../environments/environment (this allows emulators to properly connect)
-import { environment } from '../environments/environment'; // this file specifies whether to production or emulation is used
+// import { environment } from '../environments/environment'; // this file specifies whether to production or emulation is used
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
@@ -22,14 +22,17 @@ export const appConfig: ApplicationConfig = {
     provideAnimations(),
     provideCharts(withDefaultRegisterables()),
     provideFirebaseApp(() => initializeApp(firebaseConfig)),
-    provideFirestore(() => {
+    provideFirestore(() => getFirestore()),
+    /*provideFirestore(() => {
       const firestore = getFirestore(); // initialized firestore
       if (!environment.production) { // checks whether or not emulation is used
         connectFirestoreEmulator(firestore, 'localhost', 8080) // if emulation is used, connects to firebase emulation
       }
       return firestore;
-    }),
+    }),*/
     provideStorage(() => getStorage()),
+    provideAuth(() => getAuth())
+    /*
     provideAuth(() => {
       const auth = getAuth(); // initialized authentication
       if (!environment.production) { // checks whether or not emulation is used
@@ -37,5 +40,6 @@ export const appConfig: ApplicationConfig = {
       }
       return auth;
     })
+      */
     ]
 };
