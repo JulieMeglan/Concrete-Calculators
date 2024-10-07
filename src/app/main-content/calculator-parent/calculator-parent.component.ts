@@ -58,8 +58,14 @@ export class CalculatorParentComponent implements OnInit {
           `;
           break;        
       case 'tcpowers':
-        this.aboutText = 'TC Powers is a very smart calculator.';
-        break;
+          this.aboutText = `
+            <p>T.C. Powers and T.L. Brownyard published a nine-part series of articles in the late 1940s titled “Studies of the Physical Properties of Hardened Portland Cement Paste.” They proposed a simple set of empirical equations that can be used to estimate the volume relationships of the various hydration phases and porosity based on the water/cement ratio (w/c) and the degree of hydration (α). (<em>Concrete</em> and Powers).</p>
+              
+            <br><p><em>References</em></p>
+            <p><em>Concrete</em>, 2nd Edition, S. Mindess, J.F. Young, D. Darwin, Pearson, 2003.</p>
+            <p>Powers, T.C. and Brownyard, T.L., “Studies of the Physical Properties of Hardened Portland Cement Paste,” Journal Proceedings, American Concrete Institute, Vol. 43, Issue 9.</p>
+            `;
+          break;
       case 'bogue':
           this.aboutText = `
             <p>R.H. Bogue is known as one of the first to investigate methods for predicting the phase or compound composition of Portland cement based on the oxide composition (ACI SP 249-2 and Concrete). The current versions of the Bogue calculations, the ones used here, can be found in ASTM C150-20 in Annex A1.</p>
@@ -69,11 +75,25 @@ export class CalculatorParentComponent implements OnInit {
             <p>ACI SP 249-2, “A tribute to "Calculation of the Compounds in Portland Cement" by R.H. Bogue with foreword by Paul Brown, American Concrete Institute Symposium Papers, Vol. 249, pages 45-54.</p>
           `;
           break;      
-      case 'concretemix':
-        this.aboutText = 'Concrete Mix (Imperial) is a very smart calculator';
-        break;
+        case 'concretemix':
+            this.aboutText = `
+              <p>As stated in <em>Design and Control of Concrete Mixtures</em>, the goal of concrete mixture design is to create a workable fresh concrete mix that meets performance requirements including long-term durability, required strength level, and desired appearance. 
+              There are several methods or approaches that can be used to design a concrete mixture and determine the relative proportions of each ingredient. One method is provided by <em>ACI PRC-211.1-91</em>. Once the design and relative proportions of each concrete ingredient are determined, the mixture proportions for a desired volume of concrete can be calculated using a spreadsheet or the calculator shown here.</p>
+              
+              <br><p><em>References</em></p>
+              <p><em>Design and Control of Concrete Mixtures</em>, 16th Edition, by S. H. Kosmatka and M. L. Wilson, Portland Cement Association, 2016.</p>
+              <p>ACI PRC-211.1-91: Standard Practice for Selecting Proportions for Normal, Heavyweight, and Mass Concrete (Reapproved 2009).</p>
+            `;
+            break;
       case 'concretemixmetric':
-        this.aboutText = 'Concrete Mix (Metric) is a very smart calculator';
+        this.aboutText = `
+        <p>As stated in <em>Design and Control of Concrete Mixtures</em>, the goal of concrete mixture design is to create a workable fresh concrete mix that meets performance requirements including long-term durability, required strength level, and desired appearance. 
+        There are several methods or approaches that can be used to design a concrete mixture and determine the relative proportions of each ingredient. One method is provided by ACI PRC-211.1-91. Once the design and relative proportions of each concrete ingredient are determined, the mixture proportions for a desired volume of concrete can be calculated using a spreadsheet or the calculator shown here.</p>
+        
+        <br><p><em>References</em></p>
+        <p><em>Design and Control of Concrete Mixtures</em>, 16th Edition, by S. H. Kosmatka and M. L. Wilson, Portland Cement Association, 2016.</p>
+        <p>ACI PRC-211.1-91: Standard Practice for Selecting Proportions for Normal, Heavyweight, and Mass Concrete (Reapproved 2009).</p>
+      `;
         break;
       case 'mortarandmix':
         this.aboutText = 'Mortar and Mix (Imperial) is a very smart calculator';
