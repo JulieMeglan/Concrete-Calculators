@@ -16,6 +16,8 @@ import { BaseChartDirective } from 'ng2-charts';
 import { Chart, registerables, Plugin  } from 'chart.js';
 import { ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+
 @Component({
   selector: 'app-plastic-shrinkage-cracks',
   standalone: true,
@@ -28,7 +30,8 @@ import { ViewChild, ElementRef, AfterViewInit } from '@angular/core';
     MatTableModule, 
     CommonModule,
     HttpClientModule,
-    BaseChartDirective
+    BaseChartDirective,
+    MatSlideToggleModule
   ],
   templateUrl: './plastic-shrinkage-cracks.component.html',
   styleUrl: './plastic-shrinkage-cracks.component.css'
@@ -49,6 +52,8 @@ export class PlasticShrinkageCracksComponent {
   suggestion: string = ""; //explanation
   time:       any;
 
+  isMetric: boolean = false;
+
   // Defines the columns displayed in the table
   displayedColumns: string[] = ['eR', 'suggestion'];
   displayedGColumns: string[] = ['eR', 'myCT', 'aT', 'rH', 'wV', 'suggestion', 'time'];
@@ -63,34 +68,51 @@ export class PlasticShrinkageCracksComponent {
     responsive: true
   };
 
+  onUnitToggleChange(event: any): void {
+    this.isMetric = event.checked;
+    // Update the chart to reflect the new background logic
+    this.updateChart();
+  }
+
+  ngOnInit() {
+    Chart.register(...registerables, this.backgroundColorPlugin); // Register the plugin
+    this.initializeChart(); // Initialize the chart
+  }
+
   // Define the backgroundColorPlugin
   backgroundColorPlugin: Plugin = {
     id: 'backgroundColorPlugin',
-    beforeDraw(chart) {
+    beforeDraw: (chart) => {
       const ctx = chart.ctx;
       const chartArea = chart.chartArea;
       const data = chart.data.datasets[0].data as number[];
       const minValue = Math.min(...data);
       const maxValue = Math.max(...data);
 
-      // Define thresholds
-      const thresholdLow = 0.1;
-      const thresholdHigh = 0.2;
+      // Define thresholds based on this.isMetric
+      let thresholdLow, thresholdHigh;
+      if (this.isMetric) {
+        thresholdLow = 0.5;
+        thresholdHigh = 1;
+      } else {
+        thresholdLow = 0.1;
+        thresholdHigh = 0.2;
+      }
 
       ctx.save();
       ctx.clearRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
 
-      // Draw green area for eR < 0.1
+      // Draw green area for values < thresholdLow
       ctx.fillStyle = 'green';
       ctx.fillRect(chartArea.left, chartArea.bottom - ((thresholdLow - minValue) / (maxValue - minValue)) * (chartArea.bottom - chartArea.top),
         chartArea.right - chartArea.left, (thresholdLow - minValue) / (maxValue - minValue) * (chartArea.bottom - chartArea.top));
 
-      // Draw yellow area for 0.1 <= eR <= 0.2
+      // Draw yellow area for thresholdLow <= values <= thresholdHigh
       ctx.fillStyle = 'yellow';
       ctx.fillRect(chartArea.left, chartArea.bottom - ((thresholdHigh - minValue) / (maxValue - minValue)) * (chartArea.bottom - chartArea.top),
         chartArea.right - chartArea.left, ((thresholdHigh - thresholdLow) / (maxValue - minValue)) * (chartArea.bottom - chartArea.top));
 
-      // Draw red area for eR > 0.2
+      // Draw red area for values > thresholdHigh
       ctx.fillStyle = 'red';
       ctx.fillRect(chartArea.left, chartArea.top,
         chartArea.right - chartArea.left, chartArea.bottom - ((thresholdHigh - minValue) / (maxValue - minValue)) * (chartArea.bottom - chartArea.top));
@@ -98,22 +120,33 @@ export class PlasticShrinkageCracksComponent {
       ctx.restore();
     }
   };
-  
-
-  ngOnInit() {
-    Chart.register(...registerables, this.backgroundColorPlugin); // Register the plugin here
-    this.initializeChart(); // Initialize the chart
-  }
-
 
   constructor(private http: HttpClient) {}
+
+  convertFtC(f : number) : number {
+    const c = (f-32)/1.8;
+    return c;
+  }
+
+  convertMPHtKPH(mph:number) : number {
+    const kph = mph * 1.609344;
+    return kph;
+  }
 
   calculatePlasticShrinkageCracks(cT: number, aT: number, rH: number, wV: number): void {
     let eR;
     let suggestion;
 
     //eR = (cT^2.5 - rH/100 * aT^2.5) (1 + .4 * wV) * 10^-6
-    eR = (Math.pow(this.cT, 2.5) - (this.rH/100) * Math.pow(this.aT, 2.5))*(1 + (0.4 * this.wV)) * Math.pow(10, -6);
+    //eR = (Math.pow(this.cT, 2.5) - (this.rH/100) * Math.pow(this.aT, 2.5))*(1 + (0.4 * this.wV)) * Math.pow(10, -6);
+
+    if (this.isMetric) {
+      // metric eR = 5((cT+18)^2.5 - rH/100 * (aT+18)^2.5)(wV+4)*10^-6
+      eR = 5* (Math.pow((this.cT+18),2.5) - (this.rH/100) * Math.pow((this.aT+18),2.5)) * (wV+4) * Math.pow(10,-6);
+    } else {
+      // eR = (cT^2.5 - rH/100 * aT^2.5) (1 + .4 * wV) * 10^-6
+      eR = (Math.pow(this.cT, 2.5) - (this.rH/100) * Math.pow(this.aT, 2.5))*(1 + (0.4 * this.wV)) * Math.pow(10, -6);
+    }
 
     // set suggestion
     suggestion = this.getSuggestion(eR);
@@ -130,12 +163,21 @@ export class PlasticShrinkageCracksComponent {
   }
 
   getSuggestion(eR: number): string {
-    if (eR > .2) {
-      return "> .2, high risk";
-    } else if (eR > .1) {
-      return "> .1 and < .2, medium risk";
-    } 
-    return "< .1, low risk";
+    if (this.isMetric) {
+      if (eR > 1) {
+        return "> 1, high risk";
+      } else if (eR > .5) {
+        return "> .5 and < 1, medium risk";
+      } 
+      return "< .5, low risk";
+    } else {
+      if (eR > .2) {
+        return "> .2, high risk";
+      } else if (eR > .1) {
+        return "> .1 and < .2, medium risk";
+      } 
+      return "< .1, low risk";
+    }
   }
 
   //api stuff
@@ -201,12 +243,23 @@ export class PlasticShrinkageCracksComponent {
 
             // Now process the forecast data
             for (let period of this.forecast.properties.periods) {
-              aT = period.temperature;
+              // percentage
               rH = period.relativeHumidity.value;
-              wV = parseFloat(period.windSpeed);  // Handle wind speed string conversion
 
-              // Calculate evaporation rate and suggestion
-              eR = (Math.pow(myCT, 2.5) - (rH / 100) * Math.pow(aT, 2.5)) * (1 + 0.4 * wV) * Math.pow(10, -6);
+              if(this.isMetric) {
+                aT = this.convertFtC(period.temperature); // convert f input to c
+                wV = this.convertMPHtKPH(parseFloat(period.windSpeed)); // convert mph input to kph
+                // metric eR = 5((cT+18)^2.5 - rH/100 * (aT+18)^2.5)(wV+4)*10^-6
+                eR = 5* (Math.pow((myCT+18),2.5) - (rH/100) * Math.pow((aT+18),2.5)) * (wV+4) * Math.pow(10,-6);
+              }
+              else {
+                aT = period.temperature;
+                wV = parseFloat(period.windSpeed);  // Handle wind speed string conversion
+                // Calculate evaporation
+                eR = (Math.pow(myCT, 2.5) - (rH / 100) * Math.pow(aT, 2.5)) * (1 + 0.4 * wV) * Math.pow(10, -6);
+              }
+
+              // Calculate  suggestion
               suggestion = this.getSuggestion(eR);
               //time = period.startTime;
 
@@ -236,7 +289,7 @@ export class PlasticShrinkageCracksComponent {
       data: {
         labels: this.chartLabels,
         datasets: [{
-          label: 'Evaporation Rate (Ib/ft²/hr)',
+          label: 'Evaporation Rate',
           data: [],
           fill: false,
           borderColor: 'blue',
