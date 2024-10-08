@@ -105,6 +105,7 @@ export class PlasticShrinkageCracksComponent {
     this.initializeChart(); // Initialize the chart
   }
 
+
   constructor(private http: HttpClient) {}
 
   calculatePlasticShrinkageCracks(cT: number, aT: number, rH: number, wV: number): void {
@@ -259,5 +260,7 @@ export class PlasticShrinkageCracksComponent {
       this.chart.data.datasets[0].data = limitedData;
       this.chart.update(); // Update the existing chart instance
     }
+      
 }
+
 }

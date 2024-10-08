@@ -23,7 +23,9 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-bogue',
   standalone: true,
-  imports: [CommonModule, MatDividerModule, MatButtonModule, MatInputModule, MatFormFieldModule, FormsModule, MatTableModule], // ensure FormsModule is in this line
+  imports: [CommonModule, MatDividerModule, MatButtonModule, MatInputModule, MatFormFieldModule, FormsModule, MatTableModule
+    //, BrowserAnimationsModule
+    ], // ensure FormsModule is in this line
   templateUrl: './bogue.component.html', 
   styleUrl: './bogue.component.css'
 })
