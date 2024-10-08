@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { Router } from '@angular/router'; // Import the Router service
+import { Router } from '@angular/router';
 
 //minor change
 
@@ -22,6 +22,7 @@ export interface Ingredient {
   SSDMixAmountLbs: number;
   stockMixAmountLbs: number;
 }
+
 
 // Function to calculate total lbs
 function calculateTotalLb(ingredients: Ingredient[]): number {
