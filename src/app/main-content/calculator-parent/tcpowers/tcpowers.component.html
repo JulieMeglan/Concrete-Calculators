@@ -23,6 +23,11 @@
       <div>
         <button mat-raised-button color="primary" (click)="saveToFirestore()">Save to Firestore</button>
       </div><br>
+
+      <!-- New Button to Fetch All Records for the Current User -->
+    <div>
+      <button mat-raised-button color="accent" (click)="fetchRecords()">Load My Records</button>
+    </div><br>
 <!-- displays results from tcpowers.component.ts -->
 
 <div id="results">
@@ -100,4 +105,27 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 </div>
+<br>
 
+<!-- Section for displaying fetched records -->
+<div>
+  <h3>Saved Records</h3>
+  <table mat-table [dataSource]="userRecords" class="mat-elevation-z8">
+    <ng-container matColumnDef="wcRatio">
+      <th mat-header-cell *matHeaderCellDef>Water/Cement Ratio (w/c):</th>
+      <td mat-cell *matCellDef="let record">{{ record.wcRatio }}</td>
+    </ng-container>
+    <ng-container matColumnDef="alpha">
+      <th mat-header-cell *matHeaderCellDef>Degree of Hydration (α):</th>
+      <td mat-cell *matCellDef="let record">{{ record.alpha }}</td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let record">
+        <button mat-button (click)="populateFields(record)">Use Values</button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="['wcRatio', 'alpha', 'actions']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['wcRatio', 'alpha', 'actions'];"></tr>
+  </table>
+</div>

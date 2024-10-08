@@ -6,9 +6,14 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
-import { Firestore, addDoc, collection, collectionData } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData, query, where, getDocs } from '@angular/fire/firestore';
 import { Auth } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
+
+interface TCPowersRecord {
+  alpha: number;
+  wcRatio: number;
+}
 
 @Component({
   selector: 'app-tcpowers',
@@ -17,6 +22,8 @@ import { Observable } from 'rxjs';
   templateUrl: './tcpowers.component.html',
   styleUrl: './tcpowers.component.css'
 })
+
+
 export class TcpowersComponent {
 
   constructor(private firestore: Firestore, private auth: Auth){
@@ -25,6 +32,7 @@ export class TcpowersComponent {
   wc: number = 0; // variable for water/cement ratio
   alpha: number = 0; // variable for degree of hydration
   results: any; // stores values resulting from tc powers formula
+  userRecords: { alpha: number, wcRatio: number }[] = []; // stores records fetched from Firestore
   
   // defines the columns displayed in the table
   displayedColumns: string[] = [
@@ -55,6 +63,55 @@ export class TcpowersComponent {
     }
   }
 
+  
+
+  // Fetch saved records for the current user from Firestore
+  fetchRecords(): void {
+    const user = this.auth.currentUser;
+  
+    if (user) {
+      // Define records as an array of TCPowersRecord
+      const records: TCPowersRecord[] = [];
+  
+      // Reference to the collection
+      const testCollection = collection(this.firestore, 'tcpowers');
+      const q = query(testCollection, where('uid', '==', user.uid));
+  
+      // Use getDocs to fetch multiple documents
+      getDocs(q).then((querySnapshot) => {
+        querySnapshot.forEach((doc) => {
+          const data = doc.data() as TCPowersRecord; // Ensure that data is typed as TCPowersRecord
+  
+          if (data) {
+            records.push({
+              alpha: data.alpha || 0,
+              wcRatio: data.wcRatio || 0
+            });
+          }
+        });
+  
+        // Assign records to your component's variable for display
+        this.userRecords = records;
+  
+        if (this.userRecords.length === 0) {
+          alert('No records found for this user.');
+        }
+      }).catch((error) => {
+        console.error('Error fetching records: ', error);
+        alert('Error fetching records: ' + error.message);
+      });
+  
+    } else {
+      alert('No user is logged in');
+    }
+  }
+
+  // Populate input fields with selected record values
+  populateFields(record: TCPowersRecord): void {
+    this.wc = record.wcRatio; // Set wcRatio from the selected record
+    this.alpha = record.alpha; // Set alpha from the selected record
+    this.calculateTCPowers(this.wc, this.alpha); // Recalculate with new values
+  }
 
   // tc powers calculation function
   calculateTCPowers(wc: number, alpha: number): void {
