@@ -18,7 +18,7 @@
   <!-- First Column -->
   <div style="flex: 1; margin-right: 10px;">
     <mat-form-field appearance="fill" class="auto-width">
-      <mat-label>Volume (m³)</mat-label>
+      <mat-label>Volume (in³)</mat-label>
       <input matInput type="number" [(ngModel)]="userVolume" (ngModelChange)="onUserVolumeChange()" placeholder="Enter volume" min=".1">
       <mat-error *ngIf="userVolume <= 0">Please enter a value greater than 0</mat-error>
     </mat-form-field>
