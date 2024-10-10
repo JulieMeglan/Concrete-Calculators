@@ -10,10 +10,22 @@
 import {onRequest} from "firebase-functions/v2/https";
 import * as logger from "firebase-functions/logger";
 
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
+const functions = require('firebase-functions');
+const { exec } = require('child_process');
+const path = require('path');
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+exports.runNISTModel = functions.https.onRequest((req, res) => {
+    const exePath = path.join(__dirname, 'src\assets\NISTmodel.exe'); 
+
+    exec(exePath, (error, stdout, stderr) => {
+        if (error) {
+            console.error(`Error: ${error.message}`);
+            return res.status(500).send(`Error: ${error.message}`);
+        }
+        if (stderr) {
+            console.error(`stderr: ${stderr}`);
+            return res.status(500).send(`stderr: ${stderr}`);
+        }
+        res.send(stdout);
+    });
+});

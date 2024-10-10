@@ -1,16 +1,28 @@
 <h2>Plastic-Shrinkage-Cracks Calculation</h2>
 
-<p>Evaporation Rate = ([Concrete Temperature]<sup>2.5</sup> - ([relative Humidity]/100) * [air temperature]<sup>2.5</sup>)(1 + 0.4[wind velocity])*10<sup>-6</sup></p>
+<div class="toggle-container">
+  <mat-slide-toggle
+    color="primary"
+    [(ngModel)]="isMetric"
+    (change)="onUnitToggleChange($event)">
+    Switch to {{ isMetric ? 'Imperial' : 'Metric' }}
+  </mat-slide-toggle>
+</div>
+
+
+<!-- <p>Evaporation Rate = ([Concrete Temperature (F)]<sup>2.5</sup> - ([relative Humidity (%)]/100) * [air temperature (F)]<sup>2.5</sup>)(1 + 0.4[wind velocity (mph)])*10<sup>-6</sup></p> -->
+<p>{{ isMetric ? 'Metric' : 'Imperial' }} Evaporation Rate = {{ isMetric ? "5 * (([Concrete Temperature (C)] + 18)^2.5 - ([relative Humidity (%)]/100) * ([air temperature (C)] + 18)^2.5)([wind velocity (mph)] + 4) * 10^-6" 
+: "([Concrete Temperature (F)]^2.5 - ([relative Humidity (%)]/100) * [air temperature (F)]^2.5)(1 + 0.4[wind velocity (mph)]) * 10^-6" }}</p>
 <div>
     <mat-form-field appearance="fill" class="auto-width">
-      <mat-label>Concrete Temperature (F): </mat-label>
+      <mat-label>Concrete Temperature {{ isMetric ? '(C)' : '(F)'}}: </mat-label>
       <input matInput type="number" [(ngModel)]="cT" (ngModelChange)="calculatePlasticShrinkageCracks(cT, aT, rH, wV)" placeholder="Enter Value">
       <!-- <mat-error *ngIf="cao <= 0">Please enter a value greater than 0</mat-error> -->
     </mat-form-field>
 </div>
 <div>
     <mat-form-field appearance="fill" class="auto-width">
-      <mat-label>Air Temperature (F): </mat-label>
+      <mat-label>Air Temperature {{ isMetric ? '(C)' : '(F)'}}: </mat-label>
       <input matInput type="number" [(ngModel)]="aT" (ngModelChange)="calculatePlasticShrinkageCracks(cT, aT, rH, wV)" placeholder="Enter Value">
       <!-- <mat-error *ngIf="cao <= 0">Please enter a value greater than 0</mat-error> -->
     </mat-form-field>
@@ -24,7 +36,7 @@
 </div>
 <div>
     <mat-form-field appearance="fill" class="auto-width">
-      <mat-label>Wind Velocity (mph): </mat-label>
+      <mat-label>Wind Velocity {{ isMetric ? '(kph)' : '(mph)'}}: </mat-label>
       <input matInput type="number" [(ngModel)]="wV" (ngModelChange)="calculatePlasticShrinkageCracks(cT, aT, rH, wV)" placeholder="Enter Value" min="0">
       <mat-error *ngIf="wV <= 0">Please enter a value greater than 0</mat-error>
     </mat-form-field>
@@ -32,13 +44,13 @@
 
 <!-- displays results from plastic-shrinkage-cacks.component.ts -->
 <div id="results">
-    <h4><br>Plasic Shrinkage Cracks Results</h4>
-    <p>Evaporation Rate (Ib/ft<sup>2</sup>/hr): {{ results?.eR.toFixed(3) }}</p>
-
+  <!-- 
+  <p>Evaporation Rate {{ isMetric ? '(kg/m^2/hr)' : '(Ib/ft^2/hr)'}}: {{ results?.eR.toFixed(3) }}</p>
+  -->
     <table mat-table [dataSource]="[results]" class="mat-elevation-z8">
         <!-- eR Column -->
         <ng-container matColumnDef="eR">
-          <th mat-header-cell *matHeaderCellDef>Evaporation Rate (Ib/ft<sup>2</sup>/hr): </th>
+          <th mat-header-cell *matHeaderCellDef>Evaporation Rate {{ isMetric ? '(kg/m^2/hr)' : '(Ib/ft^2/hr)'}}: </th>
           <td mat-cell *matCellDef="let result">{{ results?.eR.toFixed(3) }}%</td>
         </ng-container>
         <!-- suggestion Column -->
@@ -52,16 +64,17 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
 </div>
-
+<p></p>
 
 <div>
   <h1>Plastic Shrinkage Cracks Analysis</h1>
 
   <!-- Add a form to input concrete temperature, etc., and trigger PlasticShrinkageGrapher -->
+  
   <form>
     <mat-form-field>
-      <mat-label>Concrete Temperature</mat-label>
-      <input matInput [(ngModel)]="myCT" name="concreteT" type="number" placeholder="Enter concrete temperature">
+      <mat-label>Concrete Temperature {{ isMetric ? '(C)' : '(F)'}}</mat-label>
+      <input matInput [(ngModel)]="myCT" name="concreteT" type="number" placeholder="Enter concrete temperature {{ isMetric ? '(C)' : '(F)'}}">
     </mat-form-field>
 
     <mat-form-field>
@@ -79,7 +92,6 @@
     </button>
   </form>
 
-
   <div style="display: block;">
     <canvas baseChart  id="myChart"
             [data]="chart"
@@ -88,6 +100,7 @@
             [type]="'line'">
     </canvas>
   </div>
+
 
 <!-- for testing
 <div>
