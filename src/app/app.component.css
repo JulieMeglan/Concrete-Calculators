@@ -1,58 +1,71 @@
 mat-sidenav-container {
     height: 100%;
-}
-
-.navButton {
+  }
+  
+  .navButton {
     padding: 5px;
-}
-
-.navButton button {
+  }
+  
+  .navButton button {
     width: 100%;
-}
-
-.active {
+  }
+  
+  .active {
     background: white;
-}
-
-.header-toolbar {
+  }
+  
+  .header-toolbar {
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between; /* Combines both definitions */
     height: 100px;
     padding: 0 20px;
     background-color: #C3C3C3;
-}
-
-.logo-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100%;
-}
-
-.logo-image {
-    max-height: 80px;
-    width: auto;
-}
-
-.header-toolbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
   }
   
   .sidenav-toggle-button {
-    margin-right: auto; 
+    margin-right: auto;
   }
   
   .logo-container {
     display: flex;
     justify-content: center;
+    align-items: center;
     flex-grow: 1;
+    height: 100%;
   }
   
   .logo-image {
     max-height: 100px; 
+    width: auto;
+  }
+
+  .loggedin-button {
+    margin-left: auto; 
   }
   
-
+  .btn-purple {
+    background-color: purple !important;
+    color: white !important;
+  }
+  
+  .btn-red {
+    background-color: red !important;
+    color: white !important;
+  }
+  
+  .btn-orange {
+    background-color: orange !important;
+    color: white !important;
+  }
+  
+  .btn-yellow {
+    background-color: yellow !important;
+    color: black !important;
+  }
+  
+  .btn-green {
+    background-color: green !important;
+    color: white !important;
+  }
+  
