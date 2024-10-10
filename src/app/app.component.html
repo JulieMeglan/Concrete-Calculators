@@ -6,8 +6,10 @@
     <div class="logo-container">
       <img src="assets/images/Logo2.png" alt="Logo" class="logo-image" />
     </div>
+    <button mat-raised-button class="loggedin-button" color="accent">LoggedIn</button>
   </mat-toolbar>
 </header>
+
 
 <mat-sidenav-container>
   <mat-sidenav mode="side" [(opened)]="sidenavOpened">
@@ -19,27 +21,27 @@
       </div>
       <div class="navButton">
         <a [routerLink]="['./calc/plasticshrinkage']" routerLinkActive="active-link">
-          <button mat-raised-button color="primary">Plastic Shrinkage Cracks</button>
+          <button mat-raised-button class="btn-purple">Plastic Shrinkage Cracks</button>
         </a>
       </div>
       <div class="navButton">
         <a [routerLink]="['./calc/tcpowers']" routerLinkActive="active-link">
-          <button mat-raised-button color="primary">TC Powers Volume</button>
+          <button mat-raised-button class="btn-red">TC Powers Volume</button>
         </a>
       </div>
       <div class="navButton">
         <a [routerLink]="['./calc/bogue']" routerLinkActive="active-link" title='Bogue'>
-          <button mat-raised-button color="primary">Bogue</button>
+          <button mat-raised-button class="btn-orange">Bogue</button>
         </a>
       </div>
       <div class="navButton">
         <a [routerLink]="['./calc/concretemix']" routerLinkActive="active-link">
-          <button mat-raised-button color="primary">Concrete Mix</button>
+          <button mat-raised-button class="btn-yellow">Concrete Mix</button>
         </a>
       </div>
       <div class="navButton">
         <a [routerLink]="['./calc/mortarandmix']" routerLinkActive="active-link">
-          <button mat-raised-button color="primary">Mortar Mix</button>
+          <button mat-raised-button class="btn-green">Mortar Mix</button>
         </a>
       </div>
     </nav>
@@ -48,5 +50,3 @@
     <router-outlet></router-outlet>
   </mat-sidenav-content>
 </mat-sidenav-container>
-
-
