@@ -142,10 +142,10 @@ export class PlasticShrinkageCracksComponent {
 
     if (this.isMetric) {
       // metric eR = 5((cT+18)^2.5 - rH/100 * (aT+18)^2.5)(wV+4)*10^-6
-      eR = 5* (Math.pow((this.cT+18),2.5) - (this.rH/100) * Math.pow((this.aT+18),2.5)) * (wV+4) * Math.pow(10,-6);
+      eR = 5 * (Math.pow((cT+18),2.5) - (rH/100) * Math.pow((aT+18),2.5)) * (wV+4) * Math.pow(10,-6);
     } else {
       // eR = (cT^2.5 - rH/100 * aT^2.5) (1 + .4 * wV) * 10^-6
-      eR = (Math.pow(this.cT, 2.5) - (this.rH/100) * Math.pow(this.aT, 2.5))*(1 + (0.4 * this.wV)) * Math.pow(10, -6);
+      eR = (Math.pow(cT, 2.5) - (rH/100) * Math.pow(aT, 2.5))*(1 + (0.4 * wV)) * Math.pow(10, -6);
     }
 
     // set suggestion
