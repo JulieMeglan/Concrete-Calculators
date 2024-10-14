@@ -10,7 +10,6 @@
   </mat-toolbar>
 </header>
 
-
 <mat-sidenav-container>
   <mat-sidenav mode="side" [(opened)]="sidenavOpened">
     <nav>
@@ -42,6 +41,11 @@
       <div class="navButton">
         <a [routerLink]="['./calc/mortarandmix']" routerLinkActive="active-link">
           <button mat-raised-button class="btn-green">Mortar Mix</button>
+        </a>
+      </div>
+      <div class="navButton">
+        <a href="assets/NISTmodel.exe" download>
+          <button mat-raised-button color="primary">Download NIST Model</button>
         </a>
       </div>
     </nav>
