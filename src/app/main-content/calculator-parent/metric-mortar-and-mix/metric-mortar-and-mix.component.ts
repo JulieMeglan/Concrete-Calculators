@@ -29,6 +29,15 @@ function calculateTotalKg(ingredients: Ingredient[]): number {
   return parseFloat(totalKg.toFixed(8));
 }
 
+// Function to calculate total SG
+function calculateTotalSG(ingredients: Ingredient[]): number {
+  let totalSG = 0;
+  ingredients.forEach(ingredient => {
+    totalSG += ingredient.SG;
+  });
+  return parseFloat(totalSG.toFixed(8));
+}
+
 // Function to calculate meterCubed
 function calculateMeterCubed(kg: number, SG: number): number {
   if (SG === 0) {
@@ -52,18 +61,6 @@ function calculateOneMeterCubed(ingredient: Ingredient, totalMeterCubed: number)
     return 0; // Handle division by zero or NaN case
   }
   return parseFloat((ingredient.meterCubed / totalMeterCubed).toFixed(8));
-}
-
-// Function to calculate airMeterCubed
-function calculateAirMeterCubed(ingredients: Ingredient[]): number {
-  let meterCubedTotalMinusAir = 0;
-  ingredients.forEach(ingredient => {
-    if (ingredient.name !== 'Air' && ingredient.name !== 'Coarse Aggregates') {
-      meterCubedTotalMinusAir += ingredient.meterCubed;
-    }
-  });
-  const airMeterCubed = (meterCubedTotalMinusAir / 0.94) - meterCubedTotalMinusAir;
-  return parseFloat(airMeterCubed.toFixed(8));
 }
 
 // Function to calculate totalOneMeterCubed
@@ -109,26 +106,21 @@ function calculateTotalSSDMixAmountKgs(ingredients: Ingredient[]): number {
 
 // Function to calculate stockMixAmountKgs
 function calculateStockMixAmountKgs(ingredients: Ingredient[], fineAggregateMC: number, coarseAggregateMC: number): void {
-  const fineAggregate = ingredients.find(ingredient => ingredient.name === 'Fine Aggregates');
-  const coarseAggregate = ingredients.find(ingredient => ingredient.name === 'Coarse Aggregates');
+  const fineAggregate = ingredients.find(ingredient => ingredient.name === 'Fine aggregates');
   
   ingredients.forEach(ingredient => {
     switch (ingredient.name) {
       case 'Cement':
       case 'Fly ash':
-      case 'Blast Furnace Slag':
+      case 'Blast furnace slag':
         ingredient.stockMixAmountKgs = ingredient.SSDMixAmountKgs;
         break;
-      case 'Fine Aggregates':
+      case 'Fine aggregates':
         ingredient.stockMixAmountKgs = parseFloat((ingredient.SSDMixAmountKgs * (1 + fineAggregateMC / 100)).toFixed(8));
-        break;
-      case 'Coarse Aggregates':
-        ingredient.stockMixAmountKgs = parseFloat((ingredient.SSDMixAmountKgs * (1 + coarseAggregateMC / 100)).toFixed(8));
         break;
       case 'Water':
         const fineAggDifference = fineAggregate ? (fineAggregate.SSDMixAmountKgs - fineAggregate.stockMixAmountKgs) : 0;
-        const coarseAggDifference = coarseAggregate ? (coarseAggregate.SSDMixAmountKgs - coarseAggregate.stockMixAmountKgs) : 0;
-        ingredient.stockMixAmountKgs = parseFloat((ingredient.SSDMixAmountKgs + fineAggDifference + coarseAggDifference).toFixed(8));
+        ingredient.stockMixAmountKgs = parseFloat((ingredient.SSDMixAmountKgs + fineAggDifference).toFixed(8));
         break;
       default:
         ingredient.stockMixAmountKgs = 0;
@@ -146,17 +138,16 @@ function calculateTotalStockMixAmountKgs(ingredients: Ingredient[]): number {
 }
 
 const initialIngredientData: Ingredient[] = [
-  { name: 'Cement', kg: 680, SG: 3.15, meterCubed: 0, oneMeterCubed: 0, SSDMixAmountMeterCubed: 0, SSDMixAmountKgs: 0, stockMixAmountKgs: 0 },
-  { name: 'Fly ash', kg: 0, SG: 2.5, meterCubed: 0, oneMeterCubed: 0, SSDMixAmountMeterCubed: 0, SSDMixAmountKgs: 0, stockMixAmountKgs: 0 },
-  { name: 'Blast Furnace Slag', kg: 0, SG: 2.8, meterCubed: 0, oneMeterCubed: 0, SSDMixAmountMeterCubed: 0, SSDMixAmountKgs: 0, stockMixAmountKgs: 0 },
-  { name: 'Fine Aggregates', kg: 1100, SG: 2.5, meterCubed: 0, oneMeterCubed: 0, SSDMixAmountMeterCubed: 0, SSDMixAmountKgs: 0, stockMixAmountKgs: 0 },
-  { name: 'Coarse Aggregates', kg: 1800, SG: 2.6, meterCubed: 0, oneMeterCubed: 0, SSDMixAmountMeterCubed: 0, SSDMixAmountKgs: 0, stockMixAmountKgs: 0 },
+  { name: 'Cement', kg: 600, SG: 3.15, meterCubed: 0, oneMeterCubed: 0, SSDMixAmountMeterCubed: 0, SSDMixAmountKgs: 0, stockMixAmountKgs: 0 },
+  { name: 'Fly ash', kg: 50, SG: 2.5, meterCubed: 0, oneMeterCubed: 0, SSDMixAmountMeterCubed: 0, SSDMixAmountKgs: 0, stockMixAmountKgs: 0 },
+  { name: 'Blast furnace slag', kg: 50, SG: 2.8, meterCubed: 0, oneMeterCubed: 0, SSDMixAmountMeterCubed: 0, SSDMixAmountKgs: 0, stockMixAmountKgs: 0 },
+  { name: 'Fine aggregates', kg: 1100, SG: 2.5, meterCubed: 0, oneMeterCubed: 0, SSDMixAmountMeterCubed: 0, SSDMixAmountKgs: 0, stockMixAmountKgs: 0 },
   { name: 'Water', kg: 340, SG: 1.0, meterCubed: 0, oneMeterCubed: 0, SSDMixAmountMeterCubed: 0, SSDMixAmountKgs: 0, stockMixAmountKgs: 0 },
   //water has to come after aggregates b/c of calculateStockMixAmountLbs function
 ];
 
 @Component({
-  selector: 'app-mortar-and-mix',
+  selector: 'app-concrete-mix-metric',
   standalone: true,
   imports: [CommonModule, MatDividerModule, MatButtonModule, MatInputModule, MatFormFieldModule, FormsModule, MatTableModule, MatSlideToggleModule],
   templateUrl: './metric-mortar-and-mix.component.html',
@@ -168,10 +159,15 @@ export class MetricMortarAndMixComponent {
   dataSource: Ingredient[] = [];
   userVolume: number = 40;
   mixVolume: number = 0;
-  fineAggregate: number = 1100;
-  coarseAggregate: number = 1800;
   fineAggregateMC: number = 1;
   coarseAggregateMC: number = 1;
+  cementKg: number = 600;
+  blastFurnanceSlagKg: number = 50;
+  flyAshKg: number = 50;
+  fineAggregatesKg: number = 1100;
+  waterKg: number = 340;
+  airContent: number = 6; 
+  waterContentRatio: number = 0.41;
 
   constructor(private router: Router) { 
     this.initializeData();
@@ -189,10 +185,19 @@ export class MetricMortarAndMixComponent {
       this.router.navigate(['/calc/metric-mortarandmix']); 
     }
   }
+
+  onAirContentChange(newAirContent: number): void {
+    this.airContent = newAirContent;
+    this.dataSource = this.calculateIngredients(initialIngredientData);
+  }
   
   calculateIngredients(ingredients: Ingredient[]): Ingredient[] {
+    // Remove any existing totals rows to prevent duplication
+    const filteredIngredients = ingredients.filter(ingredient => ingredient.name !== 'Total');
+  
     // Calculate meterCubed for each ingredient
-    let calculatedIngredients = ingredients.map(ingredient => ({
+    let calculatedIngredients = filteredIngredients.map(ingredient => ({
+
       ...ingredient,
       meterCubed: calculateMeterCubed(ingredient.kg, ingredient.SG),
       oneMeterCubed: 0,
@@ -200,16 +205,15 @@ export class MetricMortarAndMixComponent {
       SSDMixAmountKgs: 0,
       stockMixAmountKgs: 0
     }));
-
+  
     // Calculate mixVolume
-    this.mixVolume = this.userVolume + (0.15 * this.userVolume);
-
-    // Calculate and add air MeterCubed
-    const airMeterCubed = calculateAirMeterCubed(calculatedIngredients);
-    calculatedIngredients.push({ name: 'Air', kg: 0, SG: 0, meterCubed: airMeterCubed, oneMeterCubed: 0, SSDMixAmountMeterCubed: 0, SSDMixAmountKgs: 0, stockMixAmountKgs: 0 });
-
+    this.mixVolume = this.userVolume;
+  
     // Calculate total kg 
     const totalKg = calculateTotalKg(calculatedIngredients);
+
+    // Calculate total SG
+    const totalSG = calculateTotalSG(calculatedIngredients);
     
     // Calculate total meter cubed after meterCubed values are set
     const totalMeterCubed = calculateTotalMeterCubed(calculatedIngredients);
@@ -218,56 +222,115 @@ export class MetricMortarAndMixComponent {
     calculatedIngredients.forEach(ingredient => {
       ingredient.oneMeterCubed = calculateOneMeterCubed(ingredient, totalMeterCubed);
     });
-
+  
     // Calculate totalOneMeterCubed
     const totalOneMeterCubed = calculateTotalOneMeterCubed(calculatedIngredients);
-
+  
     // Update SSDMixAmountMeterCubed for each ingredient
     calculateSSDMixAmountMeterCubed(calculatedIngredients, this.mixVolume);
-
+  
     // Calculate totalSSDMixAmountMeterCubed
     const totalSSDMixAmountMeterCubed = calculateTotalSSDMixAmountMeterCubed(calculatedIngredients);
-
+  
     // Update SSDMixAmountKgs for each ingredient
     calculateSSDMixAmountKgs(calculatedIngredients);
-
+  
     // Calculate totalSSDMixAmountKgs
     const totalSSDMixAmountKgs = calculateTotalSSDMixAmountKgs(calculatedIngredients);
-
+  
     // Calculate stockMixAmountKgs for each ingredient
     calculateStockMixAmountKgs(calculatedIngredients, this.fineAggregateMC, this.coarseAggregateMC);
-
+  
     // Calculate totalStockMixAmountKgs
     const totalStockMixAmountKgs = calculateTotalStockMixAmountKgs(calculatedIngredients);
+  
+    // Calculate waterContentRatio
+    this.waterContentRatio = this.calculateWaterContentRatio();
 
-    // Add totals row
-    calculatedIngredients.push({ name: 'Total', kg: totalKg, SG: 0, meterCubed: totalMeterCubed, oneMeterCubed: totalOneMeterCubed, SSDMixAmountMeterCubed: totalSSDMixAmountMeterCubed, SSDMixAmountKgs: totalSSDMixAmountKgs, stockMixAmountKgs: totalStockMixAmountKgs});
-
+    // Add totals row only once
+    calculatedIngredients.push({
+      name: 'Total',
+      kg: totalKg,
+      SG: totalSG,
+      meterCubed: totalMeterCubed,
+      oneMeterCubed: totalOneMeterCubed,
+      SSDMixAmountMeterCubed: totalSSDMixAmountMeterCubed,
+      SSDMixAmountKgs: totalSSDMixAmountKgs,
+      stockMixAmountKgs: totalStockMixAmountKgs
+    });
+  
     return calculatedIngredients;
+  }
+
+  calculateWaterContentRatio(): number {
+    if (this.cementKg + this.flyAshKg + this.blastFurnanceSlagKg === 0) {
+      return 0; // Avoid division by zero
+    }
+    return parseFloat((this.waterKg / (this.cementKg + this.flyAshKg + this.blastFurnanceSlagKg)).toFixed(2));
   }
 
   onUserVolumeChange(): void {
     if (this.userVolume <= 0) {
       this.userVolume = 1;
     }
-    this.mixVolume = this.userVolume + 0.15 * this.userVolume;
     calculateSSDMixAmountMeterCubed(this.dataSource, this.mixVolume);
     calculateSSDMixAmountKgs(this.dataSource);
   }
 
   onFineAggregateMCChange(): void {
-    const ingredient = this.dataSource.find(ing => ing.name === 'Fine Aggregates');
+    const ingredient = this.dataSource.find(ing => ing.name === 'Fine aggregates');
     if (ingredient) {
-      ingredient.kg = this.fineAggregate;
+      ingredient.kg = this.fineAggregatesKg;
+
       this.dataSource = this.calculateIngredients(initialIngredientData);
     }
   }
 
+  onCementKgChange() {
+    const cement = this.dataSource.find(ing => ing.name === 'Cement');
+    if (cement) {
+      cement.kg = this.cementKg;
+      this.dataSource = this.calculateIngredients(this.dataSource);    }
+  }
+
+  onFlyAshKgChange() {
+    const flyAsh = this.dataSource.find(ing => ing.name === 'Fly ash');
+    if (flyAsh) {
+      flyAsh.kg = this.flyAshKg;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+  
+  onBlastFurnaceSlagKgChange() {
+    const blastFurnaceSlag = this.dataSource.find(ing => ing.name === 'Blast furnace slag');
+    if (blastFurnaceSlag) {
+      blastFurnaceSlag.kg = this.blastFurnanceSlagKg;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+  
+  onFineAggregatesKgChange() {
+    const fineAggregates = this.dataSource.find(ing => ing.name === 'Fine aggregates');
+    if (fineAggregates) {
+      fineAggregates.kg = this.fineAggregatesKg;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+  
   onCoarseAggregateMCChange(): void {
-    const ingredient = this.dataSource.find(ing => ing.name === 'Coarse Aggregates');
+    const ingredient = this.dataSource.find(ing => ing.name === 'Coarse aggregates');
     if (ingredient) {
-      ingredient.kg = this.coarseAggregate;
+      // ingredient.kg = this.coarseAggregatesKg;
       this.dataSource = this.calculateIngredients(initialIngredientData);
     }
   }
+  
+  onWaterKgChange() {
+    const water = this.dataSource.find(ing => ing.name === 'Water');
+    if (water) {
+      water.kg = this.waterKg;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+  
 }
