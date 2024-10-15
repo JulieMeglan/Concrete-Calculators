@@ -17,18 +17,24 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
-import { Firestore, addDoc, collection, collectionData } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData, query, where, getDocs, orderBy, doc, deleteDoc } from '@angular/fire/firestore';
 import { Auth } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
+
+interface BogueRecord {
+  cao: number; 
+  sio2: number; 
+  al2o3: number; 
+  fe2o3: number; 
+  so3: number; 
+}
 
 // components for bogue calculator
 // ensure FormsModule is in imports
 @Component({
   selector: 'app-bogue',
   standalone: true,
-  imports: [CommonModule, MatDividerModule, MatButtonModule, MatInputModule, MatFormFieldModule, FormsModule, MatTableModule
-    //, BrowserAnimationsModule
-    ], // ensure FormsModule is in this line
+  imports: [CommonModule, MatDividerModule, MatButtonModule, MatInputModule, MatFormFieldModule, FormsModule, MatTableModule], // ensure FormsModule is in this line
   templateUrl: './bogue.component.html', 
   styleUrl: './bogue.component.css'
 })
@@ -46,6 +52,8 @@ export class BogueComponent {
   fe2o3: number = 0; // variable for ferric oxide
   so3: number = 0; // variable for sulfur trioxide
   results: any; // stores values resulting from bogue formula
+  userRecords: { cao: number, sio2: number, al2o3: number, fe2o3: number, so3: number  }[] = []; // stores records fetched from Firestore
+  showRecords: boolean = false;
 
   // defines the columns displayed in the table
   displayedColumns: string[] = ['c3s', 'c2s', 'c3a', 'c4af', 'afRatio'];
@@ -76,6 +84,107 @@ export class BogueComponent {
     } else {
       alert('No user is logged in');
     }
+  }
+
+  // Fetch saved records for the current user from Firestore
+  fetchRecords(): void {
+    // Toggle the value of showRecords
+    this.showRecords = !this.showRecords;
+
+    // If showRecords is true, fetch the records
+    if (this.showRecords) {
+      const user = this.auth.currentUser;
+    
+      if (user) {
+        const records: BogueRecord[] = [];
+        const testCollection = collection(this.firestore, 'bogue');
+        const q = query(
+          testCollection,
+          where('uid', '==', user.uid),
+          orderBy('timestamp', 'desc') // This sorts records by timestamp, newest first
+        );
+
+        getDocs(q).then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const data = doc.data() as BogueRecord;
+            if (data) {
+              records.push({
+                cao: data.cao || 0,
+                sio2: data.sio2 || 0,
+                al2o3: data.al2o3 || 0,
+                fe2o3: data.fe2o3 || 0,
+                so3: data.so3 || 0
+              });
+            }
+          });
+          this.userRecords = records;
+
+          if (this.userRecords.length === 0) {
+            alert('No records found for this user.');
+          }
+        }).catch((error) => {
+          console.error('Error fetching records: ', error);
+          alert('Error fetching records: ' + error.message);
+        });
+      } else {
+        alert('No user is logged in');
+      }
+    }
+  }
+
+  // Method to delete a specific record from Firestore
+deleteRecord(record: BogueRecord): void {
+  const user = this.auth.currentUser;
+
+  if (user) {
+    // Reference to the collection
+    const testCollection = collection(this.firestore, 'bogue');
+    
+    // Query to find the document to delete
+    const q = query(
+      testCollection,
+      where('uid', '==', user.uid),
+      where('cao', '==', record.cao),
+      where('sio2', '==', record.sio2),
+      where('al2o3', '==', record.al2o3),
+      where('fe2o3', '==', record.fe2o3),
+      where('so3', '==', record.so3)
+    );
+
+    // Fetch the document to delete
+    getDocs(q).then((querySnapshot) => {
+      if (!querySnapshot.empty) {
+        const docId = querySnapshot.docs[0].id; // Get the document ID
+        const docRef = doc(this.firestore, 'bogue', docId); // Reference to the document
+
+        // Delete the document
+        deleteDoc(docRef).then(() => {
+          alert('Record deleted successfully!');
+          this.fetchRecords(); // Refresh the records after deletion
+        }).catch((error) => {
+          console.error('Error deleting record: ', error);
+          alert('Error deleting record: ' + error.message);
+        });
+      } else {
+        alert('Record not found.');
+      }
+    }).catch((error) => {
+      console.error('Error fetching records for deletion: ', error);
+      alert('Error fetching records for deletion: ' + error.message);
+    });
+  } else {
+    alert('No user is logged in');
+  }
+}
+
+  // Populate input fields with selected record values
+  populateFields(record: BogueRecord): void {
+    this.cao = record.cao; // Set cao from the selected record
+    this.sio2 = record.sio2; // Set sio2 from the selected record
+    this.al2o3 = record.al2o3; // Set al2o3 from the selected record
+    this.fe2o3 = record.fe2o3; // Set fe2o3 from the selected record
+    this.so3 = record.so3; // Set so3 from the selected record
+    this.calculateBogue(this.cao, this.sio2, this.al2o3, this.fe2o3, this.so3); // Recalculate with new values
   }
 
 

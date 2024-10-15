@@ -6,7 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
-import { Firestore, addDoc, collection, collectionData, query, where, getDocs } from '@angular/fire/firestore';
+import { Firestore, addDoc, collection, collectionData, query, where, getDocs, orderBy, deleteDoc, doc } from '@angular/fire/firestore';
 import { Auth } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 
@@ -31,6 +31,7 @@ export class TcpowersComponent {
   // variable declarations for tc powers calculations
   wc: number = 0; // variable for water/cement ratio
   alpha: number = 0; // variable for degree of hydration
+  showRecords: boolean = false; // This controls the visibility of the records section
   results: any; // stores values resulting from tc powers formula
   userRecords: { alpha: number, wcRatio: number }[] = []; // stores records fetched from Firestore
   
@@ -67,40 +68,90 @@ export class TcpowersComponent {
 
   // Fetch saved records for the current user from Firestore
   fetchRecords(): void {
+    // Toggle the visibility of the records section
+    this.showRecords = !this.showRecords;
+
+    if (this.showRecords) {
+      const user = this.auth.currentUser;
+
+      if (user) {
+        // Define records as an array of TCPowersRecord
+        const records: TCPowersRecord[] = [];
+
+        // Reference to the collection
+        const testCollection = collection(this.firestore, 'tcpowers');
+        const q = query(
+          testCollection,
+          where('uid', '==', user.uid),
+          orderBy('timestamp', 'desc') // This sorts records by timestamp, newest first
+        );
+
+        // Use getDocs to fetch multiple documents
+        getDocs(q).then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const data = doc.data() as TCPowersRecord; // Ensure that data is typed as TCPowersRecord
+
+            if (data) {
+              records.push({
+                alpha: data.alpha || 0,
+                wcRatio: data.wcRatio || 0
+              });
+            }
+          });
+
+          // Assign records to the component's variable for display
+          this.userRecords = records;
+
+          if (this.userRecords.length === 0) {
+            alert('No records found for this user.');
+          }
+        }).catch((error) => {
+          console.error('Error fetching records: ', error);
+          alert('Error fetching records: ' + error.message);
+        });
+
+      } else {
+        alert('No user is logged in');
+      }
+    }
+  }
+
+  deleteRecord(record: TCPowersRecord): void {
     const user = this.auth.currentUser;
   
     if (user) {
-      // Define records as an array of TCPowersRecord
-      const records: TCPowersRecord[] = [];
-  
       // Reference to the collection
       const testCollection = collection(this.firestore, 'tcpowers');
-      const q = query(testCollection, where('uid', '==', user.uid));
+      
+      // Query to find the document to delete
+      const q = query(
+        testCollection,
+        where('uid', '==', user.uid),
+        where('wcRatio', '==', record.wcRatio),
+        where('alpha', '==', record.alpha)
+      );
   
-      // Use getDocs to fetch multiple documents
+      // Fetch the document to delete
       getDocs(q).then((querySnapshot) => {
-        querySnapshot.forEach((doc) => {
-          const data = doc.data() as TCPowersRecord; // Ensure that data is typed as TCPowersRecord
+        if (!querySnapshot.empty) {
+          const docId = querySnapshot.docs[0].id; // Get the document ID
+          const docRef = doc(this.firestore, 'tcpowers', docId); // Reference to the document
   
-          if (data) {
-            records.push({
-              alpha: data.alpha || 0,
-              wcRatio: data.wcRatio || 0
-            });
-          }
-        });
-  
-        // Assign records to your component's variable for display
-        this.userRecords = records;
-  
-        if (this.userRecords.length === 0) {
-          alert('No records found for this user.');
+          // Delete the document
+          deleteDoc(docRef).then(() => {
+            alert('Record deleted successfully!');
+            this.fetchRecords(); // Refresh the records after deletion
+          }).catch((error) => {
+            console.error('Error deleting record: ', error);
+            alert('Error deleting record: ' + error.message);
+          });
+        } else {
+          alert('Record not found.');
         }
       }).catch((error) => {
-        console.error('Error fetching records: ', error);
-        alert('Error fetching records: ' + error.message);
+        console.error('Error fetching records for deletion: ', error);
+        alert('Error fetching records for deletion: ' + error.message);
       });
-  
     } else {
       alert('No user is logged in');
     }

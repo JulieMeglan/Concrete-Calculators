@@ -22,11 +22,13 @@
       <!-- Save Button to Firestore -->
       <div>
         <button mat-raised-button color="primary" (click)="saveToFirestore()">Save to Firestore</button>
-      </div><br>
+
 
       <!-- New Button to Fetch All Records for the Current User -->
-    <div>
-      <button mat-raised-button color="accent" (click)="fetchRecords()">Load My Records</button>
+
+      <button mat-raised-button color="accent" (click)="fetchRecords()">
+        {{ showRecords ? 'Hide Saved Records' : 'Show Saved Records' }}
+      </button>
     </div><br>
 <!-- displays results from tcpowers.component.ts -->
 
@@ -108,7 +110,7 @@
 <br>
 
 <!-- Section for displaying fetched records -->
-<div>
+<div *ngIf="showRecords">
   <h3>Saved Records</h3>
   <table mat-table [dataSource]="userRecords" class="mat-elevation-z8">
     <ng-container matColumnDef="wcRatio">
@@ -123,6 +125,7 @@
       <th mat-header-cell *matHeaderCellDef>Actions</th>
       <td mat-cell *matCellDef="let record">
         <button mat-button (click)="populateFields(record)">Use Values</button>
+        <button mat-button color="warn" (click)="deleteRecord(record)">Delete</button>
       </td>
     </ng-container>
     <tr mat-header-row *matHeaderRowDef="['wcRatio', 'alpha', 'actions']"></tr>

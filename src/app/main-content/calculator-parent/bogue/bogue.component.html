@@ -53,7 +53,12 @@ of different mineral phases and the Alumina to Ferric Oxide ratio. -->
       <!-- Save Button to Firestore -->
       <div>
         <button mat-raised-button color="primary" (click)="saveToFirestore()">Save to Firestore</button>
-      </div><br>
+
+      <!-- New Button to Fetch All Records for the Current User -->
+      <button mat-raised-button color="accent" (click)="fetchRecords()">
+        {{ showRecords ? 'Hide Saved Records' : 'Show Saved Records' }}
+      </button>
+    </div><br>
 
 
 <!-- displays results from bogue.component.ts -->
@@ -96,5 +101,42 @@ of different mineral phases and the Alumina to Ferric Oxide ratio. -->
     <!-- Header and Row Declarations -->
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>
+<br>
+
+<!-- Section for displaying fetched records -->
+<div *ngIf="showRecords">
+  <h3>Saved Records</h3>
+  <table mat-table [dataSource]="userRecords" class="mat-elevation-z8">
+    <ng-container matColumnDef="cao">
+      <th mat-header-cell *matHeaderCellDef>Lime (CaO):</th>
+      <td mat-cell *matCellDef="let record">{{ record.cao }}</td>
+    </ng-container>
+    <ng-container matColumnDef="sio2">
+      <th mat-header-cell *matHeaderCellDef>Silica (SiO<sub>2</sub>):</th>
+      <td mat-cell *matCellDef="let record">{{ record.sio2 }}</td>
+    </ng-container>
+    <ng-container matColumnDef="al2o3">
+      <th mat-header-cell *matHeaderCellDef>Alumina (Al<sub>2</sub>O<sub>3</sub>):</th>
+      <td mat-cell *matCellDef="let record">{{ record.al2o3 }}</td>
+    </ng-container>
+    <ng-container matColumnDef="fe2o3">
+      <th mat-header-cell *matHeaderCellDef>Ferric Oxide (Fe<sub>2</sub>O<sub>3</sub>):</th>
+      <td mat-cell *matCellDef="let record">{{ record.fe2o3 }}</td>
+    </ng-container>
+    <ng-container matColumnDef="so3">
+      <th mat-header-cell *matHeaderCellDef>Sulfur Trioxide (SO<sub>3</sub>):</th>
+      <td mat-cell *matCellDef="let record">{{ record.so3 }}</td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let record">
+        <button mat-button (click)="populateFields(record)">Use Values</button>
+        <button mat-button color="warn" (click)="deleteRecord(record)">Delete</button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="['cao', 'sio2', 'al2o3', 'fe2o3', 'so3', 'actions']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['cao', 'sio2', 'al2o3', 'fe2o3', 'so3', 'actions'];"></tr>
   </table>
 </div>
