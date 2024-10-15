@@ -50,7 +50,7 @@ export class LoginComponent {
         this.results = 'User ' + this.email  + ' added successfully!';
       })
       .catch(error => {
-        this.results = '';
+        this.results = 'Error adding user: ' + error.message;
         alert('Error adding user: ' + error.message);
         
       });
@@ -63,7 +63,7 @@ export class LoginComponent {
         this.results = 'User ' + userCredential.user.email + ' logged in successfully!';
       })
       .catch(error => {
-        this.results = '';
+        this.results = 'Error logging in: ' + error.message;
         alert('Error logging in: ' + error.message);
         
       });
