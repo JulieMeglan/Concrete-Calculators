@@ -35,31 +35,25 @@ export class LoginComponent {
   }
 
   // Method to add a new user to Firestore and authenticate with Firebase
-  async addUser(): Promise<void> {
-    try {
-      // Data Validation (optional)
-      if (!this.email || !this.password) {
-        this.results = 'Please enter both email and password.';
-        return;
-      }
-  
-      // Create user in Firebase Authentication
-      const userCredential = await createUserWithEmailAndPassword(this.auth, this.email, this.password);
-  
-      // Add user information to Firestore
-      const usersCollection = collection(this.firestore, 'users');
-      await addDoc(usersCollection, {
-        uid: userCredential.user.uid,
-        email: this.email,
-        createdAt: new Date(),
-        // Add other user profile information here
+  addUser(): void {
+    createUserWithEmailAndPassword(this.auth, this.email, this.password)
+      .then(userCredential => {
+        // Add user information to Firestore database
+        const usersCollection = collection(this.firestore, 'users');
+        return addDoc(usersCollection, { 
+          uid: userCredential.user.uid,
+          email: this.email,
+          createdAt: new Date()
+        });
+      })
+      .then(() => {
+        this.results = 'User ' + this.email  + ' added successfully!';
+      })
+      .catch(error => {
+        this.results = 'Error adding user: ' + error.message;
+        alert('Error adding user: ' + error.message);
+        
       });
-  
-      this.results = 'User ' + this.email + ' added successfully!';
-    } catch (error) {
-      this.results = 'Error adding user: ' + error;
-      // Display error message in a more user-friendly way (e.g., toast notification)
-    }
   }
 
   // Method to log in the user
