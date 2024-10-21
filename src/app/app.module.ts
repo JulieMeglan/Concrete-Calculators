@@ -5,6 +5,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Routes } from '@angular/router';
 import { CalculatorParentComponent } from './main-content/calculator-parent/calculator-parent.component';
+import { FirestoreModule } from '@angular/fire/firestore';
+import { firebaseConfig } from '../firebase.config'; // this file contains the firebaseConfig from the firebase website
 
 
 @NgModule({
@@ -13,7 +15,8 @@ import { CalculatorParentComponent } from './main-content/calculator-parent/calc
     BrowserModule,
     FormsModule, 
     CommonModule, 
-    RouterModule
+    RouterModule,
+    FirestoreModule // Import Firestore
   ],
   providers: [],
   bootstrap: [],
