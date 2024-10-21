@@ -1,7 +1,6 @@
 export const firebaseConfig = {
   apiKey: "AIzaSyB7FEl3ZP_xhQa0pvYkSYUAYQMsaNm5d8o",
   authDomain: "concrete-calculators.firebaseapp.com",
-  databaseURL: "https://console.firebase.google.com/u/0/project/concrete-calculators/firestore/data",
   projectId: "concrete-calculators",
   storageBucket: "concrete-calculators.appspot.com",
   messagingSenderId: "538357900190",
