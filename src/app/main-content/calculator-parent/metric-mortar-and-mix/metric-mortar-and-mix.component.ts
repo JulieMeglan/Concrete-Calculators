@@ -154,7 +154,7 @@ const initialIngredientData: Ingredient[] = [
   styleUrls: ['./metric-mortar-and-mix.component.css']
 })
 export class MetricMortarAndMixComponent {
-  isImperial: boolean = false;
+  isMetric: boolean = true;
   displayedColumns: string[] = ['ingredient', 'kg', 'Specific gravity', 'Meter cubed', 'One meter cubed', 'SSDMixAmountMeterCubed', 'SSDMixAmountKgs', 'stockMixAmountKgs'];
   dataSource: Ingredient[] = [];
   userVolume: number = 40;
@@ -177,12 +177,12 @@ export class MetricMortarAndMixComponent {
     this.dataSource = this.calculateIngredients(initialIngredientData);
   }
 
-  onUnitToggleChange(event: any): void {
-    this.isImperial = event.checked;
-    if (this.isImperial) {
-      this.router.navigate(['/calc/mortarandmix']); 
-    } else {
+  onUnitToggleChange(event: any): void { 
+    this.isMetric = event.checked;
+    if (this.isMetric) {
       this.router.navigate(['/calc/metric-mortarandmix']); 
+    } else {
+      this.router.navigate(['/calc/mortarandmix']); 
     }
   }
 
