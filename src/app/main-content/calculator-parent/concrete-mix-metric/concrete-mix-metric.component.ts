@@ -173,7 +173,7 @@ const initialIngredientData: Ingredient[] = [
   styleUrls: ['./concrete-mix-metric.component.css']
 })
 export class ConcreteMixMetricComponent {
-  isImperial: boolean = false;
+  isMetric: boolean = true;
   displayedColumns: string[] = ['ingredient', 'kg', 'Specific gravity', 'Meter cubed', 'One meter cubed', 'SSDMixAmountMeterCubed', 'SSDMixAmountKgs', 'stockMixAmountKgs'];
   dataSource: Ingredient[] = [];
   userVolume: number = 40;
@@ -198,11 +198,11 @@ export class ConcreteMixMetricComponent {
   }
 
   onUnitToggleChange(event: any): void {
-    this.isImperial = event.checked;
-    if (this.isImperial) {
-      this.router.navigate(['/calc/concretemix']); 
-    } else {
+    this.isMetric = event.checked;
+    if (this.isMetric) {
       this.router.navigate(['/calc/concretemixmetric']); 
+    } else {
+      this.router.navigate(['/calc/concretemix']); 
     }
   }
 

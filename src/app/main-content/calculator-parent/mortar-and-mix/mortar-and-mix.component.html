@@ -19,13 +19,19 @@
   <div style="flex: 1; margin-right: 10px;">
     <mat-form-field appearance="fill" class="auto-width">
       <mat-label>Volume (in³)</mat-label>
-      <input matInput type="number" [(ngModel)]="userVolume" (ngModelChange)="onUserVolumeChange()" placeholder="Enter volume" min=".01">
+      <input matInput type="number" [(ngModel)]="userVolume" (ngModelChange)="onUserVolumeChange()" 
+              [value]="userVolume | number:'1.2-2'"
+              placeholder="Enter volume" min="0" step="1">
+
       <mat-error *ngIf="userVolume <= 0">Please enter a value greater than 0</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="auto-width">
       <mat-label>Cement (lb)</mat-label>
-      <input matInput type="number" [(ngModel)]="cementLb" (ngModelChange)="onCementLbChange()" placeholder="Cement (lb)" min="0.01" step="1">
+      <input matInput type="number" [(ngModel)]="cementLb" (ngModelChange)="onCementLbChange()" 
+              [value]="cementLb | number:'1.2-2'"
+              placeholder="Cement (lb)" min="0" step="1">
+
       <mat-error *ngIf="cementLb <= 0">Please enter a value greater than 0</mat-error>
     </mat-form-field>
   </div>
@@ -34,13 +40,19 @@
   <div style="flex: 1; margin-right: 10px; box-sizing: border-box;">
     <mat-form-field appearance="fill" class="auto-width">
       <mat-label>Blast furnace slag (lb)</mat-label>
-      <input matInput type="number" [(ngModel)]="blastFurnanceSlagLb" (ngModelChange)="onBlastFurnaceSlagLbChange()" placeholder="Blast furnace slag (lb)" min="0.00" step="1.00">
+      <input matInput type="number" [(ngModel)]="blastFurnanceSlagLb" (ngModelChange)="onBlastFurnaceSlagLbChange()" 
+              [value]="blastFurnanceSlagLb | number:'1.2-2'"
+              placeholder="Blast furnance slag (lb)" min="0" step="1">
+
       <mat-error *ngIf="blastFurnanceSlagLb < 0">Please enter a value of 0 or greater</mat-error>
     </mat-form-field>
 
     <mat-form-field appearance="fill" class="auto-width">
       <mat-label>Fly ash (lb)</mat-label>
-      <input matInput type="number" [(ngModel)]="flyAshLb" (ngModelChange)="onFlyAshLbChange()" placeholder="Fly ash (lb)" min="0.00" step="1.00">
+      <input matInput type="number" [(ngModel)]="flyAshLb" (ngModelChange)="onFlyAshLbChange()" 
+              [value]="flyAshLb | number:'1.2-2'"
+              placeholder="Fly ash (lb)" step="1" min="0">
+
       <mat-error *ngIf="flyAshLb < 0">Please enter a value of 0 or greater</mat-error>
     </mat-form-field>
 </div>
@@ -50,13 +62,19 @@
   <div style="flex: 1; margin-right: 10px;">
     <mat-form-field appearance="fill" class="auto-width">
       <mat-label>Fine aggregates (lb)</mat-label>
-      <input matInput type="number" [(ngModel)]="fineAggregatesLb" (ngModelChange)="onFineAggregatesLbChange()" placeholder="Fine aggregates (lb)" min="0.01" step="1">
+      <input matInput type="number" [(ngModel)]="fineAggregatesLb" (ngModelChange)="onFineAggregatesLbChange()" 
+              [value]="fineAggregatesLb | number:'1.2-2'" 
+              placeholder="Fine aggregates (lb)" min="0" step="1">
+
       <mat-error *ngIf="fineAggregatesLb <= 0">Please enter a value greater than 0</mat-error>
     </mat-form-field>
     
     <mat-form-field appearance="fill" class="auto-width">
       <mat-label>Fine aggregate moisture content</mat-label>
-      <input matInput type="number" [(ngModel)]="fineAggregateMC" (ngModelChange)="onFineAggregateMCChange()" placeholder="Fine aggregate moisture content" step="0.01">
+      <input matInput type="number" [(ngModel)]="fineAggregateMC" (ngModelChange)="onFineAggregateMCChange()" 
+              [value]="fineAggregateMC | number:'1.2-2'" 
+              placeholder="Fine aggregate moisture content" step="1">
+
       <mat-error *ngIf="fineAggregateMC === null">Please enter a value</mat-error>
     </mat-form-field>
   </div>
