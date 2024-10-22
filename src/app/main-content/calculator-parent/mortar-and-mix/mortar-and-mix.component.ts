@@ -297,6 +297,7 @@ export class MortarAndMixComponent {
     cubicFeet = this.userVolume / Math.pow(12, 3); 
     this.mixVolume = cubicFeet + (0.15 * cubicFeet);    
     calculateSSDMixAmountFtCubed(this.dataSource, this.userVolume);
+
     calculateSSDMixAmountLbs(this.dataSource);
   }
 

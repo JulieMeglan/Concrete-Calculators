@@ -59,8 +59,6 @@
       <mat-error *ngIf="flyAshLb <= 0">Please enter a value greater than 0</mat-error>
     </mat-form-field>
   </div>
-  
-
   <!-- Third Column -->
   <div style="flex: 1; margin-right: 10px;">
     <mat-form-field appearance="fill" class="auto-width">
@@ -69,6 +67,7 @@
              [value]="fineAggregateMC | number:'1.2-2'" 
              placeholder="Fine aggregate moisture content" step="1">
       <mat-error *ngIf="fineAggregateMC === null">Please enter a value</mat-error>
+
     </mat-form-field>
   
     <mat-form-field appearance="fill" class="auto-width">
@@ -87,6 +86,7 @@
       <input matInput type="number" [(ngModel)]="fineAggregatesLb" (ngModelChange)="onFineAggregatesLbChange()" 
               [value]="fineAggregatesLb | number:'1.2-2'" 
               placeholder="Fine aggregates (lb)" min="0" step="1">
+
       <mat-error *ngIf="fineAggregatesLb <= 0">Please enter a value greater than 0</mat-error>
     </mat-form-field>
 
@@ -95,6 +95,7 @@
       <input matInput type="number" [(ngModel)]="coarseAggregatesLb" (ngModelChange)="onCoarseAggregatesLbChange()" 
               [value]="coarseAggregatesLb | number:'1.2-2'" 
               placeholder="Coarse aggregates (lb)" min="0" step="1">
+
       <mat-error *ngIf="coarseAggregatesLb <= 0">Please enter a value greater than 0</mat-error>
     </mat-form-field>
   </div>

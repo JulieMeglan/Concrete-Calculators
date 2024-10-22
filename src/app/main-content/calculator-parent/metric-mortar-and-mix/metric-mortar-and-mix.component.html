@@ -22,6 +22,7 @@
       <input matInput type="number" [(ngModel)]="userVolume" (ngModelChange)="onUserVolumeChange()" 
           [value]="userVolume | number:'1.2-2'"
           placeholder="Enter volume" min="0" step="1">
+
       <mat-error *ngIf="userVolume <= 0">Please enter a value greater than 0</mat-error>
     </mat-form-field>
 
@@ -60,6 +61,7 @@
       <input matInput type="number" [(ngModel)]="fineAggregatesKg" (ngModelChange)="onFineAggregatesKgChange()" 
       [value]="fineAggregatesKg | number:'1.2-2'" 
       placeholder="Fine aggregates (kg)" min="0" step="1">      
+
       <mat-error *ngIf="fineAggregatesKg <= 0">Please enter a value greater than 0</mat-error>
     </mat-form-field>
     
