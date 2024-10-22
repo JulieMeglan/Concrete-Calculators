@@ -30,6 +30,14 @@ function calculateTotalLb(ingredients: Ingredient[]): number {
   return parseFloat(totalLbs.toFixed(8));
 }
 
+// Function to calculate total SG
+function calculateTotalSG(ingredients: Ingredient[]): number {
+  let totalSG = 0;
+  ingredients.forEach(ingredient => {
+    totalSG += ingredient.SG;
+  });
+  return parseFloat(totalSG.toFixed(8));
+}
 
 // Function to calculate ftCubed
 function calculateFtcubed(lb: number, SG: number): number {
@@ -57,14 +65,14 @@ function calculateOneFootCubed(ingredient: Ingredient, totalFtCubed: number): nu
 }
 
 // Function to calculate air ftCubed
-function calculateAirFtCubed(ingredients: Ingredient[]): number {
+function calculateAirFtCubed(ingredients: Ingredient[], airContent: number): number {
   let ftCubedTotalMinusAir = 0;
   ingredients.forEach(ingredient => {
     if (ingredient.name !== 'Air') {
       ftCubedTotalMinusAir += ingredient.ftCubed;
     }
   });
-  const airFtCubed = (ftCubedTotalMinusAir / 0.94) - ftCubedTotalMinusAir;
+  const airFtCubed = (ftCubedTotalMinusAir / (1 - (airContent / 100))) - ftCubedTotalMinusAir;
   return parseFloat(airFtCubed.toFixed(8));
 }
 
@@ -165,11 +173,11 @@ function calculateTotalStockMixAmountLbs(ingredients: Ingredient[]): number {
 
 const initialIngredientData: Ingredient[] = [
   { name: 'Cement', lb: 1020, SG: 3.15, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
-  { name: 'Fly ash', lb: 0, SG: 2.5, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
-  { name: 'Blast furnace slag', lb: 0, SG: 2.8, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
+  { name: 'Fly ash', lb: 400, SG: 2.5, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
+  { name: 'Blast furnace slag', lb: 300, SG: 2.8, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
   { name: 'Fine aggregates', lb: 1100, SG: 2.6, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
   { name: 'Coarse aggregates', lb: 1800, SG: 2.6, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
-  { name: 'Water', lb: 340, SG: 1.0, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
+  { name: 'Water', lb: 710, SG: 1.0, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
   //water has to come after aggregates b/c of calculateStockMixAmountLbs function
 ];
 
@@ -180,20 +188,23 @@ const initialIngredientData: Ingredient[] = [
   templateUrl: './concrete-mix.component.html',
   styleUrls: ['./concrete-mix.component.css']
 })
+
 export class ConcreteMixComponent {
   isMetric: boolean = false;
   displayedColumns: string[] = ['ingredient', 'lb', 'Specific gravity', 'Feet cubed', 'One foot cubed', 'One yard cubed', 'SSDMixAmountFtCubed', 'SSDMixAmountLbs', 'stockMixAmountLbs'];
   dataSource: Ingredient[] = [];
-  userVolume: number = 40;
+  userVolume: number = 1800;
   mixVolume: number = 0;
   fineAggregatesLb: number = 1100;
   coarseAggregatesLb: number = 1800;
   fineAggregateMC: number = 1;
   coarseAggregateMC: number = 1;
   cementLb: number = 1020;
-  blastFurnanceSlagLb: number = 0;
-  flyAshLb: number = 0;
-  waterLb: number = 340;
+  blastFurnanceSlagLb: number = 300;
+  flyAshLb: number = 400;
+  waterLb: number = 710;
+  airContent: number = 6; 
+  waterContentRatio: number = 0.41;
 
   constructor(private router: Router) { // Inject the Router service
     this.initializeData();
@@ -211,7 +222,13 @@ export class ConcreteMixComponent {
       this.router.navigate(['/calc/concretemix']); // Navigate back to the imperial component
     }
   }
-  
+
+  onAirContentChange(newAirContent: number): void {
+    this.airContent = newAirContent;
+    this.dataSource = this.calculateIngredients(initialIngredientData);
+
+  }
+
   calculateIngredients(ingredients: Ingredient[]): Ingredient[] {
     const filteredIngredients = ingredients.filter(ingredient => ingredient.name !== 'Total' && ingredient.name !== 'Air');
 
@@ -228,10 +245,12 @@ export class ConcreteMixComponent {
     }));
 
     // Calculate mixVolume
-    this.mixVolume = this.userVolume + (0.15 * this.userVolume);
-    
+    let cubicFeet: number;
+    cubicFeet = this.userVolume / Math.pow(12, 3); 
+    this.mixVolume = cubicFeet + (0.15 * cubicFeet);
+
     // Calculate and add air ftCubed
-    const airFtCubed = calculateAirFtCubed(calculatedIngredients);
+    const airFtCubed = calculateAirFtCubed(calculatedIngredients, this.airContent);
 
    // Create and add the 'Air' ingredient
    const airIngredient: Ingredient = {
@@ -247,9 +266,11 @@ export class ConcreteMixComponent {
   };
   calculatedIngredients.push(airIngredient);
    
-  // Calculate total lb
+    // Calculate total lb
+    const totalLb = calculateTotalLb(calculatedIngredients);
 
-   const totalLb = calculateTotalLb(calculatedIngredients);
+    // Calculate total SG
+    const totalSG = calculateTotalSG(calculatedIngredients);
 
     // Calculate total feet cubed after ftCubed values are set
     const totalFtCubed = calculateTotalFtCubed(calculatedIngredients);
@@ -286,11 +307,14 @@ export class ConcreteMixComponent {
     // Calculate totalStockMixAmountLbs
     const totalStockMixAmountLbs = calculateTotalStockMixAmountLbs(calculatedIngredients);
 
+    // Calculate waterContentRatio
+    this.waterContentRatio = this.calculateWaterContentRatio();
+
     // Add totals row only once
     calculatedIngredients.push({
       name: 'Total',
       lb: totalLb,
-      SG: 0,
+      SG: totalSG,
       ftCubed: totalFtCubed,
       oneFootCubed: totalOneFootCubed,
       oneYardCubed: totalOneYardCubed,
@@ -302,11 +326,20 @@ export class ConcreteMixComponent {
     return calculatedIngredients;
   }
 
+  calculateWaterContentRatio(): number {
+    if (this.cementLb + this.flyAshLb + this.blastFurnanceSlagLb === 0) {
+      return 0; // Avoid division by zero
+    }
+    return parseFloat((this.waterLb / (this.cementLb + this.flyAshLb + this.blastFurnanceSlagLb)).toFixed(2));
+  }
+
   onUserVolumeChange(): void {
     if (this.userVolume <= 0) {
       this.userVolume = 1;
     }
-    this.mixVolume = this.userVolume + 0.15 * this.userVolume;
+    let cubicFeet: number;
+    cubicFeet = this.userVolume / Math.pow(12, 3); 
+    this.mixVolume = cubicFeet + (0.15 * cubicFeet);    
     calculateSSDMixAmountFtCubed(this.dataSource, this.mixVolume);
     calculateSSDMixAmountLbs(this.dataSource);
   }

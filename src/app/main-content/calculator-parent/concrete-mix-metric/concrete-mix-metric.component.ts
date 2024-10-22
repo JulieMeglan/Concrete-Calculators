@@ -29,6 +29,15 @@ function calculateTotalKg(ingredients: Ingredient[]): number {
   return parseFloat(totalKg.toFixed(8));
 }
 
+// Function to calculate total SG
+function calculateTotalSG(ingredients: Ingredient[]): number {
+  let totalSG = 0;
+  ingredients.forEach(ingredient => {
+    totalSG += ingredient.SG;
+  });
+  return parseFloat(totalSG.toFixed(8));
+}
+
 // Function to calculate meterCubed
 function calculateMeterCubed(kg: number, SG: number): number {
   if (SG === 0) {
@@ -177,6 +186,8 @@ export class ConcreteMixMetricComponent {
   fineAggregatesKg: number = 1100;
   coarseAggregatesKg: number = 1800;
   waterKg: number = 340;
+  airContent: number = 6; 
+  waterContentRatio: number = 0.41;
 
   constructor(private router: Router) { 
     this.initializeData();
@@ -193,6 +204,12 @@ export class ConcreteMixMetricComponent {
     } else {
       this.router.navigate(['/calc/concretemixmetric']); 
     }
+  }
+
+  onAirContentChange(newAirContent: number): void {
+    this.airContent = newAirContent;
+    this.dataSource = this.calculateIngredients(initialIngredientData);
+
   }
   
   calculateIngredients(ingredients: Ingredient[]): Ingredient[] {
@@ -211,7 +228,7 @@ export class ConcreteMixMetricComponent {
     }));
   
     // Calculate mixVolume
-    this.mixVolume = this.userVolume + (0.15 * this.userVolume);
+    this.mixVolume = this.userVolume;
   
     // Calculate air MeterCubed
     const airMeterCubed = calculateAirMeterCubed(calculatedIngredients);
@@ -231,6 +248,9 @@ export class ConcreteMixMetricComponent {
   
     // Calculate total kg 
     const totalKg = calculateTotalKg(calculatedIngredients);
+
+    // Calculate total SG
+    const totalSG = calculateTotalSG(calculatedIngredients);
     
     // Calculate total meter cubed after meterCubed values are set
     const totalMeterCubed = calculateTotalMeterCubed(calculatedIngredients);
@@ -261,11 +281,14 @@ export class ConcreteMixMetricComponent {
     // Calculate totalStockMixAmountKgs
     const totalStockMixAmountKgs = calculateTotalStockMixAmountKgs(calculatedIngredients);
   
+    // Calculate waterContentRatio
+    this.waterContentRatio = this.calculateWaterContentRatio();
+
     // Add totals row only once
     calculatedIngredients.push({
       name: 'Total',
       kg: totalKg,
-      SG: 0,
+      SG: totalSG,
       meterCubed: totalMeterCubed,
       oneMeterCubed: totalOneMeterCubed,
       SSDMixAmountMeterCubed: totalSSDMixAmountMeterCubed,
@@ -276,11 +299,17 @@ export class ConcreteMixMetricComponent {
     return calculatedIngredients;
   }
 
+  calculateWaterContentRatio(): number {
+    if (this.cementKg + this.flyAshKg + this.blastFurnanceSlagKg === 0) {
+      return 0; // Avoid division by zero
+    }
+    return parseFloat((this.waterKg / (this.cementKg + this.flyAshKg + this.blastFurnanceSlagKg)).toFixed(2));
+  }
+
   onUserVolumeChange(): void {
     if (this.userVolume <= 0) {
       this.userVolume = 1;
     }
-    this.mixVolume = this.userVolume + 0.15 * this.userVolume;
     calculateSSDMixAmountMeterCubed(this.dataSource, this.mixVolume);
     calculateSSDMixAmountKgs(this.dataSource);
   }
