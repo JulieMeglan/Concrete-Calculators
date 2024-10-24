@@ -1,31 +1,23 @@
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
-import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { Routes } from '@angular/router';
+import { FormsModule } from '@angular/forms'; // Import FormsModule
+import { RouterModule } from '@angular/router'; 
+import { AppComponent } from './app.component';
+import { GroceryListComponent } from './grocery-list/grocery-list.component';
 import { CalculatorParentComponent } from './main-content/calculator-parent/calculator-parent.component';
 
-
 @NgModule({
-  declarations: [],
+  declarations: [
+    AppComponent,
+    GroceryListComponent, // Declare your GroceryListComponent
+    CalculatorParentComponent // Other components you want to declare
+  ],
   imports: [
     BrowserModule,
-    FormsModule, 
-    CommonModule, 
-    RouterModule
+    FormsModule, // Import FormsModule here
+    RouterModule,
   ],
   providers: [],
-  bootstrap: [],
+  bootstrap: [AppComponent] // Bootstrap the AppComponent
 })
 export class AppModule { }
-
-
-
-
-
-
-
-
-
-
