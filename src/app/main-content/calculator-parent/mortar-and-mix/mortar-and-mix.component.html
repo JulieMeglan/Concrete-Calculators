@@ -13,6 +13,7 @@
 <!-- 6 rows for inputs -->
 <div style="display: flex; flex-direction: column; gap: 10px;"> 
 
+
   
 <!-- Row 1: Volume and Fine Aggregate Moisture Content -->
 <div class="form-row">
@@ -28,6 +29,7 @@
   </mat-form-field>
 
   <!-- Fine Aggregate Moisture Content  -->
+
   <mat-form-field appearance="fill" class="auto-width">
     <mat-label>Fine aggregate moisture content</mat-label>
     <input matInput type="number" [(ngModel)]="fineAggregateMC" (ngModelChange)="onFineAggregateMCChange()" 
@@ -79,6 +81,7 @@
             placeholder="Fly ash (SG)" step="1" min="0">
     <mat-error *ngIf="flyAshSG <= 0">Please enter a value greater than 0</mat-error>
   </mat-form-field>
+
 </div>
 
 <!-- Row 4: Blast Furnace Slag -->
