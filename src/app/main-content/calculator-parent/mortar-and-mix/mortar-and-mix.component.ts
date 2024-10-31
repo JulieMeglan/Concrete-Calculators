@@ -178,11 +178,16 @@ export class MortarAndMixComponent {
   userVolume: number = 30;
   mixVolume: number = 0;
   fineAggregatesLb: number = 1100;
+  fineAggregatesSG: number = 2.6;
   fineAggregateMC: number = 1;
   cementLb: number = 600;
+  cementSG: number = 3.15;
   blastFurnanceSlagLb: number = 50;
+  blastFurnanceSlagSG: number = 2.8; 
   flyAshLb: number = 50;
+  flyAshSG: number = 2.5; 
   waterLb: number = 340;
+  waterSG: number = 1; 
   waterContentRatio: number = 0.41;
 
   constructor(private router: Router) { // Inject the Router service
@@ -297,6 +302,7 @@ export class MortarAndMixComponent {
     cubicFeet = this.userVolume / Math.pow(12, 3); 
     this.mixVolume = cubicFeet + (0.15 * cubicFeet);    
     calculateSSDMixAmountFtCubed(this.dataSource, this.mixVolume);
+
     calculateSSDMixAmountLbs(this.dataSource);
   }
 
@@ -316,12 +322,26 @@ export class MortarAndMixComponent {
       this.dataSource = this.calculateIngredients(this.dataSource);    }
   }
 
+  onCementSGChange() {
+    const cement = this.dataSource.find(ing => ing.name === 'Cement');
+    if (cement) {
+      cement.SG = this.cementSG;
+      this.dataSource = this.calculateIngredients(this.dataSource);    }
+  }
+
   onFlyAshLbChange() {
     const flyAsh = this.dataSource.find(ing => ing.name === 'Fly ash');
     if (flyAsh) {
       flyAsh.lb = this.flyAshLb;
       this.dataSource = this.calculateIngredients(this.dataSource);
     }
+  }
+
+  onFlyAshSGChange() {
+    const flyAsh = this.dataSource.find(ing => ing.name === 'Fly ash');
+    if (flyAsh) {
+      flyAsh.SG = this.flyAshSG;
+      this.dataSource = this.calculateIngredients(this.dataSource);    }
   }
   
   onBlastFurnaceSlagLbChange() {
@@ -332,10 +352,26 @@ export class MortarAndMixComponent {
     }
   }
   
+  onBlastFurnaceSlagSGChange() {
+    const blastFurnaceSlag = this.dataSource.find(ing => ing.name === 'Blast furnace slag');
+    if (blastFurnaceSlag) {
+      blastFurnaceSlag.SG = this.blastFurnanceSlagSG;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+
   onFineAggregatesLbChange() {
     const fineAggregates = this.dataSource.find(ing => ing.name === 'Fine aggregates');
     if (fineAggregates) {
       fineAggregates.lb = this.fineAggregatesLb;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+
+  onFineAggregatesSGChange() {
+    const fineAggregates = this.dataSource.find(ing => ing.name === 'Fine aggregates');
+    if (fineAggregates) {
+      fineAggregates.SG = this.fineAggregatesSG;
       this.dataSource = this.calculateIngredients(this.dataSource);
     }
   }
@@ -344,6 +380,14 @@ export class MortarAndMixComponent {
     const water = this.dataSource.find(ing => ing.name === 'Water');
     if (water) {
       water.lb = this.waterLb;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+
+  onWaterSGChange() {
+    const water = this.dataSource.find(ing => ing.name === 'Water');
+    if (water) {
+      water.SG = this.waterSG;
       this.dataSource = this.calculateIngredients(this.dataSource);
     }
   }
