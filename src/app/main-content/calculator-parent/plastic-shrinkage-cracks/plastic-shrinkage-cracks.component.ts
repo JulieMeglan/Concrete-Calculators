@@ -103,7 +103,7 @@ export class PlasticShrinkageCracksComponent {
     // Get the current authenticated user
     const user = this.auth.currentUser;
   
-    if (user) {
+    if (user && user.emailVerified) {
       // Reference the collection where data will be saved
       const testCollection = collection(this.firestore, 'psc');
       
@@ -135,7 +135,7 @@ export class PlasticShrinkageCracksComponent {
     if (this.showRecords) {
       const user = this.auth.currentUser;
     
-      if (user) {
+      if (user && user.emailVerified) {
         const records: PSCRecord[] = [];
         const testCollection = collection(this.firestore, 'psc');
         const q = query(
@@ -177,7 +177,7 @@ export class PlasticShrinkageCracksComponent {
 deleteRecord(record: PSCRecord): void {
   const user = this.auth.currentUser;
 
-  if (user) {
+  if (user && user.emailVerified) {
     // Reference to the collection
     const testCollection = collection(this.firestore, 'psc');
     
@@ -231,7 +231,7 @@ deleteRecord(record: PSCRecord): void {
     // Get the current authenticated user
     const user = this.auth.currentUser;
   
-    if (user) {
+    if (user && user.emailVerified) {
       // Reference the collection where data will be saved
       const testCollection = collection(this.firestore, 'pscGraph');
       
@@ -262,7 +262,7 @@ deleteRecord(record: PSCRecord): void {
     if (this.showGraphRecords) {
       const user = this.auth.currentUser;
     
-      if (user) {
+      if (user && user.emailVerified) {
         const records: PSCGraphRecord[] = [];
         const testCollection = collection(this.firestore, 'pscGraph');
         const q = query(
@@ -303,7 +303,7 @@ deleteRecord(record: PSCRecord): void {
 deleteGraphRecord(record: PSCGraphRecord): void {
   const user = this.auth.currentUser;
 
-  if (user) {
+  if (user && user.emailVerified) {
     // Reference to the collection
     const testCollection = collection(this.firestore, 'pscGraph');
     

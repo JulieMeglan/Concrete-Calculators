@@ -8,7 +8,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { Firestore, addDoc, collection } from '@angular/fire/firestore';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, onAuthStateChanged, signOut } from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, onAuthStateChanged, signOut } from '@angular/fire/auth';
 
 @Component({
   selector: 'app-login',
@@ -29,6 +29,7 @@ export class LoginComponent implements OnInit{
   password: string = '';
   confirmation: string = '';
   results: string = '';
+  string: string = '';
   currentUser: any = null;
 
   // Inject Firestore and Auth services
@@ -37,9 +38,12 @@ export class LoginComponent implements OnInit{
 
   ngOnInit(): void {
     onAuthStateChanged(this.auth, (user) => {
-      if (user && user.emailVerified) {
+      if (user) {
         this.currentUser = user;
         this.results = 'Welcome, ' + user.email + '!';
+        if (!user.emailVerified) {
+          this.results += ' Please check your email for verification before proceeding.'
+        }
       } else {
         this.currentUser = null;
       }
@@ -66,7 +70,7 @@ export class LoginComponent implements OnInit{
   }
 
   checkEmailVerification(): void {
-    if (this.auth.currentUser && this.auth.currentUser.emailVerified) {
+    if (this.auth.currentUser) {
       const user = this.auth.currentUser;
       const usersCollection = collection(this.firestore, 'users');
       addDoc(usersCollection, {
@@ -109,6 +113,34 @@ export class LoginComponent implements OnInit{
       this.results = 'Error logging out: ' + error.message;
       alert('Error logging out: ' + error.message);
     });
+  }
+
+  resetPassword(): void {
+    if (this.currentUser?.email) {
+      sendPasswordResetEmail(this.auth, this.currentUser.email)
+        .then(() => {
+          this.results = 'Password reset email sent! Please check your email.';
+        })
+        .catch(error => {
+          this.results = 'Error sending password reset email: ' + error.message;
+          alert(this.results);
+        });
+    }
+  }
+
+  forgotPassword(): void {
+    if (this.email) {
+      sendPasswordResetEmail(this.auth, this.email)
+        .then(() => {
+          this.results = 'Password reset email sent! Please check your email.';
+        })
+        .catch(error => {
+          this.results = 'Error sending password reset email: ' + error.message;
+          alert(this.results);
+        });
+    } else {
+      this.results = 'Please enter your email address to reset your password.';
+    }
   }
 
 }

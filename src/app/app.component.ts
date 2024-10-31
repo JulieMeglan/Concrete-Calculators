@@ -36,7 +36,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     // Listen for authentication state changes
     onAuthStateChanged(this.auth, (user: User | null) => {
-      if (user) {
+      if (user && user.emailVerified) {
         this.userEmail = user.email; // User is logged in, set the email
       } else {
         this.userEmail = null; // User is not logged in

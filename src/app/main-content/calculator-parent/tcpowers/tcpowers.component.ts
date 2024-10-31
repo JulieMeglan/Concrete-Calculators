@@ -44,7 +44,7 @@ export class TcpowersComponent {
     // Get the current authenticated user
     const user = this.auth.currentUser;
   
-    if (user) {
+    if (user && user.emailVerified) {
       // Reference the collection where data will be saved
       const testCollection = collection(this.firestore, 'tcpowers');
       
@@ -74,7 +74,7 @@ export class TcpowersComponent {
     if (this.showRecords) {
       const user = this.auth.currentUser;
 
-      if (user) {
+      if (user && user.emailVerified) {
         // Define records as an array of TCPowersRecord
         const records: TCPowersRecord[] = [];
 
@@ -119,7 +119,7 @@ export class TcpowersComponent {
   deleteRecord(record: TCPowersRecord): void {
     const user = this.auth.currentUser;
   
-    if (user) {
+    if (user && user.emailVerified) {
       // Reference to the collection
       const testCollection = collection(this.firestore, 'tcpowers');
       

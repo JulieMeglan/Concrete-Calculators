@@ -2,8 +2,11 @@
 
 <!-- Check if the user is logged in -->
 <div *ngIf="currentUser; else loginForm">
-  <h2>Welcome, {{ currentUser.email }}!</h2>
+  <div *ngIf="results">
+    <h2>{{ results }}</h2>
+  </div>
   <button mat-raised-button color="warn" (click)="logout()">Logout</button>
+  <button mat-raised-button color="accent" (click)="resetPassword()">Reset Password</button>
 </div>
 
 <!-- Login Form if user is not logged in -->
@@ -28,6 +31,7 @@
   <div>
     <button mat-raised-button color="primary" (click)="addUser()">Add User</button>
     <button mat-raised-button color="accent" (click)="login()">Login</button>
+    <button mat-raised-button color="warn" (click)="forgotPassword()">Forgot Password?</button>
   </div>
 
   <div *ngIf="results">

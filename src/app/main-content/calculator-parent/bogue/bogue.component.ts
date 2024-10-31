@@ -63,7 +63,7 @@ export class BogueComponent {
     // Get the current authenticated user
     const user = this.auth.currentUser;
   
-    if (user) {
+    if (user && user.emailVerified) {
       // Reference the collection where data will be saved
       const testCollection = collection(this.firestore, 'bogue');
       
@@ -95,7 +95,7 @@ export class BogueComponent {
     if (this.showRecords) {
       const user = this.auth.currentUser;
     
-      if (user) {
+      if (user && user.emailVerified) {
         const records: BogueRecord[] = [];
         const testCollection = collection(this.firestore, 'bogue');
         const q = query(
@@ -136,7 +136,7 @@ export class BogueComponent {
 deleteRecord(record: BogueRecord): void {
   const user = this.auth.currentUser;
 
-  if (user) {
+  if (user && user.emailVerified) {
     // Reference to the collection
     const testCollection = collection(this.firestore, 'bogue');
     
