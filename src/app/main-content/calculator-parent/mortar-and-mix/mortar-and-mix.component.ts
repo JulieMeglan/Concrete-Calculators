@@ -90,9 +90,9 @@ function calculateTotalOneYardCubed(ingredients: Ingredient[]): number {
 }
 
 // Function to calculate SSDMixAmountFtCubed
-function calculateSSDMixAmountFtCubed(ingredients: Ingredient[], userVolume: number): void {
+function calculateSSDMixAmountFtCubed(ingredients: Ingredient[], mixVolume: number): void {
   ingredients.forEach(ingredient => {
-    ingredient.SSDMixAmountFtCubed = parseFloat((ingredient.oneFootCubed * userVolume).toFixed(8));
+    ingredient.SSDMixAmountFtCubed = parseFloat((ingredient.oneFootCubed * mixVolume).toFixed(8));
   });
 }
 
@@ -251,7 +251,7 @@ export class MortarAndMixComponent {
     const totalOneYardCubed = calculateTotalOneYardCubed(calculatedIngredients);
 
     // Update SSDMixAmountFtCubed for each ingredient
-    calculateSSDMixAmountFtCubed(calculatedIngredients, this.userVolume);
+    calculateSSDMixAmountFtCubed(calculatedIngredients, this.mixVolume);
 
     // Calculate totalSSDMixAmountFtCubed
     const totalSSDMixAmountFtCubed = calculateTotalSSDMixAmountFtCubed(calculatedIngredients);
@@ -301,7 +301,7 @@ export class MortarAndMixComponent {
     let cubicFeet: number;
     cubicFeet = this.userVolume / Math.pow(12, 3); 
     this.mixVolume = cubicFeet + (0.15 * cubicFeet);    
-    calculateSSDMixAmountFtCubed(this.dataSource, this.userVolume);
+    calculateSSDMixAmountFtCubed(this.dataSource, this.mixVolume);
 
     calculateSSDMixAmountLbs(this.dataSource);
   }
