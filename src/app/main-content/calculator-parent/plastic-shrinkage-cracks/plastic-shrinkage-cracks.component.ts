@@ -18,6 +18,25 @@ import { ViewChild, ElementRef, AfterViewInit } from '@angular/core';
 
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
+// for database features
+import { Firestore, addDoc, collection, collectionData, query, where, getDocs, orderBy, deleteDoc, doc } from '@angular/fire/firestore';
+import { Auth } from '@angular/fire/auth';
+
+interface PSCRecord {
+  cT: number;
+  aT: number;
+  rH: number;
+  wV: number;
+  isMetric: boolean;
+}
+
+interface PSCGraphRecord {
+  myCT: number;
+  latitude: number;
+  longitude: number;
+  isMetric: boolean;
+}
+
 @Component({
   selector: 'app-plastic-shrinkage-cracks',
   standalone: true,
@@ -40,7 +59,13 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 
 
 export class PlasticShrinkageCracksComponent {
+
+  constructor(private firestore: Firestore, private auth: Auth, private http: HttpClient){
+  }
+
   @ViewChild('myChart', { static: true }) myChart!: ElementRef<HTMLCanvasElement>;
+
+  
 
 
   eR:         number = 0;   //evaporation rate
@@ -52,11 +77,17 @@ export class PlasticShrinkageCracksComponent {
   suggestion: string = ""; //explanation
   time:       any;
 
+  showRecords: boolean = false;
+  showGraphRecords: boolean = false;
+
   isMetric: boolean = false;
 
   // Defines the columns displayed in the table
   displayedColumns: string[] = ['eR', 'suggestion'];
   displayedGColumns: string[] = ['eR', 'myCT', 'aT', 'rH', 'wV', 'suggestion', 'time'];
+
+  userRecords: { cT: number, aT: number, rH: number, wV: number, isMetric: boolean  }[] = []; // stores records fetched from Firestore
+  graphRecords: { myCT: number, latitude: number, longitude: number, isMetric: boolean  }[] = []; // stores graph records fetched from Firestore
 
   results: any;
 
@@ -68,10 +99,263 @@ export class PlasticShrinkageCracksComponent {
     responsive: true
   };
 
+  saveToFirestore(): void {
+    // Get the current authenticated user
+    const user = this.auth.currentUser;
+  
+    if (user && user.emailVerified) {
+      // Reference the collection where data will be saved
+      const testCollection = collection(this.firestore, 'psc');
+      
+      // Add a new document with the current values and the user's UID
+      addDoc(testCollection, {
+        cT: this.cT,
+        aT: this.aT,
+        rH: this.rH,
+        wV: this.wV,
+        isMetric: this.isMetric,
+        uid: user.uid,  // Include the uid of the logged-in user
+        timestamp: new Date()  // Add a timestamp if needed
+      }).then(() => {
+        alert('Data saved successfully!');
+      }).catch(error => {
+        alert('Error saving data: ' + error);
+      });
+    } else {
+      alert('No user is logged in');
+    }
+  }
+
+  // Fetch saved records for the current user from Firestore
+  fetchRecords(): void {
+    // Toggle the value of showRecords
+    this.showRecords = !this.showRecords;
+
+    // If showRecords is true, fetch the records
+    if (this.showRecords) {
+      const user = this.auth.currentUser;
+    
+      if (user && user.emailVerified) {
+        const records: PSCRecord[] = [];
+        const testCollection = collection(this.firestore, 'psc');
+        const q = query(
+          testCollection,
+          where('uid', '==', user.uid),
+          where('isMetric', '==', this.isMetric),  // Filter records where isMetric matches
+          orderBy('timestamp', 'desc') // This sorts records by timestamp, newest first
+        );
+
+        getDocs(q).then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const data = doc.data() as PSCRecord;
+            if (data) {
+              records.push({
+                cT: data.cT || 0,
+                aT: data.aT || 0,
+                rH: data.rH || 0,
+                wV: data.wV || 0,
+                isMetric: data.isMetric
+              });
+            }
+          });
+          this.userRecords = records;
+
+          if (this.userRecords.length === 0) {
+            alert('No records found for this user.');
+          }
+        }).catch((error) => {
+          console.error('Error fetching records: ', error);
+          alert('Error fetching records: ' + error.message);
+        });
+      } else {
+        alert('No user is logged in');
+      }
+    }
+  }
+
+  // Method to delete a specific record from Firestore
+deleteRecord(record: PSCRecord): void {
+  const user = this.auth.currentUser;
+
+  if (user && user.emailVerified) {
+    // Reference to the collection
+    const testCollection = collection(this.firestore, 'psc');
+    
+    // Query to find the document to delete
+    const q = query(
+      testCollection,
+      where('uid', '==', user.uid),
+      where('cT', '==', record.cT),
+      where('aT', '==', record.aT),
+      where('rH', '==', record.rH),
+      where('wV', '==', record.wV),
+      where('isMetric', '==', record.isMetric)
+    );
+
+    // Fetch the document to delete
+    getDocs(q).then((querySnapshot) => {
+      if (!querySnapshot.empty) {
+        const docId = querySnapshot.docs[0].id; // Get the document ID
+        const docRef = doc(this.firestore, 'psc', docId); // Reference to the document
+
+        // Delete the document
+        deleteDoc(docRef).then(() => {
+          alert('Record deleted successfully!');
+          this.fetchRecords(); // Refresh the records after deletion
+        }).catch((error) => {
+          console.error('Error deleting record: ', error);
+          alert('Error deleting record: ' + error.message);
+        });
+      } else {
+        alert('Record not found.');
+      }
+    }).catch((error) => {
+      console.error('Error fetching records for deletion: ', error);
+      alert('Error fetching records for deletion: ' + error.message);
+    });
+  } else {
+    alert('No user is logged in');
+  }
+}
+
+  // Populate input fields with selected record values
+  populateFields(record: PSCRecord): void {
+    this.cT = record.cT; // Set cT from the selected record
+    this.aT = record.aT; // Set aT from the selected record
+    this.rH = record.rH; // Set rH from the selected record
+    this.wV = record.wV; // Set wV from the selected record
+    this.calculatePlasticShrinkageCracks(this.cT, this.aT, this.rH, this.wV); // Recalculate with new values
+  }
+
+  saveGraphToFirestore(): void {
+    // Get the current authenticated user
+    const user = this.auth.currentUser;
+  
+    if (user && user.emailVerified) {
+      // Reference the collection where data will be saved
+      const testCollection = collection(this.firestore, 'pscGraph');
+      
+      // Add a new document with the current values and the user's UID
+      addDoc(testCollection, {
+        myCT: this.myCT,
+        latitude: this.latitude,
+        longitude: this.longitude,
+        isMetric: this.isMetric,
+        uid: user.uid,  // Include the uid of the logged-in user
+        timestamp: new Date()  // Add a timestamp if needed
+      }).then(() => {
+        alert('Data saved successfully!');
+      }).catch(error => {
+        alert('Error saving data: ' + error);
+      });
+    } else {
+      alert('No user is logged in');
+    }
+  }
+
+  // Fetch saved records for the current user from Firestore
+  fetchGraphRecords(): void {
+    // Toggle the value of showRecords
+    this.showGraphRecords = !this.showGraphRecords;
+
+    // If showGraphRecords is true, fetch the records
+    if (this.showGraphRecords) {
+      const user = this.auth.currentUser;
+    
+      if (user && user.emailVerified) {
+        const records: PSCGraphRecord[] = [];
+        const testCollection = collection(this.firestore, 'pscGraph');
+        const q = query(
+          testCollection,
+          where('uid', '==', user.uid),
+          where('isMetric', '==', this.isMetric),  // Filter records where isMetric matches
+          orderBy('timestamp', 'desc') // This sorts records by timestamp, newest first
+        );
+
+        getDocs(q).then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const data = doc.data() as PSCGraphRecord;
+            if (data) {
+              records.push({
+                myCT: data.myCT || 0,
+                latitude: data.latitude || 0,
+                longitude: data.longitude || 0,
+                isMetric: data.isMetric
+              });
+            }
+          });
+          this.graphRecords = records;
+
+          if (this.graphRecords.length === 0) {
+            alert('No records found for this user.');
+          }
+        }).catch((error) => {
+          console.error('Error fetching records: ', error);
+          alert('Error fetching records: ' + error.message);
+        });
+      } else {
+        alert('No user is logged in');
+      }
+    }
+  }
+
+  // Method to delete a specific record from Firestore
+deleteGraphRecord(record: PSCGraphRecord): void {
+  const user = this.auth.currentUser;
+
+  if (user && user.emailVerified) {
+    // Reference to the collection
+    const testCollection = collection(this.firestore, 'pscGraph');
+    
+    // Query to find the document to delete
+    const q = query(
+      testCollection,
+      where('uid', '==', user.uid),
+      where('myCT', '==', record.myCT),
+      where('latitude', '==', record.latitude),
+      where('longitude', '==', record.longitude),
+      where('isMetric', '==', record.isMetric)
+    );
+
+    // Fetch the document to delete
+    getDocs(q).then((querySnapshot) => {
+      if (!querySnapshot.empty) {
+        const docId = querySnapshot.docs[0].id; // Get the document ID
+        const docRef = doc(this.firestore, 'pscGraph', docId); // Reference to the document
+
+        // Delete the document
+        deleteDoc(docRef).then(() => {
+          alert('Record deleted successfully!');
+          this.fetchRecords(); // Refresh the records after deletion
+        }).catch((error) => {
+          console.error('Error deleting record: ', error);
+          alert('Error deleting record: ' + error.message);
+        });
+      } else {
+        alert('Record not found.');
+      }
+    }).catch((error) => {
+      console.error('Error fetching records for deletion: ', error);
+      alert('Error fetching records for deletion: ' + error.message);
+    });
+  } else {
+    alert('No user is logged in');
+  }
+}
+
+  // Populate input fields with selected record values
+  populateGraphFields(record: PSCGraphRecord): void {
+    this.myCT = record.myCT; // Set myCT from the selected record
+    this.latitude = record.latitude; // Set latitude from the selected record
+    this.longitude = record.longitude; // Set longitude from the selected record
+  }
+
   onUnitToggleChange(event: any): void {
     this.isMetric = event.checked;
     // Update the chart to reflect the new background logic
     this.updateChart();
+    this.showRecords = false;
+    this.showGraphRecords = false;
   }
 
   ngOnInit() {
@@ -120,8 +404,6 @@ export class PlasticShrinkageCracksComponent {
       ctx.restore();
     }
   };
-
-  constructor(private http: HttpClient) {}
 
   convertFtC(f : number) : number {
     const c = (f-32)/1.8;
@@ -313,6 +595,8 @@ export class PlasticShrinkageCracksComponent {
       this.chart.data.datasets[0].data = limitedData;
       this.chart.update(); // Update the existing chart instance
     }
+
+    
       
 }
 
