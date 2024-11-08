@@ -89,6 +89,8 @@ function calculateSSDMixAmountMeterCubed(ingredients: Ingredient[], mixVolume: n
   ingredients.forEach(ingredient => {
     ingredient.SSDMixAmountMeterCubed = parseFloat((ingredient.oneMeterCubed * mixVolume).toFixed(8));
   });
+
+  calculateTotalSSDMixAmountMeterCubed(ingredients);
 }
 
 // Function to calculate totalSSDMixAmountMeterCubed
@@ -108,13 +110,17 @@ function calculateSSDMixAmountKgs(ingredients: Ingredient[]): void {
 }
 
 // Function to calculate totalSSDMixAmountKgs
+// Function to calculate totalSSDMixAmountKgs excluding the "Total" ingredient
 function calculateTotalSSDMixAmountKgs(ingredients: Ingredient[]): number {
   let totalSSDMixAmountKgs = 0;
   ingredients.forEach(ingredient => {
-    totalSSDMixAmountKgs += ingredient.SSDMixAmountKgs;
+    if (ingredient.name !== "Total") { // Exclude the ingredient with name "Total"
+      totalSSDMixAmountKgs += ingredient.SSDMixAmountKgs;
+    }
   });
   return parseFloat(totalSSDMixAmountKgs.toFixed(8));
 }
+
 
 // Function to calculate stockMixAmountKgs
 function calculateStockMixAmountKgs(ingredients: Ingredient[], fineAggregateMC: number, coarseAggregateMC: number): void {
@@ -181,11 +187,17 @@ export class ConcreteMixMetricComponent {
   fineAggregateMC: number = 1;
   coarseAggregateMC: number = 1;
   cementKg: number = 1020;
+  cementSG: number = 3.15;
   blastFurnanceSlagKg: number = 0;
+  blastFurnanceSlagSG: number = 2.8; 
   flyAshKg: number = 0;
+  flyAshSG: number = 2.5; 
   fineAggregatesKg: number = 1100;
+  fineAggregatesSG: number = 2.6;
   coarseAggregatesKg: number = 1800;
+  coarseAggregatesSG: number = 2.6;
   waterKg: number = 340;
+  waterSG: number = 1;
   airContent: number = 6; 
   waterContentRatio: number = 0.41;
 
@@ -310,8 +322,8 @@ export class ConcreteMixMetricComponent {
     if (this.userVolume <= 0) {
       this.userVolume = 1;
     }
-    calculateSSDMixAmountMeterCubed(this.dataSource, this.mixVolume);
-    calculateSSDMixAmountKgs(this.dataSource);
+    this.dataSource = this.calculateIngredients(initialIngredientData);
+
   }
 
   onFineAggregateMCChange(): void {
@@ -337,6 +349,13 @@ export class ConcreteMixMetricComponent {
       cement.kg = this.cementKg;
       this.dataSource = this.calculateIngredients(this.dataSource);    }
   }
+  
+  onCementSGChange() {
+    const cement = this.dataSource.find(ing => ing.name === 'Cement');
+    if (cement) {
+      cement.SG = this.cementSG;
+      this.dataSource = this.calculateIngredients(this.dataSource);    }
+  }
 
   onFlyAshKgChange() {
     const flyAsh = this.dataSource.find(ing => ing.name === 'Fly ash');
@@ -345,11 +364,26 @@ export class ConcreteMixMetricComponent {
       this.dataSource = this.calculateIngredients(this.dataSource);
     }
   }
+
+  onFlyAshSGChange() {
+    const flyAsh = this.dataSource.find(ing => ing.name === 'Fly ash');
+    if (flyAsh) {
+      flyAsh.SG = this.flyAshSG;
+      this.dataSource = this.calculateIngredients(this.dataSource);    }
+  }
   
   onBlastFurnaceSlagKgChange() {
     const blastFurnaceSlag = this.dataSource.find(ing => ing.name === 'Blast furnace slag');
     if (blastFurnaceSlag) {
       blastFurnaceSlag.kg = this.blastFurnanceSlagKg;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+
+  onBlastFurnaceSlagSGChange() {
+    const blastFurnaceSlag = this.dataSource.find(ing => ing.name === 'Blast furnace slag');
+    if (blastFurnaceSlag) {
+      blastFurnaceSlag.SG = this.blastFurnanceSlagSG;
       this.dataSource = this.calculateIngredients(this.dataSource);
     }
   }
@@ -361,6 +395,14 @@ export class ConcreteMixMetricComponent {
       this.dataSource = this.calculateIngredients(this.dataSource);
     }
   }
+
+  onFineAggregatesSGChange() {
+    const fineAggregates = this.dataSource.find(ing => ing.name === 'Fine aggregates');
+    if (fineAggregates) {
+      fineAggregates.SG = this.fineAggregatesSG;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
   
   onCoarseAggregatesKgChange() {
     const coarseAggregates = this.dataSource.find(ing => ing.name === 'Coarse aggregates');
@@ -369,11 +411,27 @@ export class ConcreteMixMetricComponent {
       this.dataSource = this.calculateIngredients(this.dataSource);
     }
   }
+
+  onCoarseAggregatesSGChange() {
+    const coarseAggregates = this.dataSource.find(ing => ing.name === 'Coarse aggregates');
+    if (coarseAggregates) {
+      coarseAggregates.SG = this.coarseAggregatesSG;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
   
   onWaterKgChange() {
     const water = this.dataSource.find(ing => ing.name === 'Water');
     if (water) {
       water.kg = this.waterKg;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+
+  onWaterSGChange() {
+    const water = this.dataSource.find(ing => ing.name === 'Water');
+    if (water) {
+      water.SG = this.waterSG;
       this.dataSource = this.calculateIngredients(this.dataSource);
     }
   }

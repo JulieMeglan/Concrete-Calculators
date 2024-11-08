@@ -20,6 +20,15 @@ export interface Ingredient {
   stockMixAmountKgs: number;
 }
 
+// // Function to calculate mix volume
+// function calculateMixVolume(ingredients: Ingredient[], userVolume: number): void {
+  
+  
+//   ingredients.forEach(ingredient => {
+//     ingredient.SSDMixAmountMeterCubed = parseFloat((ingredient.oneMeterCubed * mixVolume).toFixed(8));
+//   });
+// }
+
 // Function to calculate total kg
 function calculateTotalKg(ingredients: Ingredient[]): number {
   let totalKg = 0;
@@ -77,6 +86,8 @@ function calculateSSDMixAmountMeterCubed(ingredients: Ingredient[], mixVolume: n
   ingredients.forEach(ingredient => {
     ingredient.SSDMixAmountMeterCubed = parseFloat((ingredient.oneMeterCubed * mixVolume).toFixed(8));
   });
+
+  calculateTotalSSDMixAmountMeterCubed(ingredients)
 }
 
 // Function to calculate totalSSDMixAmountMeterCubed
@@ -278,8 +289,7 @@ export class MetricMortarAndMixComponent {
     if (this.userVolume <= 0) {
       this.userVolume = 1;
     }
-    calculateSSDMixAmountMeterCubed(this.dataSource, this.mixVolume);
-    calculateSSDMixAmountKgs(this.dataSource);
+    this.dataSource = this.calculateIngredients(initialIngredientData);
   }
 
   onFineAggregateMCChange(): void {
