@@ -231,7 +231,7 @@ export class ConcreteMixComponent {
 
   onAirContentChange(newAirContent: number): void {
     this.airContent = newAirContent;
-    this.dataSource = this.calculateIngredients(initialIngredientData);
+    this.dataSource = this.calculateIngredients(this.dataSource);
 
   }
 
@@ -346,7 +346,8 @@ export class ConcreteMixComponent {
     let cubicFeet: number;
     cubicFeet = this.userVolume / Math.pow(12, 3); 
     this.mixVolume = cubicFeet + (0.15 * cubicFeet);    
-    this.dataSource = this.calculateIngredients(initialIngredientData);
+    this.dataSource = this.calculateIngredients(this.dataSource);
+
   }
 
   onFineAggregateMCChange(): void {
@@ -354,7 +355,7 @@ export class ConcreteMixComponent {
     if (ingredient) {
       ingredient.lb = this.fineAggregatesLb;
 
-      this.dataSource = this.calculateIngredients(initialIngredientData);
+      this.dataSource = this.calculateIngredients(this.dataSource);
     }
   }
 
@@ -362,7 +363,7 @@ export class ConcreteMixComponent {
     const ingredient = this.dataSource.find(ing => ing.name === 'Coarse aggregates');
     if (ingredient) {
       ingredient.lb = this.coarseAggregatesLb;
-      this.dataSource = this.calculateIngredients(initialIngredientData);
+      this.dataSource = this.calculateIngredients(this.dataSource);
     }
   }
 

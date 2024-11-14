@@ -204,7 +204,7 @@ export class MetricMortarAndMixComponent {
 
   onAirContentChange(newAirContent: number): void {
     this.airContent = newAirContent;
-    this.dataSource = this.calculateIngredients(initialIngredientData);
+    this.dataSource = this.calculateIngredients(this.dataSource);
   }
   
   calculateIngredients(ingredients: Ingredient[]): Ingredient[] {
@@ -289,7 +289,7 @@ export class MetricMortarAndMixComponent {
     if (this.userVolume <= 0) {
       this.userVolume = 1;
     }
-    this.dataSource = this.calculateIngredients(initialIngredientData);
+    this.dataSource = this.calculateIngredients(this.dataSource);
   }
 
   onFineAggregateMCChange(): void {
@@ -297,7 +297,7 @@ export class MetricMortarAndMixComponent {
     if (ingredient) {
       ingredient.kg = this.fineAggregatesKg;
 
-      this.dataSource = this.calculateIngredients(initialIngredientData);
+      this.dataSource = this.calculateIngredients(this.dataSource);
     }
   }
 
@@ -364,7 +364,7 @@ export class MetricMortarAndMixComponent {
     const ingredient = this.dataSource.find(ing => ing.name === 'Coarse aggregates');
     if (ingredient) {
       // ingredient.kg = this.coarseAggregatesKg;
-      this.dataSource = this.calculateIngredients(initialIngredientData);
+      this.dataSource = this.calculateIngredients(this.dataSource);
     }
   }
   

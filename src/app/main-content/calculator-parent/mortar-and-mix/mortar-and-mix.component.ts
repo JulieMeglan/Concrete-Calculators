@@ -301,8 +301,7 @@ export class MortarAndMixComponent {
     let cubicFeet: number;
     cubicFeet = this.userVolume / Math.pow(12, 3); 
     this.mixVolume = cubicFeet + (0.15 * cubicFeet);    
-    
-    this.dataSource = this.calculateIngredients(initialIngredientData);
+        this.dataSource = this.calculateIngredients(this.dataSource);
 
   }
 
@@ -311,7 +310,7 @@ export class MortarAndMixComponent {
     if (ingredient) {
       ingredient.lb = this.fineAggregatesLb;
 
-      this.dataSource = this.calculateIngredients(initialIngredientData);
+      this.dataSource = this.calculateIngredients(this.dataSource);
     }
   }
 
