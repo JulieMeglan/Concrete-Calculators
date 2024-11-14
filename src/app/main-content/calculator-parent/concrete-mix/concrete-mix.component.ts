@@ -347,6 +347,7 @@ export class ConcreteMixComponent {
     cubicFeet = this.userVolume / Math.pow(12, 3); 
     this.mixVolume = cubicFeet + (0.15 * cubicFeet);    
     this.dataSource = this.calculateIngredients(this.dataSource);
+
   }
 
   onFineAggregateMCChange(): void {

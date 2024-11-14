@@ -323,7 +323,6 @@ export class ConcreteMixMetricComponent {
       this.userVolume = 1;
     }
     this.dataSource = this.calculateIngredients(this.dataSource);
-
   }
 
   onFineAggregateMCChange(): void {
