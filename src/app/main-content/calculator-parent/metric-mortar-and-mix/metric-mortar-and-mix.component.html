@@ -23,7 +23,6 @@
   <mat-form-field appearance="fill" class="auto-width">
     <mat-label>Volume (m³)</mat-label>
     <input id="volumeInput" matInput type="number" [(ngModel)]="userVolume" (ngModelChange)="onUserVolumeChange()" 
-            [value]="userVolume | number:'1.0-2'"
             placeholder="Enter volume" min="0" step="1">
     <mat-error *ngIf="userVolume <= 0">Please enter a value greater than 0</mat-error>
   </mat-form-field>
@@ -32,7 +31,6 @@
     <mat-form-field appearance="fill" class="auto-width">
       <mat-label>Fine aggregate moisture content</mat-label>
       <input matInput type="number" [(ngModel)]="fineAggregateMC" (ngModelChange)="onFineAggregateMCChange()" 
-              [value]="fineAggregateMC | number:'1.0-2'" 
               placeholder="Fine aggregate moisture content" step="1">
       <mat-error *ngIf="fineAggregateMC === null">Please enter a value</mat-error>
     </mat-form-field>
@@ -52,7 +50,6 @@
     <mat-form-field appearance="fill" class="auto-width">
       <mat-label>Cement (kg)</mat-label>
       <input matInput type="number" [(ngModel)]="cementKg" (ngModelChange)="onCementKgChange()" 
-            [value]="cementKg | number:'1.0-2'"
             placeholder="Cement (kg)" min="0" step="1">
           <mat-error *ngIf="cementKg <= 0">Please enter a value greater than 0</mat-error>
     </mat-form-field>
@@ -61,7 +58,6 @@
 <mat-form-field appearance="fill" class="auto-width">
   <mat-label>Cement (SG)</mat-label>
   <input matInput type="number" [(ngModel)]="cementSG" (ngModelChange)="onCementSGChange()" 
-          [value]="cementSG | number:'1.0-2'" 
           placeholder="Cement (SG)" step="1" min="0">
   <mat-error *ngIf="cementSG <= 0">Please enter a value greater than 0</mat-error>
 </mat-form-field>
@@ -73,7 +69,6 @@
 <mat-form-field appearance="fill" class="auto-width">
   <mat-label>Fly ash (kg)</mat-label>
   <input matInput type="number" [(ngModel)]="flyAshKg" (ngModelChange)="onFlyAshKgChange()" 
-          [value]="flyAshKg | number:'1.0-2'"
           placeholder="Fly ash (kg)" step="1" min="0">
   <mat-error *ngIf="flyAshKg < 0">Please enter a value of 0 or greater</mat-error>
 </mat-form-field>
@@ -81,7 +76,6 @@
 <mat-form-field appearance="fill" class="auto-width">
   <mat-label>Fly ash (SG)</mat-label>
   <input matInput type="number" [(ngModel)]="flyAshSG" (ngModelChange)="onFlyAshSGChange()" 
-          [value]="flyAshSG | number:'1.0-2'" 
           placeholder="Fly ash (SG)" step="1" min="0">
   <mat-error *ngIf="flyAshSG <= 0">Please enter a value greater than 0</mat-error>
 </mat-form-field>
@@ -93,7 +87,6 @@
   <mat-form-field appearance="fill" class="auto-width">
       <mat-label>Blast furnance slag (kg)</mat-label>
       <input matInput type="number" [(ngModel)]="blastFurnanceSlagKg" (ngModelChange)="onBlastFurnaceSlagKgChange()" 
-              [value]="blastFurnanceSlagKg | number:'1.0-2'"
               placeholder="Blast furnance slag (kg)" min="0" step="1">
         <mat-error *ngIf="blastFurnanceSlagKg < 0">Please enter a value of 0 or greater</mat-error>
     </mat-form-field>
@@ -101,7 +94,6 @@
     <mat-form-field appearance="fill" class="auto-width">
       <mat-label>Blast furnace slag (SG)</mat-label>
       <input matInput type="number" [(ngModel)]="blastFurnanceSlagSG" (ngModelChange)="onBlastFurnaceSlagSGChange()" 
-              [value]="blastFurnanceSlagSG | number:'1.0-2'" 
               placeholder="Blast furnace slag (SG)" step="1" min="0">
       <mat-error *ngIf="blastFurnanceSlagSG <= 0">Please enter a value greater than 0</mat-error>
     </mat-form-field>
@@ -116,9 +108,7 @@
     <mat-form-field appearance="fill" class="auto-width">
       <mat-label>Fine aggregates (kg)</mat-label>
       <input matInput type="number" [(ngModel)]="fineAggregatesKg" (ngModelChange)="onFineAggregatesKgChange()" 
-      [value]="fineAggregatesKg | number:'1.0-2'" 
       placeholder="Fine aggregates (kg)" min="0" step="1">      
-
       <mat-error *ngIf="fineAggregatesKg <= 0">Please enter a value greater than 0</mat-error>
     </mat-form-field>
     
@@ -127,7 +117,6 @@
     <mat-label>Fine aggregates (SG)</mat-label>
     <input id="fineAggregatesSGInput" matInput type="number" [(ngModel)]="fineAggregatesSG" 
            (ngModelChange)="onFineAggregatesSGChange()" 
-           [value]="fineAggregatesSG | number:'1.0-2'" 
            placeholder="Fine aggregates (SG)" min="0" step="1">
     <mat-error *ngIf="fineAggregatesSG <= 0">Please enter a value greater than 0</mat-error>
   </mat-form-field>
@@ -142,7 +131,6 @@
     <mat-label>Water (lb)</mat-label>
     <input id="waterLbInput" matInput type="number" [(ngModel)]="waterKg" 
            (ngModelChange)="onWaterKgChange()" 
-           [value]="waterKg | number:'1.0-2'" 
            placeholder="Water (lb)" min="0" step="1">
     <mat-error *ngIf="waterKg <= 0">Please enter a value greater than 0</mat-error>
   </mat-form-field>
@@ -152,7 +140,6 @@
     <mat-label>Water (SG)</mat-label>
     <input id="waterSGInput" matInput type="number" [(ngModel)]="waterSG" 
            (ngModelChange)="onWaterSGChange()" 
-           [value]="waterSG | number:'1.0-2'" 
            placeholder="Water (SG)" min="0" step="1">
     <mat-error *ngIf="waterSG <= 0">Please enter a value greater than 0</mat-error>
   </mat-form-field>
