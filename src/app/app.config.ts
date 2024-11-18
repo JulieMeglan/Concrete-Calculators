@@ -13,7 +13,7 @@ import { firebaseConfig } from '../firebase.config'; // this file contains the f
 
 
 // if used for testing, use ../environments/environment (this allows emulators to properly connect)
-import { environment } from '../environment/environment'; // this file specifies whether to production or emulation is used
+import { environment } from '../environment/environment.prod'; // this file specifies whether to production or emulation is used
 import { provideCharts, withDefaultRegisterables } from 'ng2-charts';
 
 export const appConfig: ApplicationConfig = {
