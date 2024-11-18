@@ -221,7 +221,7 @@
   <h3>Saved Records</h3>
   <table mat-table [dataSource]="userRecords" class="mat-elevation-z8">
     <ng-container matColumnDef="userVolume">
-      <th mat-header-cell *matHeaderCellDef>Volume (in³):</th>
+      <th mat-header-cell *matHeaderCellDef>Volume (m³):</th>
       <td mat-cell *matCellDef="let record">{{ record.userVolume }}</td>
     </ng-container>
     <ng-container matColumnDef="fineAggregatesKg">
