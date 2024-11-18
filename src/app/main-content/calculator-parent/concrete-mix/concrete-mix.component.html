@@ -193,6 +193,18 @@
   </mat-form-field>
 </div>
 
+<!-- Save Button to Firestore -->
+<div>
+  <button mat-raised-button color="primary" (click)="saveToFirestore()">Save Data</button>
+
+
+<!-- New Button to Fetch All Records for the Current User -->
+
+<button mat-raised-button color="accent" (click)="fetchRecords()">
+  {{ showRecords ? 'Hide Saved Records' : 'Show Saved Records' }}
+</button>
+</div><br>
+
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
 
   <!-- Ingredient Column -->
@@ -257,4 +269,85 @@
 
 <div>
   <br><strong>Water Content Ratio:</strong> {{ waterContentRatio | number:'1.2-2' }}
+</div>
+
+<!-- Section for displaying fetched records -->
+<div *ngIf="showRecords">
+  <h3>Saved Records</h3>
+  <table mat-table [dataSource]="userRecords" class="mat-elevation-z8">
+    <ng-container matColumnDef="userVolume">
+      <th mat-header-cell *matHeaderCellDef>Volume (in³):</th>
+      <td mat-cell *matCellDef="let record">{{ record.userVolume }}</td>
+    </ng-container>
+    <ng-container matColumnDef="fineAggregatesLb">
+      <th mat-header-cell *matHeaderCellDef>Fine Aggregates (lb):</th>
+      <td mat-cell *matCellDef="let record">{{ record.fineAggregatesLb }}</td>
+    </ng-container>
+    <ng-container matColumnDef="fineAggregatesSG">
+      <th mat-header-cell *matHeaderCellDef>Fine Aggregates (SG):</th>
+      <td mat-cell *matCellDef="let record">{{ record.fineAggregatesSG }}</td>
+    </ng-container>
+    <ng-container matColumnDef="coarseAggregatesLb">
+      <th mat-header-cell *matHeaderCellDef>Coarse Aggregates (lb):</th>
+      <td mat-cell *matCellDef="let record">{{ record.coarseAggregatesLb }}</td>
+    </ng-container>
+    <ng-container matColumnDef="coarseAggregatesSG">
+      <th mat-header-cell *matHeaderCellDef>Coarse Aggregates (SG):</th>
+      <td mat-cell *matCellDef="let record">{{ record.coarseAggregatesSG }}</td>
+    </ng-container>
+    <ng-container matColumnDef="fineAggregateMC">
+      <th mat-header-cell *matHeaderCellDef>Fine Aggregate Moisture Content:</th>
+      <td mat-cell *matCellDef="let record">{{ record.fineAggregateMC }}</td>
+    </ng-container>
+    <ng-container matColumnDef="coarseAggregateMC">
+      <th mat-header-cell *matHeaderCellDef>Coarse Aggregate Moisture Content:</th>
+      <td mat-cell *matCellDef="let record">{{ record.coarseAggregateMC }}</td>
+    </ng-container>
+    <ng-container matColumnDef="cementLb">
+      <th mat-header-cell *matHeaderCellDef>Cement (lb):</th>
+      <td mat-cell *matCellDef="let record">{{ record.cementLb }}</td>
+    </ng-container>
+    <ng-container matColumnDef="cementSG">
+      <th mat-header-cell *matHeaderCellDef>Cement SG:</th>
+      <td mat-cell *matCellDef="let record">{{ record.cementSG }}</td>
+    </ng-container>
+    <ng-container matColumnDef="blastFurnanceSlagLb">
+      <th mat-header-cell *matHeaderCellDef>Blast Furnace Slag (lb):</th>
+      <td mat-cell *matCellDef="let record">{{ record.blastFurnanceSlagLb }}</td>
+    </ng-container>
+    <ng-container matColumnDef="blastFurnanceSlagSG">
+      <th mat-header-cell *matHeaderCellDef>Blast Furnace Slag SG:</th>
+      <td mat-cell *matCellDef="let record">{{ record.blastFurnanceSlagSG }}</td>
+    </ng-container>
+    <ng-container matColumnDef="flyAshLb">
+      <th mat-header-cell *matHeaderCellDef>Fly Ash (lb):</th>
+      <td mat-cell *matCellDef="let record">{{ record.flyAshLb }}</td>
+    </ng-container>
+    <ng-container matColumnDef="flyAshSG">
+      <th mat-header-cell *matHeaderCellDef>Fly Ash SG:</th>
+      <td mat-cell *matCellDef="let record">{{ record.flyAshSG }}</td>
+    </ng-container>
+    <ng-container matColumnDef="waterLb">
+      <th mat-header-cell *matHeaderCellDef>Water (lb):</th>
+      <td mat-cell *matCellDef="let record">{{ record.waterLb }}</td>
+    </ng-container>
+    <ng-container matColumnDef="waterSG">
+      <th mat-header-cell *matHeaderCellDef>Water SG:</th>
+      <td mat-cell *matCellDef="let record">{{ record.waterSG }}</td>
+    </ng-container>
+    <ng-container matColumnDef="airContent">
+      <th mat-header-cell *matHeaderCellDef>Air content (%):</th>
+      <td mat-cell *matCellDef="let record">{{ record.airContent }}</td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let record">
+        <button mat-button (click)="populateFields(record)">Use Values</button>
+        <button mat-button color="warn" (click)="deleteRecord(record)">Delete</button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="['userVolume', 'fineAggregatesLb', 'fineAggregatesSG', 'coarseAggregatesLb', 'coarseAggregatesSG', 'fineAggregateMC', 'coarseAggregateMC', 'cementLb', 'cementSG', 'blastFurnanceSlagLb', 'blastFurnanceSlagSG', 'flyAshLb', 'flyAshSG', 'waterLb', 'waterSG', 'airContent', 'actions']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['userVolume', 'fineAggregatesLb', 'fineAggregatesSG', 'coarseAggregatesLb', 'coarseAggregatesSG', 'fineAggregateMC', 'coarseAggregateMC', 'cementLb', 'cementSG', 'blastFurnanceSlagLb', 'blastFurnanceSlagSG', 'flyAshLb', 'flyAshSG', 'waterLb', 'waterSG', 'airContent', 'actions'];"></tr>
+    
+  </table>
 </div>

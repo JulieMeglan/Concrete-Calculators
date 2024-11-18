@@ -9,6 +9,29 @@ import { CommonModule } from '@angular/common';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { Router } from '@angular/router';
 
+import { Firestore, addDoc, collection, collectionData, query, where, getDocs, orderBy, deleteDoc, doc } from '@angular/fire/firestore';
+import { Auth } from '@angular/fire/auth';
+import { Observable } from 'rxjs';
+
+interface MetricConcreteMixRecord {
+  userVolume: number;
+  fineAggregateMC: number;
+  coarseAggregateMC: number;
+  cementKg: number;
+  cementSG: number;
+  blastFurnanceSlagKg: number;
+  blastFurnanceSlagSG: number; 
+  flyAshKg: number;
+  flyAshSG: number; 
+  fineAggregatesKg: number;
+  fineAggregatesSG: number;
+  coarseAggregatesKg: number;
+  coarseAggregatesSG: number;
+  waterKg: number;
+  waterSG: number;
+  airContent: number; 
+}
+
 export interface Ingredient {
   name: string;
   kg: number;
@@ -200,9 +223,207 @@ export class ConcreteMixMetricComponent {
   waterSG: number = 1;
   airContent: number = 6; 
   waterContentRatio: number = 0.41;
+  userRecords: {   userVolume: number, fineAggregateMC: number, coarseAggregateMC: number, cementKg: number, cementSG: number, blastFurnanceSlagKg: number;
+    blastFurnanceSlagSG: number, flyAshKg: number, flyAshSG: number, fineAggregatesKg: number, fineAggregatesSG: number, coarseAggregatesKg: number;
+    coarseAggregatesSG: number, waterKg: number, waterSG: number, airContent: number   }[] = []; // stores records fetched from Firestore
+  showRecords: boolean = false; // This controls the visibility of the records section
 
-  constructor(private router: Router) { 
+  constructor(private router: Router, private firestore: Firestore, private auth: Auth) { 
     this.initializeData();
+  }
+
+  saveToFirestore(): void {
+    // Get the current authenticated user
+    const user = this.auth.currentUser;
+  
+    if (user && user.emailVerified) {
+      // Reference the collection where data will be saved
+      const testCollection = collection(this.firestore, 'metricConcreteMix');
+      
+      // Add a new document with the current values and the user's UID
+      addDoc(testCollection, {
+        userVolume: this.userVolume,
+        fineAggregatesKg: this.fineAggregatesKg,
+        fineAggregatesSG: this.fineAggregatesSG,
+        coarseAggregatesKg: this.coarseAggregatesKg,
+        coarseAggregatesSg: this.coarseAggregatesSG,
+        fineAggregateMC: this.fineAggregateMC,
+        coarseAggregateMC: this.coarseAggregateMC,
+        cementKg: this.cementKg,
+        cementSG: this.cementSG,
+        blastFurnanceSlagKg: this.blastFurnanceSlagKg,
+        blastFurnanceSlagSG: this.blastFurnanceSlagSG,
+        flyAshKg: this.flyAshKg,
+        flyAshSG: this.flyAshSG,
+        waterKg: this.waterKg,
+        waterSG: this.waterSG,
+        airContent: this.airContent,
+        uid: user.uid,  // Include the uid of the logged-in user
+        timestamp: new Date()  // Add a timestamp if needed
+      }).then(() => {
+        alert('Data saved successfully!');
+      }).catch(error => {
+        alert('Error saving data: ' + error);
+      });
+    } else {
+      alert('No user is logged in');
+    }
+  }
+
+  
+
+  // Fetch saved records for the current user from Firestore
+  fetchRecords(): void {
+    // Toggle the visibility of the records section
+    this.showRecords = !this.showRecords;
+
+    if (this.showRecords) {
+      const user = this.auth.currentUser;
+
+      if (user && user.emailVerified) {
+        // Define records as an array of MortarMixRecord
+        const records: MetricConcreteMixRecord[] = [];
+
+        // Reference to the collection
+        const testCollection = collection(this.firestore, 'metricConcreteMix');
+        const q = query(
+          testCollection,
+          where('uid', '==', user.uid),
+          orderBy('timestamp', 'desc') // This sorts records by timestamp, newest first
+        );
+
+        // Use getDocs to fetch multiple documents
+        getDocs(q).then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const data = doc.data() as MetricConcreteMixRecord; // Ensure that data is typed as MortarMixRecord
+
+            if (data) {
+              records.push({
+                userVolume: data.userVolume || 0,
+                fineAggregatesKg: data.fineAggregatesKg || 0,
+                fineAggregatesSG: data.fineAggregatesSG || 0,
+                coarseAggregatesKg: data.coarseAggregatesKg || 0,
+                coarseAggregatesSG: data.coarseAggregatesSG ||0,
+                fineAggregateMC: data.fineAggregateMC || 0,
+                coarseAggregateMC: data.coarseAggregateMC || 0,
+                cementKg: data.cementKg || 0,
+                cementSG: data.cementSG || 0,
+                blastFurnanceSlagKg: data.blastFurnanceSlagKg || 0,
+                blastFurnanceSlagSG: data.blastFurnanceSlagSG || 0,
+                flyAshKg: data.flyAshKg || 0,
+                flyAshSG: data.flyAshSG || 0,
+                waterKg: data.waterKg || 0,
+                waterSG: data.waterSG || 0,
+                airContent: data.airContent || 0
+              });
+            }
+          });
+
+          // Assign records to the component's variable for display
+          this.userRecords = records;
+
+          if (this.userRecords.length === 0) {
+            alert('No records found for this user.');
+          }
+        }).catch((error) => {
+          console.error('Error fetching records: ', error);
+          alert('Error fetching records: ' + error.message);
+        });
+
+      } else {
+        alert('No user is logged in');
+      }
+    }
+  }
+
+  deleteRecord(record: MetricConcreteMixRecord): void {
+    const user = this.auth.currentUser;
+  
+    if (user && user.emailVerified) {
+      // Reference to the collection
+      const testCollection = collection(this.firestore, 'metricConcreteMix');
+      
+      // Query to find the document to delete
+      const q = query(
+        testCollection,
+        where('uid', '==', user.uid),
+        where('userVolume', '==', record.userVolume),
+        where('fineAggregatesKg', '==', record.fineAggregatesKg),
+        where('fineAggregatesSG', '==', record.fineAggregatesSG),
+        where('coarseAggregatesKg', '==', record.coarseAggregatesKg),
+        where('coarseAggregatesSG', '==', record.coarseAggregatesSG),
+        where('fineAggregateMC', '==', record.fineAggregateMC),
+        where('coarseAggregateMC', '==', record.coarseAggregateMC),
+        where('cementKg', '==', record.cementKg),
+        where('cementSG', '==', record.cementSG),
+        where('blastFurnanceSlagKg', '==', record.blastFurnanceSlagKg),
+        where('blastFurnanceSlagSG', '==', record.blastFurnanceSlagSG),
+        where('flyAshKg', '==', record.flyAshKg),
+        where('flyAshSG', '==', record.flyAshSG),
+        where('waterKg', '==', record.waterKg),
+        where('waterSG', '==', record.waterSG),
+        where('airContent', '==', record.airContent)
+      );
+  
+      // Fetch the document to delete
+      getDocs(q).then((querySnapshot) => {
+        if (!querySnapshot.empty) {
+          const docId = querySnapshot.docs[0].id; // Get the document ID
+          const docRef = doc(this.firestore, 'metricConcreteMix', docId); // Reference to the document
+  
+          // Delete the document
+          deleteDoc(docRef).then(() => {
+            alert('Record deleted successfully!');
+            this.fetchRecords(); // Refresh the records after deletion
+          }).catch((error) => {
+            console.error('Error deleting record: ', error);
+            alert('Error deleting record: ' + error.message);
+          });
+        } else {
+          alert('Record not found.');
+        }
+      }).catch((error) => {
+        console.error('Error fetching records for deletion: ', error);
+        alert('Error fetching records for deletion: ' + error.message);
+      });
+    } else {
+      alert('No user is logged in');
+    }
+  }
+
+  // Populate input fields with selected record values
+  populateFields(record: MetricConcreteMixRecord): void {
+    this.userVolume = record.userVolume;
+    this.fineAggregatesKg = record.fineAggregatesKg;
+    this.fineAggregatesSG = record.fineAggregatesSG;
+    this.coarseAggregatesKg = record.coarseAggregatesKg;
+    this.coarseAggregatesSG = record.coarseAggregatesSG;
+    this.fineAggregateMC = record.fineAggregateMC;
+    this.coarseAggregateMC = record.coarseAggregateMC;
+    this.cementKg = record.cementKg;
+    this.cementSG = record.cementSG;
+    this.blastFurnanceSlagKg = record.blastFurnanceSlagKg;
+    this.blastFurnanceSlagSG = record.blastFurnanceSlagSG;
+    this.flyAshKg = record.flyAshKg;
+    this.flyAshSG = record.flyAshSG;
+    this.waterKg = record.waterKg;
+    this.waterSG = record.waterSG;
+    this.airContent = record.airContent;
+    this.onUserVolumeChange();
+    this.onFineAggregatesKgChange();
+    this.onFineAggregatesSGChange();
+    this.onCoarseAggregatesKgChange();
+    this.onCoarseAggregatesSGChange();
+    //this.onFineAggregateMCChange(); // don't call this function here
+    this.onCementKgChange();
+    this.onCementSGChange();
+    this.onBlastFurnaceSlagKgChange();
+    this.onBlastFurnaceSlagSGChange();
+    this.onFlyAshKgChange();
+    this.onFlyAshSGChange();
+    this.onWaterKgChange();
+    this.onWaterSGChange();
+    this.onAirContentChange(this.airContent);
   }
 
   initializeData(): void {
