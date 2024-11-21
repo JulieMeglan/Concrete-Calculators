@@ -480,10 +480,13 @@ deleteGraphRecord(record: PSCGraphRecord): void {
   //placeholder initial plan
   latitude: number = 39.7456;
   longitude: number = -97.0892;
+
+  errorMessage: string | null = null;
   
   fetchWeather(latitude: number, longitude: number) {
     //const latitude = 39.7456; // Example latitude
     //const longitude = -97.0892; // Example longitude
+    this.errorMessage = null; // Reset error message
 
     // Get the weather data
     this.getWeather(latitude, longitude).subscribe(
@@ -496,10 +499,17 @@ deleteGraphRecord(record: PSCGraphRecord): void {
             console.log('Forecast data:', forecastData);
             this.forecast = forecastData;
           },
-          error => console.error('Error fetching forecast data', error)
+          error => {
+            console.error('Error fetching forecast data', error);
+            this.errorMessage = 'Error fetching forecast data. Please try again later.\n';
+          }
         );
       },
-      error => console.error('Error fetching weather data', error)
+      error => {
+        console.error('Error fetching weather data', error);
+        this.errorMessage = 'Error fetching weather data. Please check your input or try again later\n';
+      }
+
     );
   }
 

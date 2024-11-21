@@ -114,7 +114,11 @@
   <h1>Plastic Shrinkage Cracks Analysis</h1>
 
   <!-- Add a form to input concrete temperature, etc., and trigger PlasticShrinkageGrapher -->
-  
+  <!-- Display error message -->
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
   <form>
     <mat-form-field>
       <mat-label>Concrete Temperature {{ isMetric ? '(C)' : '(F)'}}</mat-label>
