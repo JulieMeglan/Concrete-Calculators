@@ -2,43 +2,158 @@
 
 <h2>Mortar Mix - Metric</h2>
 
-
 <div class="toggle-container">
   <mat-slide-toggle
     color="primary"
-    [(ngModel)]="isImperial"
+    [(ngModel)]="isMetric"
     (change)="onUnitToggleChange($event)"
   >
-    Switch to {{ isImperial ? 'Metric' : 'Imperial' }} 
+    Switch to {{ isMetric ? 'Imperial' : 'Metric' }} 
   </mat-slide-toggle>
 </div>
 
-<div>
+<!-- 6 rows for inputs -->
+<div style="display: flex; flex-direction: column; gap: 10px;"> 
+
+<!-- Row 1: Volume and Fine Aggregate Moisture Content -->
+<div class="form-row">
+  <label for="volumeInput" class="input-label">General:</label>
+  
+  <!-- Volume (m³) Input -->
   <mat-form-field appearance="fill" class="auto-width">
     <mat-label>Volume (m³)</mat-label>
-    <input matInput type="number" [(ngModel)]="userVolume" (ngModelChange)="onUserVolumeChange()" placeholder="Enter volume" min=".1">
+    <input id="volumeInput" matInput type="number" [(ngModel)]="userVolume" (ngModelChange)="onUserVolumeChange()" 
+            placeholder="Enter volume" min="0" step="1">
     <mat-error *ngIf="userVolume <= 0">Please enter a value greater than 0</mat-error>
   </mat-form-field>
+
+    <!-- Fine Aggregate Moisture Content  -->
+    <mat-form-field appearance="fill" class="auto-width">
+      <mat-label>Fine aggregate moisture content</mat-label>
+      <input matInput type="number" [(ngModel)]="fineAggregateMC" (ngModelChange)="onFineAggregateMCChange()" 
+              placeholder="Fine aggregate moisture content" step="1">
+      <mat-error *ngIf="fineAggregateMC === null">Please enter a value</mat-error>
+    </mat-form-field>
+  </div>
+
+  <!-- Row 2: Cement -->
+<div class="form-row">
+  <label for="cementInput" class="input-label">Cement:</label>
+
+    <mat-form-field appearance="fill" class="auto-width">
+      <mat-label>Cement (kg)</mat-label>
+      <input matInput type="number" [(ngModel)]="cementKg" (ngModelChange)="onCementKgChange()" 
+            placeholder="Cement (kg)" min="0" step="1">
+          <mat-error *ngIf="cementKg <= 0">Please enter a value greater than 0</mat-error>
+    </mat-form-field>
+
+    <!-- Cement (SG) Input -->
+<mat-form-field appearance="fill" class="auto-width">
+  <mat-label>Cement (SG)</mat-label>
+  <input matInput type="number" [(ngModel)]="cementSG" (ngModelChange)="onCementSGChange()" 
+          placeholder="Cement (SG)" step="1" min="0">
+  <mat-error *ngIf="cementSG <= 0">Please enter a value greater than 0</mat-error>
+</mat-form-field>
+</div>
+ 
+<!-- Row 3: Fly Ash -->
+<div class="form-row">
+  <label for="flyAshInput" class="input-label">Fly ash:</label>
+<mat-form-field appearance="fill" class="auto-width">
+  <mat-label>Fly ash (kg)</mat-label>
+  <input matInput type="number" [(ngModel)]="flyAshKg" (ngModelChange)="onFlyAshKgChange()" 
+          placeholder="Fly ash (kg)" step="1" min="0">
+  <mat-error *ngIf="flyAshKg < 0">Please enter a value of 0 or greater</mat-error>
+</mat-form-field>
+
+<mat-form-field appearance="fill" class="auto-width">
+  <mat-label>Fly ash (SG)</mat-label>
+  <input matInput type="number" [(ngModel)]="flyAshSG" (ngModelChange)="onFlyAshSGChange()" 
+          placeholder="Fly ash (SG)" step="1" min="0">
+  <mat-error *ngIf="flyAshSG <= 0">Please enter a value greater than 0</mat-error>
+</mat-form-field>
 </div>
 
-<div>
+<!-- Row 4: Blast Furnace Slag -->
+<div class="form-row">
+  <label for="blastFurnaceSlagInput" class="input-label">Blast furnace slag:</label>
   <mat-form-field appearance="fill" class="auto-width">
-    <mat-label>Fine aggregate moisture content</mat-label>
-    <input matInput type="number" [(ngModel)]="fineAggregateMC" (ngModelChange)="onFineAggregateMCChange()" placeholder="Fine aggregate moisture content" min=".00001">
-    <mat-error *ngIf="fineAggregateMC <= 0">Please enter a value greater than 0</mat-error>
+      <mat-label>Blast furnance slag (kg)</mat-label>
+      <input matInput type="number" [(ngModel)]="blastFurnanceSlagKg" (ngModelChange)="onBlastFurnaceSlagKgChange()" 
+              placeholder="Blast furnance slag (kg)" min="0" step="1">
+        <mat-error *ngIf="blastFurnanceSlagKg < 0">Please enter a value of 0 or greater</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="auto-width">
+      <mat-label>Blast furnace slag (SG)</mat-label>
+      <input matInput type="number" [(ngModel)]="blastFurnanceSlagSG" (ngModelChange)="onBlastFurnaceSlagSGChange()" 
+              placeholder="Blast furnace slag (SG)" step="1" min="0">
+      <mat-error *ngIf="blastFurnanceSlagSG <= 0">Please enter a value greater than 0</mat-error>
+    </mat-form-field>
+
+
+  </div>
+
+<!-- Row 5: Fine Aggregates -->
+<div class="form-row">
+  <label for="fineAggregatesLbInput" class="input-label">Fine aggregates:</label>
+<!-- Row 5: Fine Aggregates -->
+    <mat-form-field appearance="fill" class="auto-width">
+      <mat-label>Fine aggregates (kg)</mat-label>
+      <input matInput type="number" [(ngModel)]="fineAggregatesKg" (ngModelChange)="onFineAggregatesKgChange()" 
+      placeholder="Fine aggregates (kg)" min="0" step="1">      
+      <mat-error *ngIf="fineAggregatesKg <= 0">Please enter a value greater than 0</mat-error>
+    </mat-form-field>
+    
+  <!-- Fine Aggregates (SG) Input -->
+  <mat-form-field appearance="fill" class="auto-width">
+    <mat-label>Fine aggregates (SG)</mat-label>
+    <input id="fineAggregatesSGInput" matInput type="number" [(ngModel)]="fineAggregatesSG" 
+           (ngModelChange)="onFineAggregatesSGChange()" 
+           placeholder="Fine aggregates (SG)" min="0" step="1">
+    <mat-error *ngIf="fineAggregatesSG <= 0">Please enter a value greater than 0</mat-error>
   </mat-form-field>
 </div>
 
-<div>
+<!-- Row 6: Water -->
+<div class="form-row">
+  <label for="waterLbInput" class="input-label">Water:</label>
+
+  <!-- Water (lb) Input -->
   <mat-form-field appearance="fill" class="auto-width">
-    <mat-label>Coarse aggregate moisture content</mat-label>
-    <input matInput type="number" [(ngModel)]="coarseAggregateMC" (ngModelChange)="onCoarseAggregateMCChange()" placeholder="Coarse aggregate moisture content" min="0.00001">
-    <mat-error *ngIf="coarseAggregateMC <= 0">Please enter a value greater than 0</mat-error>
+    <mat-label>Water (lb)</mat-label>
+    <input id="waterLbInput" matInput type="number" [(ngModel)]="waterKg" 
+           (ngModelChange)="onWaterKgChange()" 
+           placeholder="Water (lb)" min="0" step="1">
+    <mat-error *ngIf="waterKg <= 0">Please enter a value greater than 0</mat-error>
+  </mat-form-field>
+
+  <!-- Water (SG) Input -->
+  <mat-form-field appearance="fill" class="auto-width">
+    <mat-label>Water (SG)</mat-label>
+    <input id="waterSGInput" matInput type="number" [(ngModel)]="waterSG" 
+           (ngModelChange)="onWaterSGChange()" 
+           placeholder="Water (SG)" min="0" step="1">
+    <mat-error *ngIf="waterSG <= 0">Please enter a value greater than 0</mat-error>
   </mat-form-field>
 </div>
+</div>
 
+<!-- Save Button to Firestore -->
+<div>
+  <button mat-raised-button color="primary" (click)="saveToFirestore()">Save Data</button>
+
+
+<!-- New Button to Fetch All Records for the Current User -->
+
+<button mat-raised-button color="accent" (click)="fetchRecords()">
+  {{ showRecords ? 'Hide Saved Records' : 'Show Saved Records' }}
+</button>
+</div><br>
+
+<!-- Results Table -->
+<!-- Results Table -->
 <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
-
   <!-- Ingredient Column -->
   <ng-container matColumnDef="ingredient">
     <th mat-header-cell *matHeaderCellDef> Ingredient </th>
@@ -63,11 +178,13 @@
     <td mat-cell *matCellDef="let ingredient"> {{ingredient.meterCubed | number:'1.2-2'}} </td>
   </ng-container>
 
+
   <!-- One meter cubed Column -->
   <ng-container matColumnDef="One meter cubed">
     <th mat-header-cell *matHeaderCellDef> 1 m³ </th>
     <td mat-cell *matCellDef="let ingredient"> {{ingredient.oneMeterCubed | number:'1.2-2'}} </td>
   </ng-container>
+
 
   <!-- SSD Mix Amount Meter Cubed Column -->
   <ng-container matColumnDef="SSDMixAmountMeterCubed">
@@ -75,11 +192,13 @@
     <td mat-cell *matCellDef="let ingredient"> {{ingredient.SSDMixAmountMeterCubed | number:'1.2-2'}} </td>
   </ng-container>
 
+
   <!-- SSD Mix Amount Kgs Column -->
   <ng-container matColumnDef="SSDMixAmountKgs">
     <th mat-header-cell *matHeaderCellDef> SSD Mix Amount (kg) </th>
     <td mat-cell *matCellDef="let ingredient"> {{ingredient.SSDMixAmountKgs | number:'1.2-2'}} </td>
   </ng-container>
+
 
   <!-- stockMixAmountKgs Column -->
   <ng-container matColumnDef="stockMixAmountKgs">
@@ -92,3 +211,73 @@
   <tr mat-row *matRowDef="let row; columns: displayedColumns;" [class.total-row]="row.name === 'Total'"></tr>
 
 </table>
+
+<div>
+  <br><strong>Water Content Ratio:</strong> {{ waterContentRatio | number:'1.2-2' }}
+</div>
+
+<!-- Section for displaying fetched records -->
+<div *ngIf="showRecords">
+  <h3>Saved Records</h3>
+  <table mat-table [dataSource]="userRecords" class="mat-elevation-z8">
+    <ng-container matColumnDef="userVolume">
+      <th mat-header-cell *matHeaderCellDef>Volume (m³):</th>
+      <td mat-cell *matCellDef="let record">{{ record.userVolume }}</td>
+    </ng-container>
+    <ng-container matColumnDef="fineAggregatesKg">
+      <th mat-header-cell *matHeaderCellDef>Fine Aggregates (kg):</th>
+      <td mat-cell *matCellDef="let record">{{ record.fineAggregatesKg }}</td>
+    </ng-container>
+    <ng-container matColumnDef="fineAggregatesSG">
+      <th mat-header-cell *matHeaderCellDef>Fine Aggregates (SG):</th>
+      <td mat-cell *matCellDef="let record">{{ record.fineAggregatesSG }}</td>
+    </ng-container>
+    <ng-container matColumnDef="fineAggregateMC">
+      <th mat-header-cell *matHeaderCellDef>Fine Aggregate Moisture Content:</th>
+      <td mat-cell *matCellDef="let record">{{ record.fineAggregateMC }}</td>
+    </ng-container>
+    <ng-container matColumnDef="cementKg">
+      <th mat-header-cell *matHeaderCellDef>Cement (kg):</th>
+      <td mat-cell *matCellDef="let record">{{ record.cementKg }}</td>
+    </ng-container>
+    <ng-container matColumnDef="cementSG">
+      <th mat-header-cell *matHeaderCellDef>Cement SG:</th>
+      <td mat-cell *matCellDef="let record">{{ record.cementSG }}</td>
+    </ng-container>
+    <ng-container matColumnDef="blastFurnanceSlagKg">
+      <th mat-header-cell *matHeaderCellDef>Blast Furnace Slag (kg):</th>
+      <td mat-cell *matCellDef="let record">{{ record.blastFurnanceSlagKg }}</td>
+    </ng-container>
+    <ng-container matColumnDef="blastFurnanceSlagSG">
+      <th mat-header-cell *matHeaderCellDef>Blast Furnace Slag SG:</th>
+      <td mat-cell *matCellDef="let record">{{ record.blastFurnanceSlagSG }}</td>
+    </ng-container>
+    <ng-container matColumnDef="flyAshKg">
+      <th mat-header-cell *matHeaderCellDef>Fly Ash (kg):</th>
+      <td mat-cell *matCellDef="let record">{{ record.flyAshKg }}</td>
+    </ng-container>
+    <ng-container matColumnDef="flyAshSG">
+      <th mat-header-cell *matHeaderCellDef>Fly Ash SG:</th>
+      <td mat-cell *matCellDef="let record">{{ record.flyAshSG }}</td>
+    </ng-container>
+    <ng-container matColumnDef="waterKg">
+      <th mat-header-cell *matHeaderCellDef>Water (kg):</th>
+      <td mat-cell *matCellDef="let record">{{ record.waterKg }}</td>
+    </ng-container>
+    <ng-container matColumnDef="waterSG">
+      <th mat-header-cell *matHeaderCellDef>Water SG:</th>
+      <td mat-cell *matCellDef="let record">{{ record.waterSG }}</td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let record">
+        <button mat-button (click)="populateFields(record)">Use Values</button>
+        <button mat-button color="warn" (click)="deleteRecord(record)">Delete</button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="['userVolume', 'fineAggregatesKg', 'fineAggregatesSG', 'fineAggregateMC', 'cementKg', 'cementSG', 'blastFurnanceSlagKg', 'blastFurnanceSlagSG', 'flyAshKg', 'flyAshSG', 'waterKg', 'waterSG', 'actions']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['userVolume', 'fineAggregatesKg', 'fineAggregatesSG', 'fineAggregateMC', 'cementKg', 'cementSG', 'blastFurnanceSlagKg', 'blastFurnanceSlagSG', 'flyAshKg', 'flyAshSG', 'waterKg', 'waterSG', 'actions'];"></tr>
+    
+  </table>
+</div>
+

@@ -13,12 +13,23 @@
     </div>
     <!-- get input for degree of hydration -->
     <div>
-      <mat-form-field appearance="fill" class="auto-width">
-        <mat-label>Degree of Hydration (α):</mat-label>
-        <input matInput type="number" [(ngModel)]="alpha" (ngModelChange)="calculateTCPowers(wc, alpha)" placeholder="Enter Value" min=".1">
-        <mat-error *ngIf="alpha < 0">Must be positive value</mat-error>
-      </mat-form-field>
-    </div>
+        <mat-form-field appearance="fill" class="auto-width">
+          <mat-label>Degree of Hydration (α):</mat-label>
+          <input matInput type="number" [(ngModel)]="alpha" (ngModelChange)="calculateTCPowers(wc, alpha)" placeholder="Enter Value" min=".1">
+          <mat-error *ngIf="alpha < 0">Must be positive value</mat-error>
+        </mat-form-field>
+      </div>
+      <!-- Save Button to Firestore -->
+      <div>
+        <button mat-raised-button color="primary" (click)="saveToFirestore()">Save Data</button>
+
+
+      <!-- New Button to Fetch All Records for the Current User -->
+
+      <button mat-raised-button color="accent" (click)="fetchRecords()">
+        {{ showRecords ? 'Hide Saved Records' : 'Show Saved Records' }}
+      </button>
+    </div><br>
 <!-- displays results from tcpowers.component.ts -->
 
 <div id="results">
@@ -96,6 +107,32 @@
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
 </div>
+<br>
+
+
+<!-- Section for displaying fetched records -->
+<div *ngIf="showRecords">
+  <h3>Saved Records</h3>
+  <table mat-table [dataSource]="userRecords" class="mat-elevation-z8">
+    <ng-container matColumnDef="wcRatio">
+      <th mat-header-cell *matHeaderCellDef>Water/Cement Ratio (w/c):</th>
+      <td mat-cell *matCellDef="let record">{{ record.wcRatio }}</td>
+    </ng-container>
+    <ng-container matColumnDef="alpha">
+      <th mat-header-cell *matHeaderCellDef>Degree of Hydration (α):</th>
+      <td mat-cell *matCellDef="let record">{{ record.alpha }}</td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let record">
+        <button mat-button (click)="populateFields(record)">Use Values</button>
+        <button mat-button color="warn" (click)="deleteRecord(record)">Delete</button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="['wcRatio', 'alpha', 'actions']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['wcRatio', 'alpha', 'actions'];"></tr>
+  </table>
+</div>
 
 
 <!--
@@ -161,3 +198,4 @@ then number of inputs equal to choice
   </canvas>
 </div>
 -->
+

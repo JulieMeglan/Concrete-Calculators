@@ -43,6 +43,17 @@
     </mat-form-field>
 </div>
 
+      <!-- Save Button to Firestore -->
+      <div>
+        <button mat-raised-button color="primary" (click)="saveToFirestore()">Save Data</button>
+
+      <!-- New Button to Fetch All Records for the Current User -->
+      <button mat-raised-button color="accent" (click)="fetchRecords()">
+        {{ showRecords ? 'Hide Saved Records' : 'Show Saved Records' }}
+      </button>
+    </div><br>
+
+    
 <!-- displays results from plastic-shrinkage-cacks.component.ts -->
 <div id="results">
   <!-- 
@@ -64,6 +75,38 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
+</div>
+<br>
+<!-- Section for displaying fetched records -->
+<div *ngIf="showRecords">
+  <h3>Saved Records</h3>
+  <table mat-table [dataSource]="userRecords" class="mat-elevation-z8">
+    <ng-container matColumnDef="cT">
+      <th mat-header-cell *matHeaderCellDef>Concrete Temperature {{ isMetric ? '(C)' : '(F)'}}: </th>
+      <td mat-cell *matCellDef="let record">{{ record.cT }}</td>
+    </ng-container>
+    <ng-container matColumnDef="aT">
+      <th mat-header-cell *matHeaderCellDef>Air Temperature {{ isMetric ? '(C)' : '(F)'}}: </th>
+      <td mat-cell *matCellDef="let record">{{ record.aT }}</td>
+    </ng-container>
+    <ng-container matColumnDef="rH">
+      <th mat-header-cell *matHeaderCellDef>Relative Humidity (%): </th>
+      <td mat-cell *matCellDef="let record">{{ record.rH }}</td>
+    </ng-container>
+    <ng-container matColumnDef="wV">
+      <th mat-header-cell *matHeaderCellDef>Wind Velocity {{ isMetric ? '(kph)' : '(mph)'}}: </th>
+      <td mat-cell *matCellDef="let record">{{ record.wV }}</td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef>Actions</th>
+      <td mat-cell *matCellDef="let record">
+        <button mat-button (click)="populateFields(record)">Use Values</button>
+        <button mat-button color="warn" (click)="deleteRecord(record)">Delete</button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="['cT', 'aT', 'rH', 'wV', 'actions']"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['cT', 'aT', 'rH', 'wV', 'actions'];"></tr>
+  </table>
 </div>
 <p></p>
 
@@ -92,6 +135,15 @@
       Graph
     </button>
   </form>
+        <!-- Save Button to Firestore -->
+        <div>
+          <button mat-raised-button color="primary" (click)="saveGraphToFirestore()">Save Graph Data</button>
+  
+        <!-- New Button to Fetch All Records for the Current User -->
+        <button mat-raised-button color="accent" (click)="fetchGraphRecords()">
+          {{ showRecords ? 'Hide Saved Records' : 'Show Saved Records' }}
+        </button>
+      </div><br>
 
   <div style="display: block;">
     <canvas baseChart  id="myChart"
@@ -101,6 +153,34 @@
             [type]="'line'">
     </canvas>
   </div>
+
+  <div *ngIf="showGraphRecords">
+    <h3>Saved Graph Records</h3>
+    <table mat-table [dataSource]="graphRecords" class="mat-elevation-z8">
+      <ng-container matColumnDef="myCT">
+        <th mat-header-cell *matHeaderCellDef>Concrete Temperature {{ isMetric ? '(C)' : '(F)'}}: </th>
+        <td mat-cell *matCellDef="let record">{{ record.myCT }}</td>
+      </ng-container>
+      <ng-container matColumnDef="latitude">
+        <th mat-header-cell *matHeaderCellDef>Latitude: </th>
+        <td mat-cell *matCellDef="let record">{{ record.latitude }}</td>
+      </ng-container>
+      <ng-container matColumnDef="longitude">
+        <th mat-header-cell *matHeaderCellDef>Longitude: </th>
+        <td mat-cell *matCellDef="let record">{{ record.longitude }}</td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef>Actions</th>
+        <td mat-cell *matCellDef="let record">
+          <button mat-button (click)="populateGraphFields(record)">Use Values</button>
+          <button mat-button color="warn" (click)="deleteGraphRecord(record)">Delete</button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="['myCT', 'latitude', 'longitude', 'actions']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['myCT', 'latitude', 'longitude', 'actions'];"></tr>
+    </table>
+  </div>
+  <p></p>
 
 
 <!-- for testing

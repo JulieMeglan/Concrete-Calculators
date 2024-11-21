@@ -7,9 +7,26 @@ import { FormsModule } from '@angular/forms';
 import { MatTableModule } from '@angular/material/table';
 import { CommonModule } from '@angular/common';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
-import { Router } from '@angular/router';
+import { Router } from '@angular/router'; 
 
-//minor change
+import { Firestore, addDoc, collection, collectionData, query, where, getDocs, orderBy, deleteDoc, doc } from '@angular/fire/firestore';
+import { Auth } from '@angular/fire/auth';
+import { Observable } from 'rxjs';
+
+interface MortarMixRecord {
+  userVolume: number;
+  fineAggregatesLb: number;
+  fineAggregatesSG: number;
+  fineAggregateMC: number;
+  cementLb: number;
+  cementSG: number;
+  blastFurnanceSlagLb: number;
+  blastFurnanceSlagSG: number; 
+  flyAshLb: number;
+  flyAshSG: number; 
+  waterLb: number;
+  waterSG: number; 
+}
 
 export interface Ingredient {
   name: string;
@@ -23,7 +40,6 @@ export interface Ingredient {
   stockMixAmountLbs: number;
 }
 
-
 // Function to calculate total lbs
 function calculateTotalLb(ingredients: Ingredient[]): number {
   let totalLbs = 0;
@@ -33,6 +49,14 @@ function calculateTotalLb(ingredients: Ingredient[]): number {
   return parseFloat(totalLbs.toFixed(8));
 }
 
+// Function to calculate total SG
+function calculateTotalSG(ingredients: Ingredient[]): number {
+  let totalSG = 0;
+  ingredients.forEach(ingredient => {
+    totalSG += ingredient.SG;
+  });
+  return parseFloat(totalSG.toFixed(8));
+}
 
 // Function to calculate ftCubed
 function calculateFtcubed(lb: number, SG: number): number {
@@ -57,18 +81,6 @@ function calculateOneFootCubed(ingredient: Ingredient, totalFtCubed: number): nu
     return 0; // Handle division by zero or NaN case
   }
   return parseFloat((ingredient.ftCubed / totalFtCubed).toFixed(8));
-}
-
-// Function to calculate air ftCubed
-function calculateAirFtCubed(ingredients: Ingredient[]): number {
-  let ftCubedTotalMinusAir = 0;
-  ingredients.forEach(ingredient => {
-    if (ingredient.name !== 'Air') {
-      ftCubedTotalMinusAir += ingredient.ftCubed;
-    }
-  });
-  const airFtCubed = (ftCubedTotalMinusAir / 0.94) - ftCubedTotalMinusAir;
-  return parseFloat(airFtCubed.toFixed(8));
 }
 
 // Function to calculate totalOneFootCubed
@@ -129,27 +141,22 @@ function calculateTotalSSDMixAmountLbs(ingredients: Ingredient[]): number {
 }
 
 // Function to calculate stockMixAmountLbs
-function calculateStockMixAmountLbs(ingredients: Ingredient[], fineAggregateMC: number, coarseAggregateMC: number): void {
-  const fineAggregate = ingredients.find(ingredient => ingredient.name === 'Fine Aggregates');
-  const coarseAggregate = ingredients.find(ingredient => ingredient.name === 'Coarse Aggregates');
+function calculateStockMixAmountLbs(ingredients: Ingredient[], fineAggregateMC: number): void {
+  const fineAggregate = ingredients.find(ingredient => ingredient.name === 'Fine aggregates');
   
   ingredients.forEach(ingredient => {
     switch (ingredient.name) {
       case 'Cement':
       case 'Fly ash':
-      case 'Blast Furnace Slag':
+      case 'Blast furnace slag':
         ingredient.stockMixAmountLbs = ingredient.SSDMixAmountLbs;
         break;
-      case 'Fine Aggregates':
+      case 'Fine aggregates':
         ingredient.stockMixAmountLbs = parseFloat((ingredient.SSDMixAmountLbs * (1 + fineAggregateMC / 100)).toFixed(8));
-        break;
-      case 'Coarse Aggregates':
-        ingredient.stockMixAmountLbs = parseFloat((ingredient.SSDMixAmountLbs * (1 + coarseAggregateMC / 100)).toFixed(8));
         break;
       case 'Water':
         const fineAggDifference = fineAggregate ? (fineAggregate.SSDMixAmountLbs - fineAggregate.stockMixAmountLbs) : 0;
-        const coarseAggDifference = coarseAggregate ? (coarseAggregate.SSDMixAmountLbs - coarseAggregate.stockMixAmountLbs) : 0;
-        ingredient.stockMixAmountLbs = parseFloat((ingredient.SSDMixAmountLbs + fineAggDifference + coarseAggDifference).toFixed(8));
+        ingredient.stockMixAmountLbs = parseFloat((ingredient.SSDMixAmountLbs + fineAggDifference).toFixed(8));
         break;
       default:
         ingredient.stockMixAmountLbs = 0;
@@ -167,11 +174,10 @@ function calculateTotalStockMixAmountLbs(ingredients: Ingredient[]): number {
 }
 
 const initialIngredientData: Ingredient[] = [
-  { name: 'Cement', lb: 680, SG: 3.15, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
-  { name: 'Fly ash', lb: 0, SG: 2.5, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
-  { name: 'Blast Furnace Slag', lb: 0, SG: 2.8, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
-  { name: 'Fine Aggregates', lb: 1100, SG: 2.5, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
-  { name: 'Coarse Aggregates', lb: 1800, SG: 2.6, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
+  { name: 'Cement', lb: 600, SG: 3.15, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
+  { name: 'Fly ash', lb: 50, SG: 2.5, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
+  { name: 'Blast furnace slag', lb: 50, SG: 2.8, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
+  { name: 'Fine aggregates', lb: 1100, SG: 2.6, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
   { name: 'Water', lb: 340, SG: 1.0, ftCubed: 0, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 },
   //water has to come after aggregates b/c of calculateStockMixAmountLbs function
 ];
@@ -183,19 +189,208 @@ const initialIngredientData: Ingredient[] = [
   templateUrl: './mortar-and-mix.component.html',
   styleUrls: ['./mortar-and-mix.component.css']
 })
+
 export class MortarAndMixComponent {
   isMetric: boolean = false;
   displayedColumns: string[] = ['ingredient', 'lb', 'Specific gravity', 'Feet cubed', 'One foot cubed', 'One yard cubed', 'SSDMixAmountFtCubed', 'SSDMixAmountLbs', 'stockMixAmountLbs'];
   dataSource: Ingredient[] = [];
-  userVolume: number = 40;
+  userVolume: number = 30;
   mixVolume: number = 0;
-  fineAggregate: number = 1100;
-  coarseAggregate: number = 1800;
+  fineAggregatesLb: number = 1100;
+  fineAggregatesSG: number = 2.6;
   fineAggregateMC: number = 1;
-  coarseAggregateMC: number = 1;
+  cementLb: number = 600;
+  cementSG: number = 3.15;
+  blastFurnanceSlagLb: number = 50;
+  blastFurnanceSlagSG: number = 2.8; 
+  flyAshLb: number = 50;
+  flyAshSG: number = 2.5; 
+  waterLb: number = 340;
+  waterSG: number = 1; 
+  waterContentRatio: number = 0.41;
+  userRecords: { userVolume: number, fineAggregatesLb: number, fineAggregatesSG: number, fineAggregateMC: number, cementLb: number, 
+    cementSG: number, blastFurnanceSlagLb: number, blastFurnanceSlagSG: number, flyAshLb: number, flyAshSG: number, waterLb: number,
+    waterSG: number  }[] = []; // stores records fetched from Firestore
+  showRecords: boolean = false; // This controls the visibility of the records section
 
-  constructor(private router: Router) { // Inject the Router service
+  constructor(private router: Router, private firestore: Firestore, private auth: Auth) { // Inject the Router service
     this.initializeData();
+  }
+
+
+  saveToFirestore(): void {
+    // Get the current authenticated user
+    const user = this.auth.currentUser;
+  
+    if (user && user.emailVerified) {
+      // Reference the collection where data will be saved
+      const testCollection = collection(this.firestore, 'mortarMix');
+      
+      // Add a new document with the current values and the user's UID
+      addDoc(testCollection, {
+        userVolume: this.userVolume,
+        fineAggregatesLb: this.fineAggregatesLb,
+        fineAggregatesSG: this.fineAggregatesSG,
+        fineAggregateMC: this.fineAggregateMC,
+        cementLb: this.cementLb,
+        cementSG: this.cementSG,
+        blastFurnanceSlagLb: this.blastFurnanceSlagLb,
+        blastFurnanceSlagSG: this.blastFurnanceSlagSG,
+        flyAshLb: this.flyAshLb,
+        flyAshSG: this.flyAshSG,
+        waterLb: this.waterLb,
+        waterSG: this.waterSG,
+        uid: user.uid,  // Include the uid of the logged-in user
+        timestamp: new Date()  // Add a timestamp if needed
+      }).then(() => {
+        alert('Data saved successfully!');
+      }).catch(error => {
+        alert('Error saving data: ' + error);
+      });
+    } else {
+      alert('No user is logged in');
+    }
+  }
+
+  
+
+  // Fetch saved records for the current user from Firestore
+  fetchRecords(): void {
+    // Toggle the visibility of the records section
+    this.showRecords = !this.showRecords;
+
+    if (this.showRecords) {
+      const user = this.auth.currentUser;
+
+      if (user && user.emailVerified) {
+        // Define records as an array of MortarMixRecord
+        const records: MortarMixRecord[] = [];
+
+        // Reference to the collection
+        const testCollection = collection(this.firestore, 'mortarMix');
+        const q = query(
+          testCollection,
+          where('uid', '==', user.uid),
+          orderBy('timestamp', 'desc') // This sorts records by timestamp, newest first
+        );
+
+        // Use getDocs to fetch multiple documents
+        getDocs(q).then((querySnapshot) => {
+          querySnapshot.forEach((doc) => {
+            const data = doc.data() as MortarMixRecord; // Ensure that data is typed as MortarMixRecord
+
+            if (data) {
+              records.push({
+                userVolume: data.userVolume || 0,
+                fineAggregatesLb: data.fineAggregatesLb || 0,
+                fineAggregatesSG: data.fineAggregatesSG || 0,
+                fineAggregateMC: data.fineAggregateMC || 0,
+                cementLb: data.cementLb || 0,
+                cementSG: data.cementSG || 0,
+                blastFurnanceSlagLb: data.blastFurnanceSlagLb || 0,
+                blastFurnanceSlagSG: data.blastFurnanceSlagSG || 0,
+                flyAshLb: data.flyAshLb || 0,
+                flyAshSG: data.flyAshSG || 0,
+                waterLb: data.waterLb || 0,
+                waterSG: data.waterSG || 0
+              });
+            }
+          });
+
+          // Assign records to the component's variable for display
+          this.userRecords = records;
+
+          if (this.userRecords.length === 0) {
+            alert('No records found for this user.');
+          }
+        }).catch((error) => {
+          console.error('Error fetching records: ', error);
+          alert('Error fetching records: ' + error.message);
+        });
+
+      } else {
+        alert('No user is logged in');
+      }
+    }
+  }
+
+  deleteRecord(record: MortarMixRecord): void {
+    const user = this.auth.currentUser;
+  
+    if (user && user.emailVerified) {
+      // Reference to the collection
+      const testCollection = collection(this.firestore, 'mortarMix');
+      
+      // Query to find the document to delete
+      const q = query(
+        testCollection,
+        where('uid', '==', user.uid),
+        where('userVolume', '==', record.userVolume),
+        where('fineAggregatesLb', '==', record.fineAggregatesLb),
+        where('fineAggregatesSG', '==', record.fineAggregatesSG),
+        where('fineAggregateMC', '==', record.fineAggregateMC),
+        where('cementLb', '==', record.cementLb),
+        where('cementSG', '==', record.cementSG),
+        where('blastFurnanceSlagLb', '==', record.blastFurnanceSlagLb),
+        where('blastFurnanceSlagSG', '==', record.blastFurnanceSlagSG),
+        where('flyAshLb', '==', record.flyAshLb),
+        where('flyAshSG', '==', record.flyAshSG),
+        where('waterLb', '==', record.waterLb),
+        where('waterSG', '==', record.waterSG)
+      );
+  
+      // Fetch the document to delete
+      getDocs(q).then((querySnapshot) => {
+        if (!querySnapshot.empty) {
+          const docId = querySnapshot.docs[0].id; // Get the document ID
+          const docRef = doc(this.firestore, 'mortarMix', docId); // Reference to the document
+  
+          // Delete the document
+          deleteDoc(docRef).then(() => {
+            alert('Record deleted successfully!');
+            this.fetchRecords(); // Refresh the records after deletion
+          }).catch((error) => {
+            console.error('Error deleting record: ', error);
+            alert('Error deleting record: ' + error.message);
+          });
+        } else {
+          alert('Record not found.');
+        }
+      }).catch((error) => {
+        console.error('Error fetching records for deletion: ', error);
+        alert('Error fetching records for deletion: ' + error.message);
+      });
+    } else {
+      alert('No user is logged in');
+    }
+  }
+
+  // Populate input fields with selected record values
+  populateFields(record: MortarMixRecord): void {
+    this.userVolume = record.userVolume;
+    this.fineAggregatesLb = record.fineAggregatesLb;
+    this.fineAggregatesSG = record.fineAggregatesSG;
+    this.fineAggregateMC = record.fineAggregateMC;
+    this.cementLb = record.cementLb;
+    this.cementSG = record.cementSG;
+    this.blastFurnanceSlagLb = record.blastFurnanceSlagLb;
+    this.blastFurnanceSlagSG = record.blastFurnanceSlagSG;
+    this.flyAshLb = record.flyAshLb;
+    this.flyAshSG = record.flyAshSG;
+    this.waterLb = record.waterLb;
+    this.waterSG = record.waterSG;
+    this.onUserVolumeChange();
+    this.onFineAggregatesLbChange();
+    this.onFineAggregatesSGChange();
+    //this.onFineAggregateMCChange(); // don't call this function here
+    this.onCementLbChange();
+    this.onCementSGChange();
+    this.onBlastFurnaceSlagLbChange();
+    this.onBlastFurnaceSlagSGChange();
+    this.onFlyAshLbChange();
+    this.onFlyAshSGChange();
+    this.onWaterLbChange();
+    this.onWaterSGChange();
   }
 
   initializeData(): void {
@@ -210,10 +405,13 @@ export class MortarAndMixComponent {
       this.router.navigate(['/calc/mortarandmix']); // Navigate back to the imperial component
     }
   }
-  
+
   calculateIngredients(ingredients: Ingredient[]): Ingredient[] {
+    const filteredIngredients = ingredients.filter(ingredient => ingredient.name !== 'Total' && ingredient.name !== 'Air');
+
     // Calculate ftCubed for each ingredient
-    let calculatedIngredients = ingredients.map(ingredient => ({
+    let calculatedIngredients = filteredIngredients.map(ingredient => ({
+
       ...ingredient,
       ftCubed: calculateFtcubed(ingredient.lb, ingredient.SG),
       oneFootCubed: 0,
@@ -224,14 +422,15 @@ export class MortarAndMixComponent {
     }));
 
     // Calculate mixVolume
-    this.mixVolume = this.userVolume + (0.15 * this.userVolume);
-    
-    // Calculate and add air ftCubed
-    const airFtCubed = calculateAirFtCubed(calculatedIngredients);
-    calculatedIngredients.push({ name: 'Air', lb: 0, SG: 0, ftCubed: airFtCubed, oneFootCubed: 0, oneYardCubed: 0, SSDMixAmountFtCubed: 0, SSDMixAmountLbs: 0, stockMixAmountLbs: 0 });
+    let cubicFeet: number;
+    cubicFeet = this.userVolume / Math.pow(12, 3); 
+    this.mixVolume = cubicFeet + (0.15 * cubicFeet);
+   
+    // Calculate total lb
+    const totalLb = calculateTotalLb(calculatedIngredients);
 
-   // Calculate total lb
-   const totalLb = calculateTotalLb(calculatedIngredients);
+    // Calculate total SG
+    const totalSG = calculateTotalSG(calculatedIngredients);
 
     // Calculate total feet cubed after ftCubed values are set
     const totalFtCubed = calculateTotalFtCubed(calculatedIngredients);
@@ -263,39 +462,131 @@ export class MortarAndMixComponent {
     const totalSSDMixAmountLbs = calculateTotalSSDMixAmountLbs(calculatedIngredients);
 
     // Calculate stockMixAmountLbs for each ingredient
-    calculateStockMixAmountLbs(calculatedIngredients, this.fineAggregateMC, this.coarseAggregateMC);
+    calculateStockMixAmountLbs(calculatedIngredients, this.fineAggregateMC);
 
     // Calculate totalStockMixAmountLbs
     const totalStockMixAmountLbs = calculateTotalStockMixAmountLbs(calculatedIngredients);
 
-    // Add totals row
-    calculatedIngredients.push({ name: 'Total', lb: totalLb, SG: 0, ftCubed: totalFtCubed, oneFootCubed: totalOneFootCubed, oneYardCubed: totalOneYardCubed, SSDMixAmountFtCubed: totalSSDMixAmountFtCubed, SSDMixAmountLbs: totalSSDMixAmountLbs, stockMixAmountLbs: totalStockMixAmountLbs});
+    // Calculate waterContentRatio
+    this.waterContentRatio = this.calculateWaterContentRatio();
+
+    // Add totals row only once
+    calculatedIngredients.push({
+      name: 'Total',
+      lb: totalLb,
+      SG: totalSG,
+      ftCubed: totalFtCubed,
+      oneFootCubed: totalOneFootCubed,
+      oneYardCubed: totalOneYardCubed,
+      SSDMixAmountFtCubed: totalSSDMixAmountFtCubed,
+      SSDMixAmountLbs: totalSSDMixAmountLbs,
+      stockMixAmountLbs: totalStockMixAmountLbs
+    });
 
     return calculatedIngredients;
+  }
+
+  calculateWaterContentRatio(): number {
+    if (this.cementLb + this.flyAshLb + this.blastFurnanceSlagLb === 0) {
+      return 0; // Avoid division by zero
+    }
+    return parseFloat((this.waterLb / (this.cementLb + this.flyAshLb + this.blastFurnanceSlagLb)).toFixed(2));
   }
 
   onUserVolumeChange(): void {
     if (this.userVolume <= 0) {
       this.userVolume = 1;
     }
-    this.mixVolume = this.userVolume + 0.15 * this.userVolume;
-    calculateSSDMixAmountFtCubed(this.dataSource, this.mixVolume);
-    calculateSSDMixAmountLbs(this.dataSource);
+    let cubicFeet: number;
+    cubicFeet = this.userVolume / Math.pow(12, 3); 
+    this.mixVolume = cubicFeet + (0.15 * cubicFeet);    
+        this.dataSource = this.calculateIngredients(this.dataSource);
+
   }
 
   onFineAggregateMCChange(): void {
-    const ingredient = this.dataSource.find(ing => ing.name === 'Fine Aggregates');
+    const ingredient = this.dataSource.find(ing => ing.name === 'Fine aggregates');
     if (ingredient) {
-      ingredient.lb = this.fineAggregate;
-      this.dataSource = this.calculateIngredients(initialIngredientData);
+      ingredient.lb = this.fineAggregatesLb;
+
+      this.dataSource = this.calculateIngredients(this.dataSource);
     }
   }
 
-  onCoarseAggregateMCChange(): void {
-    const ingredient = this.dataSource.find(ing => ing.name === 'Coarse Aggregates');
-    if (ingredient) {
-      ingredient.lb = this.coarseAggregate;
-      this.dataSource = this.calculateIngredients(initialIngredientData);
+  onCementLbChange() {
+    const cement = this.dataSource.find(ing => ing.name === 'Cement');
+    if (cement) {
+      cement.lb = this.cementLb;
+      this.dataSource = this.calculateIngredients(this.dataSource);    }
+  }
+
+  onCementSGChange() {
+    const cement = this.dataSource.find(ing => ing.name === 'Cement');
+    if (cement) {
+      cement.SG = this.cementSG;
+      this.dataSource = this.calculateIngredients(this.dataSource);    }
+  }
+
+  onFlyAshLbChange() {
+    const flyAsh = this.dataSource.find(ing => ing.name === 'Fly ash');
+    if (flyAsh) {
+      flyAsh.lb = this.flyAshLb;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+
+  onFlyAshSGChange() {
+    const flyAsh = this.dataSource.find(ing => ing.name === 'Fly ash');
+    if (flyAsh) {
+      flyAsh.SG = this.flyAshSG;
+      this.dataSource = this.calculateIngredients(this.dataSource);    }
+  }
+  
+  onBlastFurnaceSlagLbChange() {
+    const blastFurnaceSlag = this.dataSource.find(ing => ing.name === 'Blast furnace slag');
+    if (blastFurnaceSlag) {
+      blastFurnaceSlag.lb = this.blastFurnanceSlagLb;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+  
+  onBlastFurnaceSlagSGChange() {
+    const blastFurnaceSlag = this.dataSource.find(ing => ing.name === 'Blast furnace slag');
+    if (blastFurnaceSlag) {
+      blastFurnaceSlag.SG = this.blastFurnanceSlagSG;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+
+  onFineAggregatesLbChange() {
+    const fineAggregates = this.dataSource.find(ing => ing.name === 'Fine aggregates');
+    if (fineAggregates) {
+      fineAggregates.lb = this.fineAggregatesLb;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+
+  onFineAggregatesSGChange() {
+    const fineAggregates = this.dataSource.find(ing => ing.name === 'Fine aggregates');
+    if (fineAggregates) {
+      fineAggregates.SG = this.fineAggregatesSG;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+  
+  onWaterLbChange() {
+    const water = this.dataSource.find(ing => ing.name === 'Water');
+    if (water) {
+      water.lb = this.waterLb;
+      this.dataSource = this.calculateIngredients(this.dataSource);
+    }
+  }
+
+  onWaterSGChange() {
+    const water = this.dataSource.find(ing => ing.name === 'Water');
+    if (water) {
+      water.SG = this.waterSG;
+      this.dataSource = this.calculateIngredients(this.dataSource);
     }
   }
 }
