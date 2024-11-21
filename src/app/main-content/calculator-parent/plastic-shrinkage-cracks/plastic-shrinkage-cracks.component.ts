@@ -256,7 +256,7 @@ export class PlasticShrinkageCracksComponent {
                 aT = period.temperature;
                 wV = parseFloat(period.windSpeed);  // Handle wind speed string conversion
                 // Calculate evaporation
-                eR = (Math.pow(myCT, 2.5) - (rH / 100) * Math.pow(aT, 2.5)) * (1 + 0.4 * wV) * Math.pow(10, -6);
+                eR = (Math.pow(myCT, 2.5) - (rH / 100) * Math.pow(aT, 2.5)) * (1 + (0.4 * wV)) * Math.pow(10, -6);
               }
 
               // Calculate  suggestion
