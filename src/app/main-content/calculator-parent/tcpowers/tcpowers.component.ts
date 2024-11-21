@@ -15,10 +15,16 @@ interface TCPowersRecord {
   wcRatio: number;
 }
 
+//chart stuff
+import { ChartOptions, ChartType } from 'chart.js';
+import { ChartDataset } from 'chart.js';
+import { BaseChartDirective } from 'ng2-charts';
+import { MatSelectModule } from '@angular/material/select';
+
 @Component({
   selector: 'app-tcpowers',
   standalone: true,
-  imports: [CommonModule, MatDividerModule, MatButtonModule, MatInputModule, MatFormFieldModule, FormsModule, MatTableModule],
+  imports: [CommonModule, MatDividerModule, MatButtonModule, MatInputModule, MatFormFieldModule, FormsModule, MatTableModule, BaseChartDirective, MatSelectModule],
   templateUrl: './tcpowers.component.html',
   styleUrl: './tcpowers.component.css'
 })
@@ -201,4 +207,71 @@ export class TcpowersComponent {
       wmin
     };
   }
+
+
+  /*
+  //chart stuff below -----------------------------------------------
+  numGraphOptions: number[] = [1, 2, 3, 4, 5]; 
+  numGraphs = 5;
+
+  // Initialize arrays based on the number of graphs
+  graphWC: number[] = Array(this.numGraphs).fill('');
+  graphDH: number[] = Array(this.numGraphs).fill('');
+
+  graphVu: number[] = Array(this.numGraphs).fill(25);
+  graphVg: number[] = Array(this.numGraphs).fill(15);
+  graphPg: number[] = Array(this.numGraphs).fill(10);
+  graphPc: number[] = Array(this.numGraphs).fill(50);
+
+  public barChartOptions: ChartOptions = {
+    responsive: true,
+    scales: {
+      x: { stacked: true },
+      y: { stacked: true }
+    }
+  };
+
+  public barChartLabels: string[] = Array(this.numGraphs).fill('').map((_, i) => `Equation ${i + 1}`);
+  public barChartType: ChartType = 'bar';
+  public barChartLegend = true;
+
+  public barChartData: ChartDataset[] = [
+    { data: this.graphVu, label: 'Vu' },
+    { data: this.graphVg, label: "V'g" },
+    { data: this.graphPg, label: 'Pg' },
+    { data: this.graphPc, label: 'Pc' }
+  ];
+
+  // Getter for dynamically creating an array for ngFor
+  get graphsArray() {
+    return Array.from({ length: this.numGraphs });
+  }
+
+  updateGraphData() {
+    // Update the labels based on the current number of graphs
+    this.barChartLabels = Array(this.numGraphs).fill('').map((_, i) => `Equation ${i + 1}`);
+  
+    // Ensure each dataset has the correct number of entries
+    this.barChartData[0].data = Array(this.numGraphs).fill('').map((_, i) => this.graphVu[i] || 0);
+    this.barChartData[1].data = Array(this.numGraphs).fill('').map((_, i) => this.graphVg[i] || 0);
+    this.barChartData[2].data = Array(this.numGraphs).fill('').map((_, i) => this.graphPg[i] || 0);
+    this.barChartData[3].data = Array(this.numGraphs).fill('').map((_, i) => this.graphPc[i] || 0);
+  }
+  onNumGraphsChange() {
+    // Adjust the size of the arrays when numGraphs changes
+    this.graphWC = Array(this.numGraphs).fill('');
+    this.graphDH = Array(this.numGraphs).fill('');
+
+    this.graphVu = Array(this.numGraphs).fill('');
+    this.graphVg = Array(this.numGraphs).fill('');
+    this.graphPg = Array(this.numGraphs).fill('');
+    this.graphPc = Array(this.numGraphs).fill('');
+    this.updateGraphData();
+  }
+
+  calculateTCPowerGraph(graphWC: number[], graphDH: number[]): void {
+
+    
+  }
+  */
 }

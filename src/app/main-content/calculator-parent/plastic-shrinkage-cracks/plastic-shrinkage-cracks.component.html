@@ -11,7 +11,8 @@
 
 
 <!-- <p>Evaporation Rate = ([Concrete Temperature (F)]<sup>2.5</sup> - ([relative Humidity (%)]/100) * [air temperature (F)]<sup>2.5</sup>)(1 + 0.4[wind velocity (mph)])*10<sup>-6</sup></p> -->
-<p>{{ isMetric ? 'Metric' : 'Imperial' }} Evaporation Rate = {{ isMetric ? "5 * (([Concrete Temperature (C)] + 18)^2.5 - ([relative Humidity (%)]/100) * ([air temperature (C)] + 18)^2.5)([wind velocity (mph)] + 4) * 10^-6" 
+<p>{{ isMetric ? 'Metric' : 'Imperial' }} Evaporation Rate =<br>
+{{ isMetric ? "5 * (([Concrete Temperature (C)] + 18)^2.5 - ([relative Humidity (%)]/100) * ([air temperature (C)] + 18)^2.5)([wind velocity (mph)] + 4) * 10^-6" 
 : "([Concrete Temperature (F)]^2.5 - ([relative Humidity (%)]/100) * [air temperature (F)]^2.5)(1 + 0.4[wind velocity (mph)]) * 10^-6" }}</p>
 <div>
     <mat-form-field appearance="fill" class="auto-width">

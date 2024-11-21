@@ -5,12 +5,12 @@
 <!-- for use in TypeScript file, use [(ngModel)]="example" name = "example" -->
     <!-- get input for water to cement ratio -->
     <div>
-        <mat-form-field appearance="fill" class="auto-width">
-          <mat-label>Water/Cement Ratio (w/c):</mat-label>
-          <input matInput type="number" [(ngModel)]="wc" (ngModelChange)="calculateTCPowers(wc, alpha)" placeholder="Enter Value" min=".1">
-          <mat-error *ngIf="wc <= 0">Please enter a value greater than 0</mat-error>
-        </mat-form-field>
-      </div>
+      <mat-form-field appearance="fill" class="auto-width">
+        <mat-label>Water/Cement Ratio (w/c):</mat-label>
+        <input matInput type="number" [(ngModel)]="wc" (ngModelChange)="calculateTCPowers(wc, alpha)" placeholder="Enter Value" min=".1">
+        <mat-error *ngIf="wc <= 0">Please enter a value greater than 0</mat-error>
+      </mat-form-field>
+    </div>
     <!-- get input for degree of hydration -->
     <div>
         <mat-form-field appearance="fill" class="auto-width">
@@ -109,6 +109,7 @@
 </div>
 <br>
 
+
 <!-- Section for displaying fetched records -->
 <div *ngIf="showRecords">
   <h3>Saved Records</h3>
@@ -132,3 +133,69 @@
     <tr mat-row *matRowDef="let row; columns: ['wcRatio', 'alpha', 'actions'];"></tr>
   </table>
 </div>
+
+
+<!--
+<h2>Comparrison Graph</h2>
+-->
+
+<!-- 
+first drop down to select 1 to 5
+then number of inputs equal to choice
+-->
+
+<!-- dropdown field to select 1 - 5 -->
+ <!--
+<div>
+-->
+  <!-- Dropdown for Number of Graphs -->
+   <!--
+  <label for="numGraphs">Select Number of Graphs:</label>
+  <select [(ngModel)]="numGraphs" id="numGraphs">
+    <option *ngFor="let count of numGraphOptions" [value]="count">{{ count }}</option>
+  </select>
+</div>
+    -->
+    <!-- error check
+    <p>You selected: {{numGraphs}}</p>
+    -->
+
+<!-- 1 - 5 input fields -->
+<!-- Dynamic Input Pairs for Graphs -->
+
+<!--
+<div *ngFor="let graph of graphsArray let i = index">
+  <div style="margin-top: 10px;">
+    <mat-form-field appearance="fill" class="auto-width">
+      <mat-label>Water/Cement Ratio (w/c) {{i + 1}}:</mat-label>
+      <input matInput type="number" [(ngModel)]="graphWC" (ngModelChange)="calculateTCPowerGraph(graphWC, graphDH)" placeholder="Enter Value" min=".1">
+      <mat-error *ngIf="wc <= 0">Please enter a value greater than 0</mat-error>
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="auto-width">
+      <mat-label>Degree of Hydration (α) {{i + 1}}:</mat-label>
+      <input matInput type="number" [(ngModel)]="graphDH" (ngModelChange)="calculateTCPowerGraph(graphWC, graphDH)" placeholder="Enter Value" min=".1">
+      <mat-error *ngIf="alpha < 0">Must be positive value</mat-error>
+    </mat-form-field>
+  </div>
+</div>
+
+<button mat-raised-button color="primary" type="button" (click)="calculateTCPowerGraph(graphWC, graphDH)">
+  Graph
+</button>
+-->
+
+<!-- Display chart -->
+
+<!--
+<div style="display: block;">
+  <canvas baseChart
+    [datasets]="barChartData"
+    [labels]="barChartLabels"
+    [options]="barChartOptions"
+    [legend]="barChartLegend"
+    [type]="barChartType">
+  </canvas>
+</div>
+-->
+
